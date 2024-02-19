@@ -24,6 +24,7 @@
 </script>
 
 <table class="w-[80%] h-80 bg-white box-border">
+	<!-- header section -->
 	<div
 		class="flex flex-row justify-between items-center h-12 px-5 border-solid border-b-[1px] border-grey-300"
 	>
@@ -32,6 +33,7 @@
 		<h2 class="w-30">Sist Laget</h2>
 		<h2 class="w-16 text-center">URL</h2>
 	</div>
+	<!-- row section -->
 	{#each dinners as dinner}
 		<div class="flex flex-row justify-between items-center px-5 py-3">
 			{#if dinner.image == undefined}
