@@ -1,9 +1,10 @@
-export function showDate(date: Date) {
+export function showDate(date: Date | null) {
+	if (date === null)
+	{
+		return "";
+	}
 	const dateStr = date.toDateString();
 	// split out weekday and year:
-	const weekday,
-		month,
-		day,
-		year = dateStr.split(' ');
-	return month + ' ' + day;
+	const dateArr = dateStr.split(" ");
+	return dateArr[0]+ ' ' + dateArr[2];
 }
