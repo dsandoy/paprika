@@ -30,8 +30,8 @@
 		<button class="btn-primary">Ny Matrett</button>
 	</div>
 	{#if viewMode === 'table'}
-		{#if data.error}
-			<div>{data.error.message}</div>
+		{#if !data.response}
+			<div>"Ingen middager"</div>
 		{:else}
 			<Table />
 		{/if}
