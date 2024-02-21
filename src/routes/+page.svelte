@@ -12,7 +12,7 @@
 	<p>
 		{#if $page.data.session}
 			{#if $page.data.session.user?.image}
-				<img src={$page.data.session.user.image} />
+				<img src={$page.data.session.user.image} alt="profile" />
 			{/if}
 			<span class="signedInText">
 				<small>Signed in as</small><br />
