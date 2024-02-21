@@ -1,14 +1,28 @@
-export const load = async ({ fetch }) => {
-	const response = await fetch('/api/dish');
-	if (response.ok) {
-		const data = await response.json();
-		return {
+import { prisma } from '$lib/prisma.js';
+import { error } from '@sveltejs/kit';
+
+export const load = async (event ) => {
+	const session = await event.locals.auth();
+	if (!session?.user) {
+		error(401, 'unauthorized');
+	}
+	if (!session.user.email)
+	{
+		error(401, 'this user does not have an email?!');
+	}
+	const data = await prisma.dish.findMany({
+			where: {
+				user: session.user.email
+			},
+			include: {
+				ingredients: true,
+				image: true
+			}
+		})
+		.catch((err) => {
+			error(500, 'something went wrong when collecting data: ' + err);
+		});
+	return {
 			response: data
 		};
-	} else {
-		return {
-			status: response.status,
-			error: new Error('Failed to fetch data')
-		};
-	}
 };
