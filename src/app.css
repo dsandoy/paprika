@@ -24,3 +24,7 @@ h2 {
 .divide-content {
 	@apply divide-y divide-grey-300;
 }
+
+.selected-tab {
+	@apply box-border;
+}

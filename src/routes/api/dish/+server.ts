@@ -6,8 +6,14 @@ export async function GET(event) {
 	if (!session?.user) {
 		error(401, 'unauthorized');
 	}
-	const data = await prisma.dinner
-		.findMany({
+	if (!session.user.email)
+	{
+		error(401, 'this user does not have an email?!');
+	}
+	const data = await prisma.dish.findMany({
+			where: {
+				user: session.user.email
+			},
 			include: {
 				ingredients: true,
 				image: true

@@ -1,4 +1,4 @@
 import { writable } from 'svelte/store';
-import type { Dinner } from './types';
+import type { Dish } from './types';
 
-export const dinners = writable<Dinner[]>([] as Dinner[]);
+export const dishes = writable<Dish[]>([] as Dish[]);

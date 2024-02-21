@@ -11,7 +11,7 @@ datasource db {
   relationMode = "prisma"
 }
 
-model Dinner {
+model Dish {
   id          Int          @id @default(autoincrement())
   name        String
   url         String
@@ -19,6 +19,7 @@ model Dinner {
   lastMade    DateTime?
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @updatedAt
+  user        String
   ingredients Ingredient[]
   imageId     Int?
 
@@ -26,17 +27,17 @@ model Dinner {
 }
 
 model Ingredient {
-  id       Int    @id @default(autoincrement())
-  value    String
-  dinner   Dinner @relation(fields: [dinnerId], references: [id])
-  dinnerId Int
+  id     Int    @id @default(autoincrement())
+  value  String
+  dish   Dish   @relation(fields: [dishId], references: [id])
+  dishId Int
 
-  @@index([dinnerId])
+  @@index([dishId])
 }
 
 model Image {
-  id       Int      @id @default(autoincrement())
+  id       Int    @id @default(autoincrement())
   filename String
   data     Bytes
-  Dinner   Dinner[]
+  dish     Dish[]
 }
