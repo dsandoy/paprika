@@ -11,15 +11,15 @@ h2 {
 }
 
 .btn-primary {
-	@apply h-11 bg-green text-white rounded-lg px-5 text-lg;
+	@apply h-11 bg-green text-white rounded-lg px-5 text-lg cursor-pointer;
 }
 
 .btn {
-	@apply h-11 rounded-lg px-5 text-lg;
+	@apply h-11 rounded-lg px-5 text-lg cursor-pointer;
 }
 
 .box-border {
-	@apply rounded border-solid border-[1px] border-b-grey-300;
+	@apply border-solid border-[1px] border-b-grey-300;
 }
 .divide-content {
 	@apply divide-y divide-grey-300;
