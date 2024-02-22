@@ -24,6 +24,9 @@ h1 {
 .btn {
 	@apply h-11 rounded-lg px-5 text-lg cursor-pointer;
 }
+.btn-secondary {
+	@apply btn border-[1px] border-green bg-gradient-to-r from-gray-100 to-gray-100 via-white hover:from-green hover:to-green hover:text-white
+}
 
 .box-border {
 	@apply border-solid border-[1px] border-b-grey-300;

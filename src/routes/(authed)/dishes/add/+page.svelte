@@ -20,18 +20,20 @@
 	};
 </script>
 
-<section class="container flex flex-col items-center justify-center">
+<section class="flex flex-col items-center justify-center">
 	<h2 class="mb-12 mt-12">Legg til ny Matrett</h2>
 	<form
 		use:enhance
-		class="w-[80%] lg:w-[50%] flex flex-col justify-center items-center"
+		class="w-[80%] md:w-[60%] xl:w-[40%] flex flex-col justify-center items-center"
 		method="post"
 		action="/dishes/add"
 	>
+		<!-- set name  -->
 		<input class="input" type="text" name="name" placeholder="Navn" />
+		<!-- set recipe url -->
 		<input class="input" type="text" name="url" placeholder="Link til oppskrift" />
-		<input type="hidden" name="user" value={$page.data.session?.user?.email} />
 
+		<!-- upload image -->
 		<div class="flex flex-row w-full mb-5">
 			<label class=" px-5 flex items-center justify-center text-gray-400" for="image"
 				>Last opp Bilde:</label
@@ -43,6 +45,7 @@
 				accept="image/*"
 			/>
 		</div>
+		<!-- ingredients -->
 		<div class=" w-full border-[1px] p-5 rounded border-grey-300 flex flex-row mb-6">
 			<div class="flex flex-col w-[50%] items-center">
 				<input
@@ -52,13 +55,10 @@
 					bind:value={ingredient.value}
 					placeholder="Ingrediens"
 				/>
-				<button
-					class="btn border-[1px] border-grey-300 bg-blue hover:bg-sky-800 text-white w-48"
-					on:click={addIngrendient}>Legg til</button
-				>
+				<button class="btn-primary w-32" on:click={addIngrendient}>Legg til</button>
 			</div>
 			<div class="w-[50%] pl-5">
-				<h3 class="px-5 text-gray-400 text-right">ingredienser</h3>
+				<h3 class="px-5 text-gray-400">ingredienser</h3>
 				{#each $ingredients as ingredient}
 					<button
 						class="block hover:bg-red hover:text-white rounded-lg pl-5 pr-5"
@@ -67,8 +67,9 @@
 					>
 				{/each}
 			</div>
+			<!-- include ingredients -->
 			<input type="hidden" value={ingredients} />
 		</div>
-		<button class="btn-primary w-48">Legg til matrett</button>
+		<button class="btn-secondary w-48">Legg til matrett</button>
 	</form>
 </section>
