@@ -36,7 +36,7 @@ export function validateURL(url: string) {
 
 /** error code for name empty */
 export const NAME_EMPTY = -1;
-/** error code for naem already in use */
+/** error code for name already in use */
 export const NAME_ALREADY_IN_USE = -2;
 /** Check that the name is not empty or already in use */
 export function validateName(name: string, names: string[] | null = null) {

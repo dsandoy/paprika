@@ -1,4 +1,3 @@
-import { get } from 'svelte/store';
 import {
 	validateName,
 	validateURL,
@@ -7,48 +6,54 @@ import {
 	NAME_EMPTY,
 	URL_INVALID
 } from '$lib/utils';
-import { page } from '$app/stores';
 import { prisma } from '$lib/prisma';
 
-const USER_INVALID = -10;
 export const actions = {
-	default: async ({ request }) => {
-		const user = get(page).data.session?.user?.email;
-		if (!user) {
-			return {
-				error: USER_INVALID,
-				message: 'Du må være innlogget for å legge til en matrett'
-			};
+	ingredients: async ({request}) => {
+		const data = await request.formData();
+		const dish = {
+			name : data.get('name') as string,
+			url : data.get('url') as string,
+			user : data.get('user') as string
 		}
-		const data = request.formData();
-		const name = data.get('name');
-		const result = validateName(name);
-		if (result === NAME_EMPTY) {
-			return {
-				error: NAME_EMPTY,
-				message: 'Du kan ikke ha et tomt navn'
-			};
+		return {
+		data: dish,
 		}
-		if (result === NAME_ALREADY_IN_USE) {
-			return {
-				error: NAME_ALREADY_IN_USE,
-				message: 'Du har allerede en matrett med det navnet, kall denne noe annet'
-			};
-		}
-
-		const url = data.get('url');
-		const result2 = validateURL(url);
-		if (!result2) {
-			return {
-				error: URL_INVALID,
-				message: 'Oppgi en gyldig URL'
-			};
-		}
+	},
+	add: async ({ request }) => {
+		const data = await request.formData();
+		const user = data.get('user') as string;
+		const name = data.get('name') as string;
+		const url = data.get('url') as string;
 		const dish = {
 			name: name,
 			url: url,
 			user: user
 		};
+		const result = validateName(name);
+		if (result === NAME_EMPTY) {
+			return {
+				error: NAME_EMPTY,
+				message: 'Oppgi et navn',
+				data: dish
+			};
+		}
+		if (result === NAME_ALREADY_IN_USE) {
+			return {
+				error: NAME_ALREADY_IN_USE,
+				message: 'Du har allerede en matrett med det navnet, kall denne noe annet',
+				data: dish
+			};
+		}
+
+		const result2 = validateURL(url);
+		if (!result2) {
+			return {
+				error: URL_INVALID,
+				message: 'Oppgi en gyldig URL',
+				data: dish
+			};
+		}
 		await prisma.dish
 			.create({
 				data: dish

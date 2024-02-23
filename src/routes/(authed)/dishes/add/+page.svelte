@@ -1,10 +1,10 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
-	import { page } from '$app/stores';
 	import type { Ingredient } from '$lib/types';
 	import { ingredients } from '$lib/stores';
+	import { page } from '$app/stores';
 
-	export let formData;
+	export let form;
 
 	let ingredient: Ingredient = { value: '' };
 
@@ -26,15 +26,29 @@
 		use:enhance
 		class="w-[80%] md:w-[60%] xl:w-[40%] flex flex-col justify-center items-center"
 		method="post"
-		action="/dishes/add"
+		action="?/ingredients"
 	>
+		<!-- user -->
+		<input type="hidden" value={$page.data.session?.user?.email} name="user" />
 		<!-- set name  -->
-		<input class="input" type="text" name="name" placeholder="Navn" />
+		<input
+			class="input"
+			type="text"
+			name="name"
+			value={form?.data?.name || ''}
+			placeholder="Navn"
+		/>
 		<!-- set recipe url -->
-		<input class="input" type="text" name="url" placeholder="Link til oppskrift" />
+		<input
+			class="input"
+			type="text"
+			value={form?.data?.url || ''}
+			name="url"
+			placeholder="Link til oppskrift"
+		/>
 
 		<!-- upload image -->
-		<div class="flex flex-row w-full mb-5">
+		<!-- <div class="flex flex-row w-full mb-5">
 			<label class=" px-5 flex items-center justify-center text-gray-400" for="image"
 				>Last opp Bilde:</label
 			>
@@ -44,7 +58,7 @@
 				name="image"
 				accept="image/*"
 			/>
-		</div>
+		</div> -->
 		<!-- ingredients -->
 		<div class=" w-full border-[1px] p-5 rounded border-grey-300 flex flex-row mb-6">
 			<div class="flex flex-col w-[50%] items-center">
@@ -70,6 +84,11 @@
 			<!-- include ingredients -->
 			<input type="hidden" value={ingredients} />
 		</div>
-		<button class="btn-secondary w-48">Legg til matrett</button>
+		<button class="btn-secondary w-48" formaction="?/add">Legg til matrett</button>
+		<div>
+			{#if form?.error}
+				<p class="text-red">{form?.error}: {form?.message}</p>
+			{/if}
+		</div>
 	</form>
 </section>
