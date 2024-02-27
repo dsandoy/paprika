@@ -8,6 +8,7 @@ import {
 	URL_INVALID
 } from '$lib/utils';
 import { prisma } from '$lib/prisma';
+import { redirect } from '@sveltejs/kit';
 
 export const actions = {
 	add: async ({ request }) => {
@@ -62,8 +63,6 @@ export const actions = {
 					};
 				});
 
-		return {
-			success: true
-		};
+		redirect(302, '/dishes/add/success');
 	}
 };
