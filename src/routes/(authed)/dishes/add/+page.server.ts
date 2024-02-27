@@ -10,17 +10,6 @@ import {
 import { prisma } from '$lib/prisma';
 
 export const actions = {
-	ingredients: async ({request}) => {
-		const data = await request.formData();
-		const dish = {
-			name : data.get('name') as string,
-			url : data.get('url') as string,
-			user : data.get('user') as string
-		}
-		return {
-		data: dish,
-		}
-	},
 	add: async ({ request }) => {
 		const data = await request.formData();
 		const user = data.get('user') as string;
