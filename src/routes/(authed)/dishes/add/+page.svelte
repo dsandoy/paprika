@@ -1,21 +1,20 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
-	import type { Ingredient } from '$lib/types';
 	import { ingredients } from '$lib/stores';
 	import { page } from '$app/stores';
 
 	export let form;
 
-	let ingredient: Ingredient = { value: '' };
+	let ingredient = '';
 
-	/** add ingredient to ingredients list */
+	/** add ingredient to client kept ingredients list */
 	const addIngrendient = () => {
-		if (!ingredient.value) return;
-		if ($ingredients.some((i) => i.value === ingredient.value)) return;
+		// do not add empty or duplicated ingredients
+		if (!ingredient) return;
+		if ($ingredients.some((i) => i === ingredient)) return;
 
-		const ingredientCopy = { ...ingredient };
-		$ingredients.push(ingredientCopy);
-		ingredient = { value: '' };
+		$ingredients.push(ingredient);
+		ingredient = '';
 		$ingredients = $ingredients;
 	};
 </script>
@@ -65,8 +64,8 @@
 				<input
 					class="input"
 					type="text"
-					name="ingredients"
-					bind:value={ingredient.value}
+					name="temp-ingredients"
+					bind:value={ingredient}
 					placeholder="Ingrediens"
 				/>
 				<button class="btn-primary w-32" on:click={addIngrendient}>Legg til</button>
@@ -77,12 +76,12 @@
 					<button
 						class="block hover:bg-red hover:text-white rounded-lg pl-5 pr-5"
 						on:click={() => ($ingredients = $ingredients.filter((i) => i !== ingredient))}
-						>{ingredient.value}</button
+						>{ingredient}</button
 					>
 				{/each}
 			</div>
 			<!-- include ingredients -->
-			<input type="hidden" value={ingredients} />
+			<input type="hidden" value={$ingredients} name="ingredients" />
 		</div>
 		<button class="btn-secondary w-48" formaction="?/add">Legg til matrett</button>
 		<div>

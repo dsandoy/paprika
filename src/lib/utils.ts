@@ -1,5 +1,6 @@
 import { get } from 'svelte/store';
 import { dishes } from './stores';
+import type { Ingredient } from './types';
 
 /** Display the date in the date number and month only. Ex: 12. feb,
  * if no datevalue, return emptyMessage, else return empty string
@@ -42,9 +43,23 @@ export const NAME_ALREADY_IN_USE = -2;
 export function validateName(name: string, names: string[] | null = null) {
 	if (name.length === 0) return NAME_EMPTY;
 
-	if (names == null) names = get(dishes).map((dish) => dish.name.toLowerCase());
-	if (names.includes(name.toLowerCase())) {
+	if (names === null)
+	{
+		names = get(dishes).map((d) => d.name);
+	}
+
+	if (names.includes(name)) {
 		return NAME_ALREADY_IN_USE;
 	}
 	return 0;
+}
+
+/** Handle the comma separated list of ingredients and returns ingredient array*/
+export function handleIngredients(ingredients :string | null) : Ingredient[]
+{
+	if (ingredients === null) {
+		return [];
+	}
+	const arr = ingredients.split(',');
+	return arr.map((i) => ({ value: i }))
 }

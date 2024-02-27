@@ -1,6 +1,7 @@
 import {
 	validateName,
 	validateURL,
+	handleIngredients,
 	DATABASE_ERROR,
 	NAME_ALREADY_IN_USE,
 	NAME_EMPTY,
@@ -24,11 +25,13 @@ export const actions = {
 		const data = await request.formData();
 		const user = data.get('user') as string;
 		const name = data.get('name') as string;
+		const ingredients = handleIngredients(data.get('ingredients') as string | null);
 		const url = data.get('url') as string;
 		const dish = {
 			name: name,
 			url: url,
-			user: user
+			user: user,
+			ingredients:ingredients,
 		};
 		const result = validateName(name);
 		if (result === NAME_EMPTY) {
@@ -54,16 +57,21 @@ export const actions = {
 				data: dish
 			};
 		}
+
 		await prisma.dish
 			.create({
-				data: dish
-			})
-			.catch((error) => {
-				return {
-					error: DATABASE_ERROR,
-					message: 'Klarte ikke å opprette matretten i databasen.. Noe gikk galt...' + error
-				};
-			});
+				data: {
+					name: dish.name,
+					url: dish.url,
+					user: dish.user,
+					ingredients: { create: dish.ingredients },
+				},},).catch((err) => {
+					return {
+						error: DATABASE_ERROR,
+						message: 'Noe gikk galt med databasen. Prøv igjen'+err,
+						data: dish
+					};
+				});
 
 		return {
 			success: true
