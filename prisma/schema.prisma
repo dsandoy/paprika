@@ -12,18 +12,19 @@ datasource db {
 }
 
 model Dish {
-  id          Int          @id @default(autoincrement())
-  name        String
-  url         String
-  image       Image?       @relation(fields: [imageId], references: [id])
-  lastMade    DateTime?
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
-  user        String
-  ingredients Ingredient[]
-  imageId     Int?
+  id            Int          @id @default(autoincrement())
+  name          String
+  url           String
+  customImageId Int?
+  customImage   CustomImage? @relation(fields: [customImageId], references: [id])
+  image         Int          @default(0)
+  lastMade      DateTime?
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+  user          String
+  ingredients   Ingredient[]
 
-  @@index([imageId])
+  @@index([customImageId])
 }
 
 model Ingredient {
@@ -35,9 +36,13 @@ model Ingredient {
   @@index([dishId])
 }
 
-model Image {
-  id       Int    @id @default(autoincrement())
-  filename String
-  data     Bytes
-  dish     Dish[]
+model CustomImage {
+  id           Int    @id @default(autoincrement())
+  name         String
+  size         Int
+  type         String
+  lastModified Float
+  data         Bytes
+
+  Dish Dish[]
 }

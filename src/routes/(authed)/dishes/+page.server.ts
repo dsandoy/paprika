@@ -16,7 +16,6 @@ export const load = async (event) => {
 			},
 			include: {
 				ingredients: true,
-				image: true
 			}
 		})
 		.catch((err) => {

@@ -57,6 +57,17 @@
 		}
 		name.reportValidity();
 	}
+
+	let customImageUrl: string | null = null;
+	/** Let the user see the image they uploaded..*/
+	function handleImageUpload(event: Event) {
+		const image = (event.target as HTMLInputElement)?.files?.[0];
+		if (!image) {
+			customImageUrl = null;
+			return;
+		}
+		customImageUrl = URL.createObjectURL(image);
+	}
 </script>
 
 <section class="flex flex-col items-center justify-center">
@@ -67,6 +78,7 @@
 		method="post"
 		action="?/ingredients"
 		bind:this={formElement}
+		enctype="multipart/form-data"
 	>
 		<!-- user -->
 		<input type="hidden" value={$page.data.session?.user?.email} name="user" />
@@ -91,7 +103,7 @@
 		/>
 
 		<!-- upload image -->
-		<!-- <div class="flex flex-row w-full mb-5">
+		<div class="flex flex-row w-full mb-5">
 			<label class=" px-5 flex items-center justify-center text-gray-400" for="image"
 				>Last opp Bilde:</label
 			>
@@ -100,8 +112,12 @@
 				type="file"
 				name="image"
 				accept="image/*"
+				on:change={handleImageUpload}
 			/>
-		</div> -->
+			{#if customImageUrl}
+				<img src={customImageUrl} class="w-24 h-24" alt="uploaded" />
+			{/if}
+		</div>
 		<!-- ingredients -->
 		<div class=" w-full border-[1px] p-5 rounded border-grey-300 flex flex-row mb-6">
 			<div class="flex flex-col w-[50%] items-center">
