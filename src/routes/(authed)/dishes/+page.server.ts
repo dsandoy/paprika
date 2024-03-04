@@ -15,8 +15,7 @@ export const load = async (event) => {
 				user: session.user.email
 			},
 			include: {
-				ingredients: true,
-				image: true
+				ingredients: true
 			}
 		})
 		.catch((err) => {

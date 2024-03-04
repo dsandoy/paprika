@@ -20,11 +20,19 @@
 		<div class="border-x-[1px] border-solidborder-grey-300">
 			{#each $dishes as dish}
 				<div class="flex flex-row justify-between items-center px-5 py-3">
-					{#if dish.image == undefined}
+					{#if !dish.customImageId}
 						<div class="w-16"><div class="bg-gray-300 h-16 w-16 text-center">Img</div></div>
+					{:else}
+						<div class="w-16">
+							<img
+								src={`/api/dishes/${dish.id}/image/${dish.customImageId}`}
+								alt="uploaded"
+								class="w-16 h-16"
+							/>
+						</div>
 					{/if}
-					<div class="w-30">{dish.name}</div>
-					<div class="w-30 text-base">{showDate(dish.lastMade, 'Ikke laget')}</div>
+					<div class="w-32">{dish.name}</div>
+					<div class="w-32 text-base">{showDate(dish.lastMade, 'Ikke laget')}</div>
 					<a href={dish.url} class="w-16"
 						><button class="btn border-[1px] border-solid border-grey-300 bg-gray-100">URL</button
 						></a

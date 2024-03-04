@@ -27,7 +27,9 @@
 				on:click={() => (viewMode = 'images')}>Bilder</button
 			>
 		</div>
-		<button class="btn-primary">Ny Matrett</button>
+		<a href="/dishes/add">
+			<button class="btn-primary">Ny Matrett</button>
+		</a>
 	</div>
 	{#if viewMode === 'table'}
 		{#if !data.response}
