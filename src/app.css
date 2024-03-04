@@ -17,8 +17,6 @@ h1 {
 	@apply rounded-lg w-full py-2 px-5 block mb-5 border-[1px] border-grey-300 focus:ring-2 focus:invalid:ring-red focus:ring-green focus:border-green focus:invalid:border-red focus:outline-none;
 }
 
-
-
 .box-border {
 	@apply border-solid border-[1px] border-b-grey-300;
 }
