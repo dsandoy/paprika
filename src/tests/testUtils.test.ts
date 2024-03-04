@@ -1,4 +1,11 @@
-import { showDate, validateURL, validateName, NAME_EMPTY, NAME_ALREADY_IN_USE, handleIngredients } from '$lib/utils';
+import {
+	showDate,
+	validateURL,
+	validateName,
+	NAME_EMPTY,
+	NAME_ALREADY_IN_USE,
+	handleIngredients
+} from '$lib/utils';
 import { it, expect } from 'vitest';
 
 it('test showDate with date', () => {
@@ -35,8 +42,5 @@ it('validateName valid', () => {
 });
 
 it('handleIngredients', () => {
-	expect(handleIngredients('test, test2')).toEqual([
-		{ value: 'test' },
-		{ value: 'test2' }
-	]);
-})
+	expect(handleIngredients('test, test2')).toEqual([{ value: 'test' }, { value: 'test2' }]);
+});
