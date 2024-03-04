@@ -2,6 +2,7 @@
 	import Table from '$lib/components/dish/Table.svelte';
 	import type { Dish } from '$lib/types.js';
 	import { dishes } from '$lib/stores.js';
+	import PrimaryButton from '$lib/components/PrimaryButton.svelte';
 
 	export let data;
 	if (data.response) {
@@ -28,7 +29,7 @@
 			>
 		</div>
 		<a href="/dishes/add">
-			<button class="btn-primary">Ny Matrett</button>
+			<PrimaryButton>Ny Matrett</PrimaryButton>
 		</a>
 	</div>
 	{#if viewMode === 'table'}

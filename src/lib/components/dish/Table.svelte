@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { showDate } from '$lib/utils';
 	import { dishes } from '$lib/stores';
+	import SecondaryButton from '../SecondaryButton.svelte';
 </script>
 
 {#if $dishes.length === 0}
@@ -33,10 +34,9 @@
 					{/if}
 					<div class="w-32">{dish.name}</div>
 					<div class="w-32 text-base">{showDate(dish.lastMade, 'Ikke laget')}</div>
-					<a href={dish.url} class="w-16"
-						><button class="btn border-[1px] border-solid border-grey-300 bg-gray-100">URL</button
-						></a
-					>
+					<a href={dish.url} class="w-16">
+						<SecondaryButton classNames="w-16 px-0 h-8">URL</SecondaryButton>
+					</a>
 				</div>
 			{/each}
 		</div>

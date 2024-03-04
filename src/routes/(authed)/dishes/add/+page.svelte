@@ -3,6 +3,8 @@
 	import { ingredients } from '$lib/stores';
 	import { page } from '$app/stores';
 	import { NAME_ALREADY_IN_USE, NAME_EMPTY, validateName, validateURL } from '$lib/utils.js';
+	import PrimaryButton from '$lib/components/PrimaryButton.svelte';
+	import SecondaryButton from '$lib/components/SecondaryButton.svelte';
 
 	export let form;
 	let formElement: HTMLFormElement;
@@ -130,7 +132,9 @@
 					on:input={validateIngredients}
 					placeholder="Ingrediens"
 				/>
-				<button type="button" class="btn-primary w-32" on:click={addIngrendient}>Legg til</button>
+				<PrimaryButton type="button" classNames="w-32" on:click={addIngrendient}
+					>Legg til</PrimaryButton
+				>
 			</div>
 			<div class="w-[50%] pl-5">
 				<h3 class="px-5 text-gray-400">ingredienser</h3>
@@ -146,7 +150,7 @@
 			<!-- include ingredients -->
 			<input type="hidden" value={$ingredients} name="ingredients" />
 		</div>
-		<button class="btn-secondary w-48" formaction="?/add">Legg til matrett</button>
+		<SecondaryButton classNames="w-48" formaction="?/add">Legg til matrett</SecondaryButton>
 		<div>
 			{#if form?.error}
 				<p class="text-red">{form?.message}</p>
