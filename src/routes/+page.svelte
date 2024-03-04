@@ -30,12 +30,13 @@
 		</div>
 	{:else}
 		<div
-			class="flex items-center justify-center flex-col border-l-[8px] border-red p-5 pr-16 rounded bg-gray-100 w-96"
+			class="flex items-center justify-center flex-col border-l-[8px] border-red p-5 pr-16 rounded bg-gray-100 w-96 gap-4"
 		>
-			<span class="notSignedInText">You are not signed in</span>
-			<PrimaryButton>
+			<div>You are not signed in</div>
+			<SecondaryButton classNames="flex flex-row w-64 h-14 justify-center items-center gap-3">
+				<img src="google-logo.png" alt="Google logo" class="h-6" />
 				<SignIn provider="google" />
-			</PrimaryButton>
+			</SecondaryButton>
 		</div>
 	{/if}
 </section>
