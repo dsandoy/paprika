@@ -43,8 +43,7 @@ export const NAME_ALREADY_IN_USE = -2;
 export function validateName(name: string, names: string[] | null = null) {
 	if (name.length === 0) return NAME_EMPTY;
 
-	if (names === null)
-	{
+	if (names === null) {
 		names = get(dishes).map((d) => d.name);
 	}
 
@@ -55,11 +54,10 @@ export function validateName(name: string, names: string[] | null = null) {
 }
 
 /** Handle the comma separated list of ingredients and returns ingredient array*/
-export function handleIngredients(ingredients :string | null) : Ingredient[]
-{
+export function handleIngredients(ingredients: string | null): Ingredient[] {
 	if (ingredients === null) {
 		return [];
 	}
 	const arr = ingredients.split(',');
-	return arr.map((i) => ({ value: i }))
+	return arr.map((i) => ({ value: i }));
 }

@@ -31,8 +31,8 @@
 							/>
 						</div>
 					{/if}
-					<div class="w-30">{dish.name}</div>
-					<div class="w-30 text-base">{showDate(dish.lastMade, 'Ikke laget')}</div>
+					<div class="w-32">{dish.name}</div>
+					<div class="w-32 text-base">{showDate(dish.lastMade, 'Ikke laget')}</div>
 					<a href={dish.url} class="w-16"
 						><button class="btn border-[1px] border-solid border-grey-300 bg-gray-100">URL</button
 						></a

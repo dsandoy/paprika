@@ -11,7 +11,7 @@ export interface Ingredient {
 
 /** Dinner or dish had for dinner */
 export interface Dish {
-	id?: number
+	id?: number;
 	/** What is the dish called */
 	name: string;
 	/** Url to the recipe */
@@ -37,5 +37,5 @@ export interface CustomImage {
 	size: number;
 	type: string;
 	lastModified: number;
-	data: Blob;
+	data: Buffer;
 }
