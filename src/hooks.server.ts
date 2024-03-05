@@ -1,8 +1,20 @@
-import { redirect, type Handle, type MaybePromise, type RequestEvent, type ResolveOptions } from '@sveltejs/kit';
+import {
+	redirect,
+	type Handle,
+	type MaybePromise,
+	type RequestEvent,
+	type ResolveOptions
+} from '@sveltejs/kit';
 import { handle as authenticationHandle } from '$lib/auth';
 import { sequence } from '@sveltejs/kit/hooks';
 
-async function authorizationHandle({ event, resolve }: { event: RequestEvent, resolve: (event: RequestEvent, opts?: ResolveOptions) => MaybePromise<Response> }): Promise<Response> {
+async function authorizationHandle({
+	event,
+	resolve
+}: {
+	event: RequestEvent;
+	resolve: (event: RequestEvent, opts?: ResolveOptions) => MaybePromise<Response>;
+}): Promise<Response> {
 	// Protect any routes under /api
 	if (event.url.pathname.startsWith('/api') || event.url.pathname.startsWith('/dishes')) {
 		const session = await event.locals.auth();
