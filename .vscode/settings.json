@@ -1,0 +1,18 @@
+{
+    // vscode
+    "editor.formatOnSave": true,
+    "editor.insertSpaces": true,
+    "files.insertFinalNewline": true,
+    "files.trimFinalNewlines": true,
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+
+    //eslint
+    "eslint.validate": ["javascript", "typescript", "svelte"],
+    "typescript.tsserver.experimental.enableProjectDiagnostics": false, // get problems from all files instead of just open files
+    // svelte
+    "[svelte]": {
+        "editor.formatOnSave": true
+    },
+}
+
+
