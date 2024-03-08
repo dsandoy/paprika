@@ -8,7 +8,9 @@
 {#if $dishes.length === 0}
 	<div>Ingen middager er funnet...</div>
 {:else}
-	<table class="bg-white w-[80%] mt-12 flex flex-col items-center justify-center">
+	<table
+		class="bg-white w-[80%] mt-12 flex flex-col items-center justify-center overflow-y-auto scroll-m-7"
+	>
 		<!-- header section -->
 		<div
 			class="flex flex-row justify-between items-center h-12 px-5 border-solid border-b-[1px] border-grey-300 w-[100%]"
