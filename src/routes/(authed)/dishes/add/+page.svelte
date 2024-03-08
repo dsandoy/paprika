@@ -5,6 +5,7 @@
 	import { NAME_ALREADY_IN_USE, NAME_EMPTY, validateName, validateURL } from '$lib/utils.js';
 	import PrimaryButton from '$lib/components/PrimaryButton.svelte';
 	import SecondaryButton from '$lib/components/SecondaryButton.svelte';
+	import BottomCircles from '$lib/components/BottomCircles.svelte';
 
 	export let form;
 	let formElement: HTMLFormElement;
@@ -105,12 +106,12 @@
 		/>
 
 		<!-- upload image -->
-		<div class="flex flex-row justify-center items-center w-full mb-5 gap-5">
+		<div class="flex flex-row justify-center items-center w-full mb-5 gap-5 ">
 			{#if customImageUrl}
 				<img src={customImageUrl} class="w-24 h-24" alt="uploaded" />
 			{/if}
-			<SecondaryButton type="button" classNames="w-36">
-				<label for="upload_image"
+			<SecondaryButton type="button" classNames="w-36 cursor-pointer">
+				<label class="cursor-pointer" for="upload_image"
 					>Velg Bilde
 					<input
 						class="hidden"
@@ -160,4 +161,5 @@
 			{/if}
 		</div>
 	</form>
+	<BottomCircles />
 </section>
