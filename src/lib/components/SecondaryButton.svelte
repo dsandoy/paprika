@@ -1,5 +1,5 @@
 <script lang="ts">
-	import Button from "./Button.svelte";
+	import Button from './Button.svelte';
 
 	export let classNames = '';
 	export let type: 'button' | 'submit' = 'submit';

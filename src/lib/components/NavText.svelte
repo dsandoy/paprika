@@ -1,6 +1,5 @@
 <script lang="ts">
-    export let url = "";
+	export let url = '';
 </script>
 
-
-<a href={url} class="text-xl hover:text-green font-semibold block"><slot/></a>
+<a href={url} class="text-xl hover:text-green font-semibold block"><slot /></a>

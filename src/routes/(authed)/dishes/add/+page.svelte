@@ -106,7 +106,7 @@
 		/>
 
 		<!-- upload image -->
-		<div class="flex flex-row justify-center items-center w-full mb-5 gap-5 ">
+		<div class="flex flex-row justify-center items-center w-full mb-5 gap-5">
 			{#if customImageUrl}
 				<img src={customImageUrl} class="w-24 h-24" alt="uploaded" />
 			{/if}

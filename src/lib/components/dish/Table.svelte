@@ -24,7 +24,9 @@
 				<div class="flex flex-row justify-between items-center px-5 py-3">
 					{#if !dish.customImageId}
 						<div class="w-12 lg:w-16">
-							<button class="bg-gray-200 h-12 w-12 lg:h-16 lg:w-16 flex align-center text-gray-500 items-center rounded hover:bg-gray-300 hover:text-gray-500">
+							<button
+								class="bg-gray-200 h-12 w-12 lg:h-16 lg:w-16 flex align-center text-gray-500 items-center rounded hover:bg-gray-300 hover:text-gray-500"
+							>
 								<Icons iconName="zondicons:camera" height="2.3rem" classNames="m-auto"></Icons>
 							</button>
 						</div>
@@ -42,11 +44,9 @@
 						{showDate(dish.lastMade, 'Ikke laget')}
 					</div>
 					<a href={dish.url} class="w-12 lg:w-16">
-						<SecondaryButton classNames="w-12 lg:w-16 h-8 text-sm px-2 lg:text-base"
-							>
-							<Icons/>
-							</SecondaryButton
-						>
+						<SecondaryButton classNames="w-12 lg:w-16 h-8 text-sm px-2 lg:text-base">
+							<Icons />
+						</SecondaryButton>
 					</a>
 				</div>
 			{/each}

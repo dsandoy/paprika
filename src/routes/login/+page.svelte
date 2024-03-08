@@ -1,6 +1,6 @@
 <script lang="ts">
 	import BottomCircles from '$lib/components/BottomCircles.svelte';
-import SecondaryButton from '$lib/components/SecondaryButton.svelte';
+	import SecondaryButton from '$lib/components/SecondaryButton.svelte';
 	import { SignIn } from '@auth/sveltekit/components';
 </script>
 
@@ -16,5 +16,5 @@ import SecondaryButton from '$lib/components/SecondaryButton.svelte';
 			Logg inn
 		</SecondaryButton>
 	</SignIn>
-	<BottomCircles/>
+	<BottomCircles />
 </section>

@@ -8,11 +8,11 @@
 	/** defaults to link*/
 	export let iconName = 'zondicons:link';
 	/** Pass text-color to change the fill of the icons..*/
-	export let classNames = "m-auto";
+	export let classNames = 'm-auto';
 	/** a valid string css height value*/
 	export let height = '24px';
 </script>
 
- <span class={classNames}>
-	 <Icon icon={iconName} {height} />
- </span>
+<span class={classNames}>
+	<Icon icon={iconName} {height} />
+</span>
