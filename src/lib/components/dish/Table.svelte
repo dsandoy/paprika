@@ -2,12 +2,15 @@
 	import { showDate } from '$lib/utils';
 	import { dishes } from '$lib/stores';
 	import SecondaryButton from '../SecondaryButton.svelte';
+	import Icons from '../Icons.svelte';
 </script>
 
 {#if $dishes.length === 0}
 	<div>Ingen middager er funnet...</div>
 {:else}
-	<table class="bg-white w-[80%] mt-12 flex flex-col items-center justify-center">
+	<table
+		class="bg-white w-[80%] mt-12 flex flex-col items-center justify-center overflow-y-auto scroll-m-7"
+	>
 		<!-- header section -->
 		<div
 			class="flex flex-row justify-between items-center h-12 px-5 border-solid border-b-[1px] border-grey-300 w-[100%]"
@@ -22,15 +25,19 @@
 			{#each $dishes as dish}
 				<div class="flex flex-row justify-between items-center px-5 py-3">
 					{#if !dish.customImageId}
-						<div class=" w-12 lg:w-16">
-							<div class="bg-gray-300 h-12 w-12 lg:h-16 lg:w-16 text-center">Img</div>
+						<div class="w-12 lg:w-16">
+							<button
+								class="bg-gray-200 h-12 w-12 lg:h-16 lg:w-16 flex align-center text-gray-500 items-center rounded hover:bg-gray-300 hover:text-gray-500"
+							>
+								<Icons iconName="zondicons:camera" height="2.3rem" classNames="m-auto"></Icons>
+							</button>
 						</div>
 					{:else}
 						<div class=" w-12 lg:w-16">
 							<img
 								src={`/api/dishes/${dish.id}/image/${dish.customImageId}`}
 								alt="uploaded"
-								class="w-12 h-12 lg:w-16 lg:h-16"
+								class="w-12 h-12 lg:w-16 lg:h-16 rounded"
 							/>
 						</div>
 					{/if}
@@ -39,9 +46,9 @@
 						{showDate(dish.lastMade, 'Ikke laget')}
 					</div>
 					<a href={dish.url} class="w-12 lg:w-16">
-						<SecondaryButton classNames="w-12 lg:w-16 h-8 text-sm px-2 lg:text-base"
-							>U</SecondaryButton
-						>
+						<SecondaryButton classNames="w-12 lg:w-16 h-8 text-sm px-2 lg:text-base">
+							<Icons />
+						</SecondaryButton>
 					</a>
 				</div>
 			{/each}

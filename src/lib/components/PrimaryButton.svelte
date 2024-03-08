@@ -1,14 +1,19 @@
 <script lang="ts">
+	import Button from './Button.svelte';
+
 	export let classNames = '';
 	export let type: 'button' | 'submit' = 'submit';
 	export let formaction = '';
+	/** special attribute used to control reactivity from data attributes in tailwind*/
+	export let data_ui = false;
 </script>
 
-<button
-	class="h-11 border-[1px] border-green bg-gradient-to-r from-green to-green hover:from-gray-200 hover:to-gray-200 hover:via-white text-white hover:text-black rounded-lg px-5 text-lg cursor-pointer hover:bg-p-green {classNames}"
+<Button
+	classNames="rounded-lg border-[1px] px-5 border-green bg-gradient-to-r from-green to-green hover:from-gray-200 hover:to-gray-200 hover:via-white text-white hover:text-black hover:bg-p-green {classNames}"
 	{type}
 	on:click
 	{formaction}
+	{data_ui}
 >
 	<slot />
-</button>
+</Button>
