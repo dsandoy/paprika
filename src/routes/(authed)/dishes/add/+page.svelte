@@ -111,17 +111,17 @@
 			{/if}
 			<SecondaryButton type="button" classNames="w-36">
 				<label for="upload_image"
-				>Velg Bilde
-				<input
-				class="hidden"
-				type="file"
-				id="upload_image"
-				name="image"
-				accept="image/*"
-				on:change={handleImageUpload}
-				/>
-			</label>
-		</SecondaryButton>
+					>Velg Bilde
+					<input
+						class="hidden"
+						type="file"
+						id="upload_image"
+						name="image"
+						accept="image/*"
+						on:change={handleImageUpload}
+					/>
+				</label>
+			</SecondaryButton>
 		</div>
 		<!-- ingredients -->
 		<div class=" w-full border-[1px] p-5 rounded border-grey-300 flex flex-row mb-6">
