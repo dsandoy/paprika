@@ -23,6 +23,7 @@ export const URL_INVALID = -3;
 export const DATABASE_ERROR = -8;
 /** Validate that the inputed value is a url */
 export function validateURL(url: string) {
+	if (!url) return true;
 	const pattern = new RegExp(
 		'^(https?:\\/\\/|http?:\\/\\/)?' + // protocol
 			'((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name

@@ -3,8 +3,6 @@ import {
 	validateURL,
 	handleIngredients,
 	DATABASE_ERROR,
-	NAME_ALREADY_IN_USE,
-	NAME_EMPTY,
 	URL_INVALID
 } from '$lib/utils';
 import { prisma } from '$lib/prisma';
@@ -18,26 +16,19 @@ export const actions = {
 		const name = data.get('name') as string;
 		const ingredients = handleIngredients(data.get('ingredients') as string | null);
 		const url = data.get('url') as string;
-		const customImage = data.get('image') as File | null;
+		const customImage = data.get('image') as File;
+		/** the data passed back to the user if the form fails */
 		const dish = {
 			name: name,
 			url: url,
 			user: user,
-			ingredients: ingredients,
-			customImage: customImage
+			ingredients: ingredients
 		};
 		const result = validateName(name);
-		if (result === NAME_EMPTY) {
+		if (result !== 0) {
 			return {
-				error: NAME_EMPTY,
-				message: 'Oppgi et navn',
-				data: dish
-			};
-		}
-		if (result === NAME_ALREADY_IN_USE) {
-			return {
-				error: NAME_ALREADY_IN_USE,
-				message: 'Du har allerede en matrett med det navnet, kall denne noe annet',
+				error: 1,
+				message: 'Navnet er ikke gyldig, det er enten tomt eller finnes allerede',
 				data: dish
 			};
 		}
@@ -52,7 +43,7 @@ export const actions = {
 		}
 
 		let customImageProcessed: CustomImage | null = null;
-		if (customImage instanceof File) {
+		if (customImage.size > 0) {
 			const ciArray = await customImage?.arrayBuffer();
 			const ciBuffer = Buffer.from(ciArray);
 
