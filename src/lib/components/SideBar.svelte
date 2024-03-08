@@ -21,8 +21,17 @@
 	</Button>
 
 	<section slot="content" class="flex flex-col gap-4">
-		<NavText url="/dishes">Matretter</NavText>
-		<NavText url="/dashboard">Dashbord</NavText>
-		<NavText url="/dish-planner">Planlegger</NavText>
+		<NavText url="/dishes">
+			<Icons iconName="zondicons:location-food" height="1.5rem" classNames="mr-5"
+			></Icons>Matretter</NavText
+		>
+		<NavText url="/dashboard">
+			<Icons iconName="zondicons:home" height="1.5rem" classNames="mr-5"></Icons>
+			Dashbord</NavText
+		>
+		<NavText url="/dish-planner">
+			<Icons iconName="zondicons:calendar" height="1.5rem" classNames="mr-5"></Icons>
+			Planlegger</NavText
+		>
 	</section>
 </Dropdown>
