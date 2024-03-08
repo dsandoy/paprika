@@ -105,20 +105,23 @@
 		/>
 
 		<!-- upload image -->
-		<div class="flex flex-row w-full mb-5">
-			<label class=" px-5 flex items-center justify-center text-gray-400" for="image"
-				>Last opp Bilde:</label
-			>
-			<input
-				class="rounded-lg py-2 px-5 block cursor-pointer"
-				type="file"
-				name="image"
-				accept="image/*"
-				on:change={handleImageUpload}
-			/>
+		<div class="flex flex-row justify-center items-center w-full mb-5 gap-5">
 			{#if customImageUrl}
 				<img src={customImageUrl} class="w-24 h-24" alt="uploaded" />
 			{/if}
+			<SecondaryButton type="button" classNames="w-36">
+				<label for="upload_image"
+					>Velg Bilde
+					<input
+						class="hidden"
+						type="file"
+						id="upload_image"
+						name="image"
+						accept="image/*"
+						on:change={handleImageUpload}
+					/>
+				</label>
+			</SecondaryButton>
 		</div>
 		<!-- ingredients -->
 		<div class=" w-full border-[1px] p-5 rounded border-grey-300 flex flex-row mb-6">
@@ -132,8 +135,8 @@
 					on:input={validateIngredients}
 					placeholder="Ingrediens"
 				/>
-				<PrimaryButton type="button" classNames="w-32" on:click={addIngrendient}
-					>Legg til</PrimaryButton
+				<SecondaryButton type="button" classNames="w-32" on:click={addIngrendient}
+					>Legg til</SecondaryButton
 				>
 			</div>
 			<div class="w-[50%] pl-5">
@@ -150,7 +153,7 @@
 			<!-- include ingredients -->
 			<input type="hidden" value={$ingredients} name="ingredients" />
 		</div>
-		<SecondaryButton classNames="w-48" formaction="?/add">Legg til matrett</SecondaryButton>
+		<PrimaryButton classNames="w-48" formaction="?/add">Legg til matrett</PrimaryButton>
 		<div>
 			{#if form?.error}
 				<p class="text-red">{form?.message}</p>
