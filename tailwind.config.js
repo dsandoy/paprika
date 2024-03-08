@@ -24,6 +24,9 @@ export default {
       "lg": "84px",
     },
     },
+    data: {
+      isOpen: 'ui~="true"',
+    },
   },
   plugins: [],
 }
