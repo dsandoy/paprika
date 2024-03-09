@@ -10,7 +10,7 @@
 <Dropdown
 	bind:isOpen
 	classNamesButton="flex items-center gap-3 cursor-pointer relative "
-	classNamesContent="w-36 lg:w-56 absolute bg-gray-100 border-r-[1px] border-green z-10 text-black p-5 left-0 top-16 bottom-0"
+	classNamesContent="w-42 lg:w-56 absolute bg-gray-100 border-r-[1px] border-green z-10 text-black p-5 left-0 top-16 bottom-0"
 >
 	<Button
 		slot="button"
@@ -21,15 +21,15 @@
 	</Button>
 
 	<section slot="content" class="flex flex-col gap-4">
-		<NavText url="/dishes">
+		<NavText url="/dishes" bind:isOpen>
 			<Icons iconName="zondicons:location-food" height="1.5rem" classNames="mr-5"
 			></Icons>Matretter</NavText
 		>
-		<NavText url="/dashboard">
+		<NavText url="/dashboard" bind:isOpen>
 			<Icons iconName="zondicons:home" height="1.5rem" classNames="mr-5"></Icons>
 			Dashbord</NavText
 		>
-		<NavText url="/dish-planner">
+		<NavText url="/dish-planner" bind:isOpen>
 			<Icons iconName="zondicons:calendar" height="1.5rem" classNames="mr-5"></Icons>
 			Planlegger</NavText
 		>
