@@ -9,7 +9,7 @@
 	<div>Ingen middager er funnet...</div>
 {:else}
 	<table
-		class="bg-white w-[80%] mt-12 flex flex-col items-center justify-center overflow-y-auto scroll-m-7"
+		class="bg-white w-[80%] mb-8 flex flex-col items-center justify-center overflow-y-auto py-32 overscroll-contain"
 	>
 		<!-- header section -->
 		<div
@@ -18,7 +18,7 @@
 			<div class="h-16 w-12 lg:w-16"></div>
 			<div class="w-24 lg:w-32 text-gray-400 text-base">Matrett</div>
 			<div class="w-24 lg:w-32 text-gray-400 text-base hidden lg:contents">Sist Laget</div>
-			<div class="w-12 lg:w-24 text-center text-gray-400 text-base">URL</div>
+			<div class="w-12 lg:w-16 text-center text-gray-400 text-base">URL</div>
 		</div>
 		<!-- row section -->
 		<div class="border-x-[1px] border-solidborder-grey-300 w-[100%]">
