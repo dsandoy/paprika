@@ -9,7 +9,7 @@
 	<div>Ingen middager er funnet...</div>
 {:else}
 	<table
-		class="bg-white w-[80%] mb-8 flex flex-col items-center justify-center overflow-y-auto py-32 overscroll-contain"
+		class="bg-white w-[80%] mb-8 flex flex-col items-center justify-center overflow-y-auto py-48 overscroll-contain"
 	>
 		<!-- header section -->
 		<div
