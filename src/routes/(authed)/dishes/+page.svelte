@@ -3,7 +3,6 @@
 	import type { Dish } from '$lib/types.js';
 	import { dishes } from '$lib/stores.js';
 	import PrimaryButton from '$lib/components/PrimaryButton.svelte';
-	import Icons from '$lib/components/Icons.svelte';
 
 	export let data;
 	if (data.response) {
