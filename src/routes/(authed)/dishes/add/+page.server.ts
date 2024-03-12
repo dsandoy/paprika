@@ -1,11 +1,4 @@
-import {
-	validateName,
-	validateURL,
-	handleIngredients,
-	DATABASE_ERROR,
-	URL_INVALID
-} from '$lib/utils';
-import { prisma } from '$lib/prisma';
+import { validateName, validateURL, handleIngredients, URL_INVALID } from '$lib/utils';
 import { redirect } from '@sveltejs/kit';
 import type { CustomImage } from '$lib/types';
 
@@ -55,24 +48,6 @@ export const actions = {
 				data: ciBuffer
 			};
 		}
-
-		await prisma.dish
-			.create({
-				data: {
-					name: dish.name,
-					url: dish.url,
-					user: dish.user,
-					ingredients: { create: dish.ingredients },
-					customImage: customImageProcessed ? { create: customImageProcessed } : undefined
-				}
-			})
-			.catch((err) => {
-				return {
-					error: DATABASE_ERROR,
-					message: 'Noe gikk galt med databasen. Prøv igjen' + err,
-					data: dish
-				};
-			});
 
 		redirect(302, '/dishes/add/success');
 	}

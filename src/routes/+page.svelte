@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { SignIn, SignOut } from '@auth/sveltekit/components';
 	import { page } from '$app/stores';
 	import PrimaryButton from '$lib/components/PrimaryButton.svelte';
 	import SecondaryButton from '$lib/components/SecondaryButton.svelte';
@@ -28,21 +27,16 @@
 					<strong class="text-sm lg:text-base">{$page.data.session.user?.name ?? 'User'}</strong>
 				</div>
 			</div>
-			<SignOut>
-				<SecondaryButton type="button" classNames="w-24 h-8 px-2 text-sm">Logg ut</SecondaryButton>
-			</SignOut>
+			<SecondaryButton type="button" classNames="w-24 h-8 px-2 text-sm">Logg ut</SecondaryButton>
 		</div>
 	{:else}
-		<SignIn provider="google">
-			<SecondaryButton
-				slot="submitButton"
-				type="button"
-				classNames="flex flex-row w-48 lg:w-64 h-12 lg:h-14 justify-center items-center gap-3"
-			>
-				<img src="google-logo.png" alt="Google logo" class="h-6" />
-				Logg Inn
-			</SecondaryButton>
-		</SignIn>
+		<SecondaryButton
+			type="button"
+			classNames="flex flex-row w-48 lg:w-64 h-12 lg:h-14 justify-center items-center gap-3"
+		>
+			<img src="google-logo.png" alt="Google logo" class="h-6" />
+			Logg Inn
+		</SecondaryButton>
 		<div
 			class="flex items-center justify-center flex-col border-l-[8px] border-red p-3 mt-24 pr-16 rounded bg-gray-100 w-64 lg:w-96 gap-4"
 		>

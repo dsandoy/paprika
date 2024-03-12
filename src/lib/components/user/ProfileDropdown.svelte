@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { page } from '$app/stores';
-	import { SignOut } from '@auth/sveltekit/components';
 	import Dropdown from '../Dropdown.svelte';
 	import SecondaryButton from '../SecondaryButton.svelte';
 </script>
@@ -13,13 +12,11 @@
 		{#if $page?.data?.session?.user?.image}
 			<img class="rounded-lg h-10 lg:h-11" src={$page.data.session.user.image} alt="profile" />
 		{:else}
-			<img class="rounded-lg h-10 lg:h-11" src="google-logo.png" alt="profile" />
+			<img class="rounded-lg h-10 lg:h-11" src="/google-logo.png" alt="profile" />
 		{/if}
 	</span>
 	<div slot="content" class="flex flex-col gap-4">
 		<p class="text-sm">{$page.data?.session?.user?.name}</p>
-		<SecondaryButton classNames="w-24 h-8 px-2 text-sm">
-			<SignOut>Logg ut</SignOut>
-		</SecondaryButton>
+		<SecondaryButton classNames="w-24 h-8 px-2 text-sm">Logg ut</SecondaryButton>
 	</div>
 </Dropdown>

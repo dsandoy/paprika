@@ -20,7 +20,6 @@ export function showDate(date: Date | null, emptyMessage = '') {
 
 export const URL_INVALID = -3;
 
-export const DATABASE_ERROR = -8;
 /** Validate that the inputed value is a url */
 export function validateURL(url: string) {
 	if (!url) return true;
