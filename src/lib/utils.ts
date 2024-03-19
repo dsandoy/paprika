@@ -1,12 +1,10 @@
-import { get } from 'svelte/store';
-import { dishes } from './stores';
-import type { Ingredient } from './types';
+import type { Dish, Ingredient } from './types';
 
 /** Display the date in the date number and month only. Ex: 12. feb,
  * if no datevalue, return emptyMessage, else return empty string
  */
-export function showDate(date: Date | null, emptyMessage = '') {
-	if (date === null) {
+export function showDate(date: Date | undefined, emptyMessage = '') {
+	if (date === undefined) {
 		if (emptyMessage) {
 			return emptyMessage;
 		}
@@ -18,46 +16,67 @@ export function showDate(date: Date | null, emptyMessage = '') {
 	return dateArr[0] + ' ' + dateArr[2];
 }
 
-export const URL_INVALID = -3;
+/** Static class for Dish validation methods */
+export class DishValidator {
+	public static readonly INVALID_URL = -3;
+	/** Error code if the attribute is empty */
+	public static readonly EMPTY = -1;
+	/** Error code if the attribute is already in use*/
+	public static readonly IN_USE = -2;
 
-/** Validate that the inputed value is a url */
-export function validateURL(url: string) {
-	if (!url) return true;
-	const pattern = new RegExp(
-		'^(https?:\\/\\/|http?:\\/\\/)?' + // protocol
-			'((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name
-			'((\\d{1,3}\\.){3}\\d{1,3}))' + // OR ip (v4) address
-			'(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + // port and path
-			'(\\?[;&a-z\\d%_.~+=-]*)?' + // query string
-			'(\\#[-a-z\\d_]*)?$',
-		'i'
-	); // fragment locator
-	return pattern.test(url);
-}
+	/** Validate that the inputed value is a url */
+	public static validateURL(url: string) {
+		if (!url) return 0;
+		const pattern = new RegExp(
+			'^(https?:\\/\\/|http?:\\/\\/)?' + // protocol
+				'((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{1,}|' + // domain name
+				'((\\d{0,3}\\.){3}\\d{1,3}))' + // OR ip (v4) address
+				'(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + // port and path
+				'(\\?[;&a-z\\d%_.~+=-]*)?' + // query string
+				'(\\#[-a-z\\d_]*)?$',
+			'i'
+		); // fragment locator
+		const res = pattern.test(url);
+		if (!res) return this.INVALID_URL;
+		return 0;
+	}
+	/** Check that the name is not empty or already in use
+	 * Returns 0 if valid, EMPTY if empty, IN_USE if already in use
+	 */
+	public static validateName(name: string, dishes: Dish[]) {
+		if (name.length === 0) return this.EMPTY;
 
-/** error code for name empty */
-export const NAME_EMPTY = -1;
-/** error code for name already in use */
-export const NAME_ALREADY_IN_USE = -2;
-/** Check that the name is not empty or already in use */
-export function validateName(name: string, names: string[] | null = null) {
-	if (name.length === 0) return NAME_EMPTY;
-
-	if (names === null) {
-		names = get(dishes).map((d) => d.name);
+		const names = dishes.map((d) => d.name);
+		if (names.includes(name)) {
+			return this.IN_USE;
+		}
+		return 0;
 	}
 
-	if (names.includes(name)) {
-		return NAME_ALREADY_IN_USE;
+	/** Returns 0 if valid, IN_USE if already in use */
+	public static validateIngredients(ing: Ingredient, ingredients: Ingredient[]) {
+		if (ingredients.some((i) => i === ing)) {
+			return this.IN_USE;
+		}
+		return 0;
 	}
-	return 0;
-}
 
-/** Handle the comma separated list of ingredients and returns ingredient array*/
-export function handleIngredients(ingredients: string | null): Ingredient[] {
-	if (ingredients === null) {
-		return [];
+	/** Validates all fields of a dish simultaneously
+	 *  To be used before submitting a dish to the database
+	 */
+	public static validateAll(dish: Dish, dishes: Dish[]) {
+		let result = this.validateName(dish.name, dishes);
+		if (result !== 0) return result;
+		result = this.validateURL(dish.url);
+		if (result !== 0) return result;
+		// check the ingredients for dublicates
+		if (dish.ingredients) {
+			const uniq = [...new Set(dish.ingredients)];
+			if (uniq.length !== dish.ingredients.length) {
+				console.log('Ingrendients are not unique...');
+				return this.IN_USE;
+			}
+		}
+		return 0;
 	}
-	const arr = ingredients.split(',');
-	return arr.map((i) => ({ value: i }));
 }

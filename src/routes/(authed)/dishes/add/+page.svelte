@@ -1,16 +1,19 @@
 <script lang="ts">
-	import { enhance } from '$app/forms';
 	import { ingredients } from '$lib/stores';
-	import { page } from '$app/stores';
-	import { NAME_ALREADY_IN_USE, NAME_EMPTY, validateName, validateURL } from '$lib/utils.js';
+	import { DishValidator } from '$lib/utils.js';
 	import PrimaryButton from '$lib/components/PrimaryButton.svelte';
 	import SecondaryButton from '$lib/components/SecondaryButton.svelte';
 	import BottomCircles from '$lib/components/BottomCircles.svelte';
+	import { collectionStore, userStore } from 'sveltefire';
+	import { DBService, DishQueries, auth, firestore } from '$lib/Firebase';
+	import type { Dish } from '$lib/types.js';
 
-	export let form;
 	let formElement: HTMLFormElement;
 	let ingredientInput: HTMLInputElement;
 	let ingredient = '';
+
+	const user = userStore(auth);
+	const dishes = collectionStore<Dish>(firestore, DishQueries.dishes($user));
 
 	/** Tell the user that the ingredient is already in the list */
 	function validateIngredients() {
@@ -37,7 +40,7 @@
 	/** offer a validation on the url in real time... */
 	function validatetheUrl() {
 		const url = formElement.children.namedItem('url') as HTMLInputElement;
-		if (!validateURL(url_text)) {
+		if (DishValidator.validateURL(url_text) !== 0) {
 			url.setCustomValidity('Linken er ikke gyldig..');
 			url.reportValidity();
 		} else {
@@ -50,10 +53,10 @@
 	/** Validate the name in real time...*/
 	function validatetheName() {
 		const name = formElement.children.namedItem('name') as HTMLInputElement;
-		const result = validateName(name_text);
-		if (result === NAME_EMPTY) {
+		const result = DishValidator.validateName(name_text, $dishes);
+		if (result === DishValidator.EMPTY) {
 			name.setCustomValidity('Navnet kan ikke være tomt..');
-		} else if (result === NAME_ALREADY_IN_USE) {
+		} else if (result === DishValidator.IN_USE) {
 			name.setCustomValidity('Du har allerede en matrett med dette navet');
 		} else {
 			name.setCustomValidity('');
@@ -71,20 +74,36 @@
 		}
 		customImageUrl = URL.createObjectURL(image);
 	}
+
+	let errorMessage = '';
+	async function AddDish() {
+		const dish: Dish = {
+			name: name_text,
+			url: url_text,
+			user: $user?.uid as string,
+			ingredients: $ingredients
+		};
+		const valid = DishValidator.validateAll(dish, $dishes);
+		// Todo set som error message
+		if (valid !== 0) {
+			errorMessage = 'Ugyldig input';
+			errorMessage = errorMessage;
+			return;
+		}
+
+		await DBService.createDish(dish);
+		window.location.href = `/dishes/add/success`;
+	}
 </script>
 
 <section class="flex flex-col items-center justify-center">
 	<h2 class="mb-12 mt-12">Legg til ny Matrett</h2>
 	<form
-		use:enhance
 		class="w-[80%] md:w-[60%] xl:w-[40%] flex flex-col justify-center items-center"
 		method="post"
-		action="?/ingredients"
 		bind:this={formElement}
 		enctype="multipart/form-data"
 	>
-		<!-- user -->
-		<input type="hidden" value={$page.data.session?.user?.email} name="user" />
 		<!-- set name  -->
 		<input
 			class="input"
@@ -154,11 +173,13 @@
 			<!-- include ingredients -->
 			<input type="hidden" value={$ingredients} name="ingredients" />
 		</div>
-		<PrimaryButton classNames="w-48" formaction="?/add">Legg til matrett</PrimaryButton>
+		<PrimaryButton classNames="w-48" type="button" on:click={AddDish}
+			>Legg til matrett</PrimaryButton
+		>
 		<div>
-			{#if form?.error}
-				<p class="text-red">{form?.message}</p>
-			{/if}
+			<p class="text-red">
+				{#if errorMessage}{errorMessage}{/if}
+			</p>
 		</div>
 	</form>
 	<BottomCircles />

@@ -1,9 +1,13 @@
 <script lang="ts">
 	import BottomCircles from '$lib/components/BottomCircles.svelte';
 	import SecondaryButton from '$lib/components/SecondaryButton.svelte';
-	import { SignedIn, SignedOut } from 'sveltefire';
-	import { SignInWithGoogle } from '$lib/Firebase';
+	import { SignedIn, SignedOut, userStore } from 'sveltefire';
+	import { SignInWithGoogle, auth } from '$lib/Firebase';
 	import PrimaryButton from '$lib/components/PrimaryButton.svelte';
+
+	/** If the user is logged in, redirect to the dishes page */
+	const user = userStore(auth);
+	$: if ($user) window.location.href = '/dishes';
 </script>
 
 <section class="h-svh flex flex-col items-center justify-start gap-4">

@@ -1,9 +1,6 @@
 type URL = string;
 
-export interface Ingredient {
-	/** The ingredient */
-	value: string;
-}
+export type Ingredient = string;
 
 /** Dinner or dish had for dinner */
 export interface Dish {

@@ -1,7 +1,5 @@
 <script lang="ts">
 	import Table from '$lib/components/dish/Table.svelte';
-	import type { Dish } from '$lib/types.js';
-	import { dishes } from '$lib/stores.js';
 	import PrimaryButton from '$lib/components/PrimaryButton.svelte';
 
 	export let data;

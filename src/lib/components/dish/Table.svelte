@@ -1,8 +1,14 @@
 <script lang="ts">
 	import { showDate } from '$lib/utils';
-	import { dishes } from '$lib/stores';
 	import SecondaryButton from '../SecondaryButton.svelte';
 	import Icons from '../Icons.svelte';
+	import { DishQueries, auth, firestore } from '$lib/Firebase';
+	import { collectionStore, userStore } from 'sveltefire';
+	import type { Dish } from '$lib/types';
+
+	const user = userStore(auth);
+	const q = DishQueries.dishes($user);
+	const dishes = collectionStore<Dish>(firestore, q);
 </script>
 
 {#if $dishes.length === 0}
@@ -24,7 +30,7 @@
 		<div class="border-x-[1px] border-solidborder-grey-300 w-[100%]">
 			{#each $dishes as dish}
 				<div class="flex flex-row justify-between items-center px-5 py-3">
-					{#if !dish.customImageId}
+					{#if !dish.customImage}
 						<div class="w-12 lg:w-16">
 							<button
 								class="bg-gray-200 h-12 w-12 lg:h-16 lg:w-16 flex align-center text-gray-500 items-center rounded hover:bg-gray-300 hover:text-gray-500"
@@ -33,13 +39,13 @@
 							</button>
 						</div>
 					{:else}
-						<div class=" w-12 lg:w-16">
+						<!-- <div class=" w-12 lg:w-16">
 							<img
-								src={`/api/dishes/${dish.id}/image/${dish.customImageId}`}
+								src={`/api/dishes/${dish.id}/image/${dish}`}
 								alt="uploaded"
 								class="w-12 h-12 lg:w-16 lg:h-16 rounded"
 							/>
-						</div>
+						</div> -->
 					{/if}
 					<div class="w-24 lg:w-32 text-sm lg:text-lg">{dish.name}</div>
 					<div class="w-24 hidden lg:contents lg:w-32 text-xs lg:text-base">
