@@ -1,13 +1,8 @@
 <script lang="ts">
 	import Table from '$lib/components/dish/Table.svelte';
-	import type { Dish } from '$lib/types.js';
-	import { dishes } from '$lib/stores.js';
 	import PrimaryButton from '$lib/components/PrimaryButton.svelte';
 
 	export let data;
-	if (data.response) {
-		$dishes = data.response as Dish[];
-	}
 
 	let viewMode: 'table' | 'images' = 'table';
 </script>
@@ -33,7 +28,7 @@
 		</a>
 	</div>
 	{#if viewMode === 'table'}
-		{#if !data.response}
+		{#if !data}
 			<div>"Ingen middager"</div>
 		{:else}
 			<Table />
