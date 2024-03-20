@@ -23,6 +23,10 @@ export class DishValidator {
 	public static readonly EMPTY = -1;
 	/** Error code if the attribute is already in use*/
 	public static readonly IN_USE = -2;
+	/** Error code if the attribute is invalid */
+	public static readonly INVALID_FILE_TYPE = -4;
+	/** Code if the attribute is valid */
+	public static readonly VALID = 0;
 
 	/** Validate that the inputed value is a url */
 	public static validateURL(url: string) {
@@ -38,7 +42,7 @@ export class DishValidator {
 		); // fragment locator
 		const res = pattern.test(url);
 		if (!res) return this.INVALID_URL;
-		return 0;
+		return this.VALID;
 	}
 	/** Check that the name is not empty or already in use
 	 * Returns 0 if valid, EMPTY if empty, IN_USE if already in use
@@ -50,7 +54,7 @@ export class DishValidator {
 		if (names.includes(name)) {
 			return this.IN_USE;
 		}
-		return 0;
+		return this.VALID;
 	}
 
 	/** Returns 0 if valid, IN_USE if already in use */
@@ -58,7 +62,17 @@ export class DishValidator {
 		if (ingredients.some((i) => i === ing)) {
 			return this.IN_USE;
 		}
-		return 0;
+		return this.VALID;
+	}
+
+	/** Make sure the uploaded file is an image */
+	public static validateImage(file: File) {
+		if (!file) return this.VALID;
+		const imgTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/svg+xml'];
+		if (imgTypes.includes(file.type)) {
+			return this.VALID;
+		}
+		return this.INVALID_FILE_TYPE;
 	}
 
 	/** Validates all fields of a dish simultaneously
@@ -66,9 +80,9 @@ export class DishValidator {
 	 */
 	public static validateAll(dish: Dish, dishes: Dish[]) {
 		let result = this.validateName(dish.name, dishes);
-		if (result !== 0) return result;
+		if (result !== this.VALID) return result;
 		result = this.validateURL(dish.url);
-		if (result !== 0) return result;
+		if (result !== this.VALID) return result;
 		// check the ingredients for dublicates
 		if (dish.ingredients) {
 			const uniq = [...new Set(dish.ingredients)];
@@ -77,6 +91,6 @@ export class DishValidator {
 				return this.IN_USE;
 			}
 		}
-		return 0;
+		return this.VALID;
 	}
 }

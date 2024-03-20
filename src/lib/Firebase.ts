@@ -10,6 +10,7 @@ import {
 } from 'firebase/firestore';
 import { GoogleAuthProvider, getAuth, signInWithRedirect, type User } from 'firebase/auth';
 import type { Dish } from './types';
+import { getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage';
 
 const app = initializeApp({
 	apiKey: 'AIzaSyDQkAHO5mLvZm4VnRG84CsA7Jico7ouXGU',
@@ -22,6 +23,7 @@ const app = initializeApp({
 
 export const firestore = getFirestore(app);
 export const auth = getAuth(app);
+export const storage = getStorage();
 const googleProvider = new GoogleAuthProvider();
 googleProvider.addScope('profile');
 googleProvider.addScope('email');
@@ -49,6 +51,15 @@ export class DBService {
 				console.error('Error adding document: ', error);
 				return -1;
 			});
+	}
+
+	/** Upload the file to the storage and return the url */
+	public static async uploadImage(file: File) {
+		const randomNumber = Math.floor(Math.random() * 100);
+		const storageRef = ref(storage, `dishes/${randomNumber}-${file.name}`);
+		await uploadBytes(storageRef, file);
+		const url = await getDownloadURL(storageRef);
+		return url;
 	}
 }
 

@@ -39,13 +39,13 @@
 							</button>
 						</div>
 					{:else}
-						<!-- <div class=" w-12 lg:w-16">
+						<div class=" w-12 lg:w-16">
 							<img
-								src={`/api/dishes/${dish.id}/image/${dish}`}
+								src={dish.customImage}
 								alt="uploaded"
 								class="w-12 h-12 lg:w-16 lg:h-16 rounded"
 							/>
-						</div> -->
+						</div>
 					{/if}
 					<div class="w-24 lg:w-32 text-sm lg:text-lg">{dish.name}</div>
 					<div class="w-24 hidden lg:contents lg:w-32 text-xs lg:text-base">

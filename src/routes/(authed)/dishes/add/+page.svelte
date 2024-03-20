@@ -11,6 +11,11 @@
 	let formElement: HTMLFormElement;
 	let ingredientInput: HTMLInputElement;
 	let ingredient = '';
+	let url_text = '';
+	let name_text = '';
+	let customImageUrl: string | null = null;
+	let customImage: File | undefined;
+	let errorMessage = '';
 
 	const user = userStore(auth);
 	const dishes = collectionStore<Dish>(firestore, DishQueries.dishes($user));
@@ -36,11 +41,10 @@
 		$ingredients = $ingredients;
 	};
 
-	let url_text = '';
 	/** offer a validation on the url in real time... */
-	function validatetheUrl() {
+	function validateUrl() {
 		const url = formElement.children.namedItem('url') as HTMLInputElement;
-		if (DishValidator.validateURL(url_text) !== 0) {
+		if (DishValidator.validateURL(url_text) !== DishValidator.VALID) {
 			url.setCustomValidity('Linken er ikke gyldig..');
 			url.reportValidity();
 		} else {
@@ -49,9 +53,8 @@
 		}
 	}
 
-	let name_text = '';
 	/** Validate the name in real time...*/
-	function validatetheName() {
+	function validateName() {
 		const name = formElement.children.namedItem('name') as HTMLInputElement;
 		const result = DishValidator.validateName(name_text, $dishes);
 		if (result === DishValidator.EMPTY) {
@@ -64,18 +67,18 @@
 		name.reportValidity();
 	}
 
-	let customImageUrl: string | null = null;
 	/** Let the user see the image they uploaded..*/
 	function handleImageUpload(event: Event) {
-		const image = (event.target as HTMLInputElement)?.files?.[0];
-		if (!image) {
+		customImage = (event.target as HTMLInputElement)?.files?.[0];
+		if (!customImage) {
 			customImageUrl = null;
 			return;
 		}
-		customImageUrl = URL.createObjectURL(image);
+		if (DishValidator.validateImage(customImage) === DishValidator.VALID) {
+			customImageUrl = URL.createObjectURL(customImage);
+		}
 	}
 
-	let errorMessage = '';
 	async function AddDish() {
 		const dish: Dish = {
 			name: name_text,
@@ -83,16 +86,17 @@
 			user: $user?.uid as string,
 			ingredients: $ingredients
 		};
-		const valid = DishValidator.validateAll(dish, $dishes);
-		// Todo set som error message
-		if (valid !== 0) {
+		const result = DishValidator.validateAll(dish, $dishes);
+		if (result !== DishValidator.VALID) {
 			errorMessage = 'Ugyldig input';
 			errorMessage = errorMessage;
 			return;
 		}
 
+		const url = await DBService.uploadImage(customImage as File);
+		dish.customImage = url;
 		await DBService.createDish(dish);
-		window.location.href = `/dishes/add/success`;
+		window.location.href = '/dishes/add/success';
 	}
 </script>
 
@@ -110,7 +114,7 @@
 			type="text"
 			name="name"
 			bind:value={name_text}
-			on:input={validatetheName}
+			on:input={validateName}
 			placeholder="Navn"
 			required
 		/>
@@ -121,7 +125,7 @@
 			name="url"
 			placeholder="Link til oppskrift"
 			bind:value={url_text}
-			on:input={validatetheUrl}
+			on:input={validateUrl}
 		/>
 
 		<!-- upload image -->
@@ -129,7 +133,7 @@
 			{#if customImageUrl}
 				<img src={customImageUrl} class="w-24 h-24" alt="uploaded" />
 			{/if}
-			<SecondaryButton type="button" classNames="w-36 cursor-pointer">
+			<SecondaryButton type="button" classNames="w-36">
 				<label class="cursor-pointer" for="upload_image"
 					>Velg Bilde
 					<input
@@ -144,7 +148,7 @@
 			</SecondaryButton>
 		</div>
 		<!-- ingredients -->
-		<div class=" w-full border-[1px] p-5 rounded border-grey-300 flex flex-row mb-6">
+		<div class="w-full border-[1px] p-5 rounded border-grey-300 flex flex-row mb-6">
 			<div class="flex flex-col w-[50%] items-center">
 				<input
 					class="input"
