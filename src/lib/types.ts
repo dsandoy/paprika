@@ -18,3 +18,9 @@ export interface Dish {
 	/** The user email that created the dinner */
 	user: string;
 }
+
+export interface PlanEntry {
+	date: Date;
+	dish?: Dish;
+	checked?: boolean;
+}
