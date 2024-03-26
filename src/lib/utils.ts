@@ -141,9 +141,15 @@ export class DishValidator {
 export class PlansHandler {
 	/** Creates plans for the upcoming week if it does not exist.
 	 * @param user The logged in user
+	 * @param date optional if the date is not the next monday...
 	 */
-	public static async CreateMissingPlans(user: User | null) {
-		const nextMonday = DateHandler.getNextMonday(new Date());
+	public static async CreateMissingPlans(user: User | null, date: Date | null = null) {
+		let nextMonday;
+		if (!date) {
+			nextMonday = DateHandler.getNextMonday(new Date());
+		} else {
+			nextMonday = date;
+		}
 		const query = PlanQueries.getPlans(user, [
 			nextMonday,
 			DateHandler.getDayNDaysAway(nextMonday, 6)

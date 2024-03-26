@@ -2,12 +2,14 @@ import { initializeApp } from 'firebase/app';
 import {
 	CollectionReference,
 	Query,
+	Timestamp,
 	collection,
 	doc,
 	getDocs,
 	getFirestore,
 	query,
 	setDoc,
+	updateDoc,
 	where
 } from 'firebase/firestore';
 import { GoogleAuthProvider, getAuth, signInWithRedirect, type User } from 'firebase/auth';
@@ -80,7 +82,7 @@ export class DBService {
 		for (let i = 0; i < 7; i++) {
 			const docRef = doc(collection(firestore, 'dishplans'));
 			const emtpyPlan: PlanEntry = {
-				date: date,
+				date: Timestamp.fromDate(date),
 				user: user?.uid
 			};
 
@@ -103,6 +105,16 @@ export class DBService {
 		const snapshot = await getDocs(query);
 		const docs = snapshot.docs.map((doc) => doc.data());
 		return docs;
+	}
+
+	/** Update the dish in the provided planEntry */
+	public static async updatePlanEntry(planEntry: PlanEntry) {
+		const docRef = doc(collection(firestore, 'dishplans'), planEntry.id);
+		await updateDoc(docRef, {
+			dish: planEntry.dish
+		})
+			.then(() => console.log('Updated planEntry'))
+			.catch((error) => console.error('Failed to update planEntry: ', error));
 	}
 }
 

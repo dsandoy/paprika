@@ -10,7 +10,7 @@ export interface Dish {
 	/** Url to the recipe */
 	url: string;
 	/** When it was last scheduled in the dinner scheduler */
-	lastMade?: Date;
+	lastMade?: Timestamp;
 	/** The image number of the dinner, used if no custom image */
 	image?: number;
 	/** the user uploaded custom image */
@@ -22,8 +22,10 @@ export interface Dish {
 }
 
 export interface PlanEntry {
+	id?: string;
 	date: Timestamp;
-	dish?: Dish;
+	/** The id of the dish */
+	dish?: string;
 	user?: string;
 	checked?: boolean;
 }
