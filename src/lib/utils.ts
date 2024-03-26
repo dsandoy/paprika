@@ -1,19 +1,56 @@
-import type { Dish, Ingredient } from './types';
+import { DBService } from './Firebase';
+import type { Dish, Ingredient, PlanEntry } from './types';
 
-/** Display the date in the date number and month only. Ex: 12. feb,
- * if no datevalue, return emptyMessage, else return empty string
- */
-export function showDate(date: Date | undefined, emptyMessage = '') {
-	if (date === undefined) {
-		if (emptyMessage) {
-			return emptyMessage;
+export class DateHandler {
+	/** Display the date in the date number and month only. Ex: 12. feb,
+	 * if no datevalue, return emptyMessage, else return empty string
+	 */
+	public static showDate(date: Date | undefined, emptyMessage = '') {
+		if (date === undefined) {
+			if (emptyMessage) {
+				return emptyMessage;
+			}
+			return '';
 		}
-		return '';
+		const dateStr = date.toDateString();
+		// remove month and year:
+		const dateArr = dateStr.split(' ');
+		return dateArr[0] + ' ' + dateArr[2];
 	}
-	const dateStr = date.toDateString();
-	// remove month and year:
-	const dateArr = dateStr.split(' ');
-	return dateArr[0] + ' ' + dateArr[2];
+
+	/** Returns the next monday from the provided date.. */
+	public static getNextMonday(date: Date): Date {
+		let daysToMonday = 8 - date.getDay();
+		if (daysToMonday === 8) {
+			// getDay is 0 on sunday..
+			daysToMonday = 1;
+		}
+		const nextMonday = this.getDayNDaysAway(date, daysToMonday);
+		return nextMonday;
+	}
+
+	public static getNextDay(date: Date): Date {
+		return this.getDayNDaysAway(date, 1);
+	}
+
+	/** Returns the date the set distance away. Works both back and forewards.. */
+	public static getDayNDaysAway(date: Date, distance: number) {
+		return new Date(date.getFullYear(), date.getMonth(), date.getDate() + distance);
+	}
+
+	/** Checks if the provided date preceeds the current date */
+	public static hasDayPassed(date: Date) {
+		return date < new Date();
+	}
+
+	/** Returns a date range of the current week */
+	public static getWeek(date: Date) {
+		const day = date.getDay();
+		if (day === 0) {
+			return [this.getDayNDaysAway(date, -6), date];
+		}
+		return [this.getDayNDaysAway(date, -(day - 1)), this.getDayNDaysAway(date, 7 - day)];
+	}
 }
 
 /** Static class for Dish validation methods */
@@ -92,5 +129,25 @@ export class DishValidator {
 			}
 		}
 		return this.VALID;
+	}
+}
+
+/** Creates the Planentries for the upcoming week if the dont exist */
+export class PlannerCreator {
+	/** Creates plans for the upcoming week if it does not exist. */
+	public static async CreateMissingPlans(plans: PlanEntry[]) {
+		const nextMonday = DateHandler.getNextMonday(new Date());
+		if (!this.doesPlansExist(plans, nextMonday)) {
+			await DBService.createWeekPlans(nextMonday);
+		}
+	}
+	/** Check if plans exist for the upcoming week. */
+	public static doesPlansExist(plans: PlanEntry[], date: Date) {
+		for (const plan of plans) {
+			if (plan.date.toDateString() === date.toDateString()) {
+				return true;
+			}
+		}
+		return false;
 	}
 }

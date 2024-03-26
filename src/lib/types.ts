@@ -22,5 +22,6 @@ export interface Dish {
 export interface PlanEntry {
 	date: Date;
 	dish?: Dish;
+	user?: string;
 	checked?: boolean;
 }

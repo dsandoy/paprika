@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { showDate } from '$lib/utils';
+	import { DateHandler } from '$lib/utils';
 	import SecondaryButton from '../SecondaryButton.svelte';
 	import Icons from '../Icons.svelte';
 	import { DishQueries, auth, firestore } from '$lib/Firebase';
@@ -49,7 +49,7 @@
 					{/if}
 					<div class="w-24 lg:w-32 text-sm lg:text-lg">{dish.name}</div>
 					<div class="w-24 hidden lg:contents lg:w-32 text-xs lg:text-base">
-						{showDate(dish.lastMade, 'Ikke laget')}
+						{DateHandler.showDate(dish.lastMade, 'Ikke laget')}
 					</div>
 					<a href={dish.url} class="w-12 lg:w-16">
 						<SecondaryButton classNames="w-12 lg:w-16 h-8 text-sm px-2 lg:text-base">

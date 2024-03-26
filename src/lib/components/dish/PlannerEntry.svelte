@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Checkbox from '../Checkbox.svelte';
 	import type { Dish, PlanEntry } from '$lib/types.js';
-	import { showDate } from '$lib/utils';
+	import { DateHandler } from '$lib/utils';
 	import Dropdown from '../Dropdown.svelte';
 	import { collectionStore, userStore } from 'sveltefire';
 	import { DishQueries, auth, firestore } from '$lib/Firebase';
@@ -32,8 +32,8 @@
 </script>
 
 <div class="flex flex-row w-[26rem] gap-5 align-center items-center p-4">
-	<Checkbox />
-	<p class="w-24 text-sm text-center">{showDate(plannerEntry.date)}</p>
+	<Checkbox bind:checked={plannerEntry.checked} />
+	<p class="w-24 text-sm text-center">{DateHandler.showDate(plannerEntry.date)}</p>
 	<Dropdown
 		bind:isOpen
 		classNamesButton="flex items-center gap-3 cursor-pointer"
@@ -60,7 +60,7 @@
 					class="absolute z-30 top-0 left-1/2 transform -translate-x-1/2 w-0 h-0 border-t-[10px] border-b-[10px] border-r-[15px] border-b-transparent border-t-transparent border-r-green"
 				></div>
 			</div>
-			<section class="h-16">Legg til Middag: {showDate(plannerEntry.date)}</section>
+			<section class="h-16">Legg til Middag: {DateHandler.showDate(plannerEntry.date)}</section>
 
 			<DishSearch bind:dishes={sortedDishes} />
 			<div class="overflow-y-auto h-[10rem]">
