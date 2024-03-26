@@ -6,9 +6,11 @@
 	import { collectionStore, userStore } from 'sveltefire';
 	import { DishQueries, auth, firestore } from '$lib/Firebase';
 	import DishSearch from '../DishSearch.svelte';
+	import { Timestamp } from 'firebase/firestore';
+	import DishImage from './DishImage.svelte';
 
 	export let plannerEntry: PlanEntry = {
-		date: new Date(),
+		date: Timestamp.now(),
 		dish: {
 			name: 'Sushi Bowl',
 			user: 'user', // not relevant
@@ -46,11 +48,11 @@
 			slot="button"
 		>
 			{#if plannerEntry.dish}
-				<img
-					src={plannerEntry.dish.customImage}
-					alt="profile"
-					class="rounded h-10 lg:h-11 w-10 lg:w-11"
+				<DishImage
+					imagesrc={plannerEntry.dish.customImage}
+					classNames="w-10 lg:w-11 h-10 lg:h-11"
 				/>
+
 				<p class="text-base">{plannerEntry.dish.name}</p>
 			{/if}
 		</div>
@@ -70,11 +72,8 @@
 						data-ui={plannerEntry.dish === dish}
 						class="flex flex-row gap-6 text-sm hover:bg-gray-200 cursor-pointer p-2 w-full data-isOpen:bg-gray-200"
 					>
-						{#if dish.customImage}
-							<img src={dish.customImage} alt="profile" class="rounded h-8 lg:h-10 w-8 lg:w-10" />
-						{:else}
-							<div class="rouned h-8 lg:h-10 w-8 lg:w-10 bg-gray-300"></div>
-						{/if}
+						<DishImage classNames="rounded h-8 lg:h-10 w-8 lg:w-10" imagesrc={dish.customImage} />
+
 						<p class="mt-3">{dish.name}</p>
 					</button>
 				{/each}

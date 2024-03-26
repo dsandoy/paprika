@@ -1,5 +1,6 @@
-import type { Dish, PlanEntry } from '$lib/types';
-import { DishValidator, DateHandler, PlannerCreator } from '$lib/utils';
+import type { Dish } from '$lib/types';
+import { DishValidator, DateHandler } from '$lib/utils';
+import { Timestamp } from 'firebase/firestore';
 import { it, expect, describe } from 'vitest';
 
 describe('Test the DishValidator', () => {
@@ -96,8 +97,8 @@ describe('Test the DishValidator', () => {
 
 describe('Test DateHandle', () => {
 	it('test showDate with date', () => {
-		expect(DateHandler.showDate(new Date('05.21.2022'))).toBe('Sat 21');
-		expect(DateHandler.showDate(new Date('04.20.2022'))).toBe('Wed 20');
+		expect(DateHandler.showDate(Timestamp.fromDate(new Date('05.21.2022')))).toBe('Sat 21');
+		expect(DateHandler.showDate(Timestamp.fromDate(new Date('04.20.2022')))).toBe('Wed 20');
 		expect(DateHandler.showDate(undefined)).toBe('');
 		expect(DateHandler.showDate(undefined, 'nothing')).toBe('nothing');
 	});
@@ -143,23 +144,5 @@ describe('Test DateHandle', () => {
 	it('hasdaypassed', () => {
 		expect(DateHandler.hasDayPassed(new Date('03.22.2024'))).toBe(true);
 		expect(DateHandler.hasDayPassed(new Date('03.21.2124'))).toBe(false);
-	});
-});
-
-describe('Test PlannerCreator', () => {
-	const plans: PlanEntry[] = [
-		{
-			date: new Date('03.24.2024')
-		},
-		{
-			date: new Date('03.25.2024')
-		},
-		{
-			date: new Date('03.26.2024')
-		}
-	];
-	it('DoesPlanExists true', () => {
-		expect(PlannerCreator.doesPlansExist(plans, new Date('03.25.2024'))).toBe(true);
-		expect(PlannerCreator.doesPlansExist(plans, new Date('03.27.2024'))).toBe(false);
 	});
 });

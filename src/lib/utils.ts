@@ -1,18 +1,23 @@
-import { DBService } from './Firebase';
+import type { User } from 'firebase/auth';
+import { DBService, PlanQueries } from './Firebase';
 import type { Dish, Ingredient, PlanEntry } from './types';
+import { Timestamp } from 'firebase/firestore';
 
 export class DateHandler {
 	/** Display the date in the date number and month only. Ex: 12. feb,
 	 * if no datevalue, return emptyMessage, else return empty string
+	 * @param date The date to display
+	 * @param emptyMessage The message to display if no date
 	 */
-	public static showDate(date: Date | undefined, emptyMessage = '') {
-		if (date === undefined) {
+	public static showDate(date: Timestamp | undefined, emptyMessage = '') {
+		if (date === undefined || typeof date !== 'object') {
 			if (emptyMessage) {
 				return emptyMessage;
 			}
 			return '';
 		}
-		const dateStr = date.toDateString();
+		const date2 = date.toDate();
+		const dateStr = date2.toDateString();
 		// remove month and year:
 		const dateArr = dateStr.split(' ');
 		return dateArr[0] + ' ' + dateArr[2];
@@ -132,22 +137,20 @@ export class DishValidator {
 	}
 }
 
-/** Creates the Planentries for the upcoming week if the dont exist */
-export class PlannerCreator {
-	/** Creates plans for the upcoming week if it does not exist. */
-	public static async CreateMissingPlans(plans: PlanEntry[]) {
+/** Handles various plan related functions */
+export class PlansHandler {
+	/** Creates plans for the upcoming week if it does not exist.
+	 * @param user The logged in user
+	 */
+	public static async CreateMissingPlans(user: User | null) {
 		const nextMonday = DateHandler.getNextMonday(new Date());
-		if (!this.doesPlansExist(plans, nextMonday)) {
-			await DBService.createWeekPlans(nextMonday);
+		const query = PlanQueries.getPlans(user, [
+			nextMonday,
+			DateHandler.getDayNDaysAway(nextMonday, 6)
+		]);
+		const plans = (await DBService.getResources(query)) as PlanEntry[];
+		if (plans.length === 0) {
+			await DBService.createWeekPlans(nextMonday, user);
 		}
-	}
-	/** Check if plans exist for the upcoming week. */
-	public static doesPlansExist(plans: PlanEntry[], date: Date) {
-		for (const plan of plans) {
-			if (plan.date.toDateString() === date.toDateString()) {
-				return true;
-			}
-		}
-		return false;
 	}
 }

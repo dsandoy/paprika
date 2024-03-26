@@ -1,3 +1,5 @@
+import type { Timestamp } from 'firebase/firestore';
+
 export type Ingredient = string;
 
 /** Dinner or dish had for dinner */
@@ -20,7 +22,7 @@ export interface Dish {
 }
 
 export interface PlanEntry {
-	date: Date;
+	date: Timestamp;
 	dish?: Dish;
 	user?: string;
 	checked?: boolean;

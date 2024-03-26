@@ -1,7 +1,8 @@
 <script lang="ts">
 	import { PlanQueries, auth, firestore } from '$lib/Firebase';
 	import PlannerEntry from '$lib/components/dish/PlannerEntry.svelte';
-	import { DateHandler } from '$lib/utils';
+	import { DateHandler, PlansHandler } from '$lib/utils';
+	import { onMount } from 'svelte';
 	import { collectionStore, userStore } from 'sveltefire';
 
 	const currentWeek = DateHandler.getWeek(new Date());
@@ -9,6 +10,10 @@
 	const user = userStore(auth);
 	const currentPlans = collectionStore(firestore, PlanQueries.getPlans($user, currentWeek));
 	const nextWeekPlans = collectionStore(firestore, PlanQueries.getPlans($user, nextWeek));
+
+	onMount(() => {
+		PlansHandler.CreateMissingPlans($user);
+	});
 
 	/** Checks all plans, set next to true to check for next week*/
 	function checkAll(next = false) {

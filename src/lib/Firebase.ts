@@ -1,10 +1,10 @@
 import { initializeApp } from 'firebase/app';
 import {
 	CollectionReference,
-	and,
+	Query,
 	collection,
 	doc,
-	getDoc,
+	getDocs,
 	getFirestore,
 	query,
 	setDoc,
@@ -43,7 +43,9 @@ export async function SignOut() {
 
 /** Handle the create and update of database elements */
 export class DBService {
-	/** Create a dish at the database.. Returns its id if successfull and "" else */
+	/** Create a dish at the database.. Returns its id if successfull and "" else
+	 *  @param dish The dish to create
+	 */
 	public static async createDish(dish: Dish) {
 		const docRef = doc(collection(firestore, 'dishes'));
 		let result = -1;
@@ -58,7 +60,9 @@ export class DBService {
 		return result;
 	}
 
-	/** Upload the file to the storage and return the url */
+	/** Upload the file to the storage and return the url
+	 *  @param file The file to upload
+	 */
 	public static async uploadImage(file: File) {
 		const randomNumber = Math.floor(Math.random() * 100);
 		const storageRef = ref(storage, `dishes/${randomNumber}-${file.name}`);
@@ -67,14 +71,17 @@ export class DBService {
 		return url;
 	}
 
-	/** Creates empty plan entries for the week starting on monday */
-	public static async createWeekPlans(monday: Date) {
-		const docRef = doc(collection(firestore, 'dishplans'));
-
+	/** Creates empty plan entries for the week starting on monday
+	 *  @param monday The first day of the week to create
+	 *  @param user The logged in user
+	 */
+	public static async createWeekPlans(monday: Date, user: User | null) {
 		let date = monday;
 		for (let i = 0; i < 7; i++) {
+			const docRef = doc(collection(firestore, 'dishplans'));
 			const emtpyPlan: PlanEntry = {
-				date: date
+				date: date,
+				user: user?.uid
 			};
 
 			let result = -1;
@@ -88,10 +95,21 @@ export class DBService {
 			date = DateHandler.getNextDay(date);
 		}
 	}
+
+	/** Retrieves the provided data requested by the query
+	 *  @param query The query to fetch
+	 */
+	public static async getResources(query: Query) {
+		const snapshot = await getDocs(query);
+		const docs = snapshot.docs.map((doc) => doc.data());
+		return docs;
+	}
 }
 
 export class DishQueries {
-	/** Build a query were you fetch all dishes created by the logged in user */
+	/** Build a query were you fetch all dishes created by the logged in user
+	 *  @param user The logged in user
+	 */
 	public static dishes(user: User | null) {
 		const dishesRef = collection(firestore, 'dishes') as CollectionReference<Dish>;
 		return query<Dish>(dishesRef, where('user', '==', user?.uid));
@@ -100,7 +118,10 @@ export class DishQueries {
 
 /** Quiery builders for the dishplans */
 export class PlanQueries {
-	/** Get all plan entries for the provided date range for the user */
+	/** Get all plan entries for the provided date range for the user
+	 *  @param dateRange The dates to fetch, assumed to be sorted and 2 entries
+	 *  @param user The logged in user
+	 */
 	public static getPlans(user: User | null, dateRange: Date[]) {
 		const dishesRef = collection(firestore, 'dishplans') as CollectionReference<PlanEntry>;
 		return query<PlanEntry>(
