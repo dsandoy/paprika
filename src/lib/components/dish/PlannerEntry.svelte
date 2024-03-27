@@ -6,12 +6,9 @@
 	import { collectionStore, userStore } from 'sveltefire';
 	import { DBService, DishQueries, auth, firestore } from '$lib/Firebase';
 	import DishSearch from '../DishSearch.svelte';
-	import { Timestamp } from 'firebase/firestore';
 	import DishImage from './DishImage.svelte';
 
-	export let plannerEntry: PlanEntry = {
-		date: Timestamp.now()
-	};
+	export let plannerEntry: PlanEntry;
 
 	const user = userStore(auth);
 	const dishes = collectionStore<Dish>(firestore, DishQueries.dishes($user));
@@ -41,7 +38,14 @@
 
 <div class="flex flex-row lg:w-[26rem] align-center items-center p-4">
 	<Checkbox bind:checked={plannerEntry.checked} />
-	<p class="lg:w-24 w-24 text-sm text-center">{DateHandler.showDate(plannerEntry.date)}</p>
+	<p
+		class="lg:w-24 w-24 text-sm text-center"
+		class:text-nice-blue={DateHandler.isTimestampToday(plannerEntry.date) === 'today'}
+		class:font-semibold={DateHandler.isTimestampToday(plannerEntry.date) === 'today'}
+		class:text-gray-500={DateHandler.isTimestampToday(plannerEntry.date) === 'before'}
+	>
+		{DateHandler.showDate(plannerEntry.date)}
+	</p>
 	<Dropdown
 		bind:isOpen
 		classNamesButton="flex items-center gap-3 cursor-pointer"
@@ -57,7 +61,14 @@
 			{#if chosenDish}
 				<DishImage imagesrc={chosenDish.customImage} classNames="w-10 lg:w-11 h-10 lg:h-11" />
 
-				<p class="text-base">{chosenDish.name}</p>
+				<p
+					class="text-base"
+					class:text-nice-blue={DateHandler.isTimestampToday(plannerEntry.date) === 'today'}
+					class:font-semibold={DateHandler.isTimestampToday(plannerEntry.date) === 'today'}
+					class:text-gray-500={DateHandler.isTimestampToday(plannerEntry.date) === 'before'}
+				>
+					{chosenDish.name}
+				</p>
 			{/if}
 		</div>
 		<!-- the change dish dropdown content  -->

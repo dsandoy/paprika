@@ -145,4 +145,8 @@ describe('Test DateHandle', () => {
 		expect(DateHandler.hasDayPassed(new Date('03.22.2024'))).toBe(true);
 		expect(DateHandler.hasDayPassed(new Date('03.21.2124'))).toBe(false);
 	});
+	it('isTimestampToday', () => {
+		expect(DateHandler.isTimestampToday(Timestamp.fromDate(new Date('03.21.2024')))).toBe('before');
+		expect(DateHandler.isTimestampToday(Timestamp.fromDate(new Date('03.21.2124')))).toBe('after');
+	});
 });

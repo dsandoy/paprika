@@ -12,7 +12,7 @@ export default {
       },
       "white": "#FDFFFE",
       "red": "#dc8491",
-      "blue": "#6090af",
+      "nice-blue": "#6090af",
       "p-green": "#529873",
       "p-yellow": "#f9d639",
       "p-purple": "#e8b5fd",

@@ -56,6 +56,23 @@ export class DateHandler {
 		}
 		return [this.getDayNDaysAway(date, -(day - 1)), this.getDayNDaysAway(date, 7 - day)];
 	}
+
+	public static isTimestampToday(timestamp: Timestamp): 'before' | 'after' | 'today' | '' {
+		const date = timestamp.toDate();
+		const today = new Date();
+		if (
+			date.getFullYear() === today.getFullYear() &&
+			date.getMonth() === today.getMonth() &&
+			date.getDate() === today.getDate()
+		) {
+			return 'today';
+		} else if (date < today) {
+			return 'before';
+		} else if (date > today) {
+			return 'after';
+		}
+		return '';
+	}
 }
 
 /** Static class for Dish validation methods */
