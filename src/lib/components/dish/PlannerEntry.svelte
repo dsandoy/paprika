@@ -15,23 +15,26 @@
 
 	const user = userStore(auth);
 	const dishes = collectionStore<Dish>(firestore, DishQueries.dishes($user));
+
 	let isOpen = false;
-
-	let sortedDishes = $dishes;
-	$: sortedDishes = $dishes;
-
+	let filteredDishes: Dish[] = [];
 	let chosenDish: Dish | undefined = undefined;
 	$: chosenDish = plannerEntry.dish ? $dishes.find((d) => d.id === plannerEntry.dish) : undefined;
 
 	function updateDish(dish: Dish) {
-		if (plannerEntry.dish === dish.id) return;
 		if (smallSize) {
 			isOpen = false;
 		}
-		plannerEntry.dish = dish.id;
+		// if the dish is already selected, unselect it
+		if (plannerEntry.dish === dish.id) {
+			plannerEntry.dish = '';
+		} else {
+			plannerEntry.dish = dish.id;
+		}
 		plannerEntry = plannerEntry;
 		DBService.updatePlanEntry(plannerEntry);
 	}
+
 	let smallSize = window.matchMedia('(max-width: 800px)').matches;
 	$: smallSize = window.matchMedia('(max-width: 800px)').matches;
 </script>
@@ -69,9 +72,9 @@
 			{/if}
 
 			<h3 class="h-16">Legg til Middag: {DateHandler.showDate(plannerEntry.date)}</h3>
-			<DishSearch bind:dishes={sortedDishes} />
+			<DishSearch dishes={$dishes} bind:filteredDishes />
 			<div class="overflow-y-auto h-[10rem]">
-				{#each sortedDishes as dish}
+				{#each filteredDishes as dish}
 					<button
 						on:click={() => updateDish(dish)}
 						data-ui={chosenDish === dish}

@@ -63,7 +63,7 @@
 					<p class="text-sm">Velg alle</p>
 				</Button>
 				<h3>Neste Uke</h3>
-				<SecondaryButton classNames="text-sm h-auto w-auto p-2">Lag Handleliste</SecondaryButton>
+				<SecondaryButton classNames="text-xs h-auto w-auto p-2">Lag Handleliste</SecondaryButton>
 			</div>
 			{#if $nextWeekPlans}
 				{#each $nextWeekPlans as plannerEntry}
