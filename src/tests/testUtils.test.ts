@@ -77,9 +77,10 @@ describe('Test the DishValidator', () => {
 		});
 	});
 	it('validateImage invalid', () => {
-		const blob = new Blob(['not an image'], { type: 'text/plain' });
-		const file = new File([blob], 'not-an-image.txt');
-		expect(DishValidator.validateImage(file)).toBe(DishValidator.INVALID_FILE_TYPE);
+		const file = { type: 'text/plain' };
+		expect(DishValidator.validateImage(file as unknown as File)).toBe(
+			DishValidator.INVALID_FILE_TYPE
+		);
 	});
 
 	it('validateAll all valid', () => {
