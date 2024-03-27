@@ -1,3 +1,5 @@
+import type { Timestamp } from 'firebase/firestore';
+
 export type Ingredient = string;
 
 /** Dinner or dish had for dinner */
@@ -8,7 +10,7 @@ export interface Dish {
 	/** Url to the recipe */
 	url: string;
 	/** When it was last scheduled in the dinner scheduler */
-	lastMade?: Date;
+	lastMade?: Timestamp;
 	/** The image number of the dinner, used if no custom image */
 	image?: number;
 	/** the user uploaded custom image */
@@ -17,4 +19,13 @@ export interface Dish {
 	ingredients?: Ingredient[];
 	/** The user email that created the dinner */
 	user: string;
+}
+
+export interface PlanEntry {
+	id?: string;
+	date: Timestamp;
+	/** The id of the dish */
+	dish?: string;
+	user?: string;
+	checked?: boolean;
 }

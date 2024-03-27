@@ -1,11 +1,7 @@
 import type { Dish } from '$lib/types';
-import { showDate, DishValidator } from '$lib/utils';
+import { DishValidator, DateHandler } from '$lib/utils';
+import { Timestamp } from 'firebase/firestore';
 import { it, expect, describe } from 'vitest';
-
-it('test showDate with date', () => {
-	expect(showDate(new Date('05.21.2022'))).toBe('Sat 21');
-	expect(showDate(new Date('04.20.2022'))).toBe('Wed 20');
-});
 
 describe('Test the DishValidator', () => {
 	const dishes: Dish[] = [
@@ -81,9 +77,10 @@ describe('Test the DishValidator', () => {
 		});
 	});
 	it('validateImage invalid', () => {
-		const blob = new Blob(['not an image'], { type: 'text/plain' });
-		const file = new File([blob], 'not-an-image.txt');
-		expect(DishValidator.validateImage(file)).toBe(DishValidator.INVALID_FILE_TYPE);
+		const file = { type: 'text/plain' };
+		expect(DishValidator.validateImage(file as unknown as File)).toBe(
+			DishValidator.INVALID_FILE_TYPE
+		);
 	});
 
 	it('validateAll all valid', () => {
@@ -96,5 +93,61 @@ describe('Test the DishValidator', () => {
 
 	it('validateAll url invalid', () => {
 		expect(DishValidator.validateAll(dishbadUrl, dishes)).toBe(DishValidator.INVALID_URL);
+	});
+});
+
+describe('Test DateHandle', () => {
+	it('test showDate with date', () => {
+		expect(DateHandler.showDate(Timestamp.fromDate(new Date('05.21.2022')))).toBe('Sat 21');
+		expect(DateHandler.showDate(Timestamp.fromDate(new Date('04.20.2022')))).toBe('Wed 20');
+		expect(DateHandler.showDate(undefined)).toBe('');
+		expect(DateHandler.showDate(undefined, 'nothing')).toBe('nothing');
+	});
+
+	it('findNextDay', () => {
+		expect(DateHandler.getNextDay(new Date('05.21.2022'))).toStrictEqual(new Date('05.22.2022'));
+		expect(DateHandler.getNextDay(new Date('12.31.2022'))).toStrictEqual(new Date('01.01.2023'));
+	});
+	it('GetNextMonday friday', () => {
+		expect(DateHandler.getNextMonday(new Date('03.22.2024'))).toStrictEqual(new Date('03.25.2024'));
+	});
+	it('GetNextMonday Sunday', () => {
+		expect(DateHandler.getNextMonday(new Date('03.24.2024'))).toStrictEqual(new Date('03.25.2024'));
+	});
+	it('GetNextMonday monday', () => {
+		expect(DateHandler.getNextMonday(new Date('03.25.2024'))).toStrictEqual(new Date('04.01.2024'));
+	});
+
+	it('Get daysndays away', () => {
+		const date = new Date('03.22.2024');
+		expect(DateHandler.getDayNDaysAway(date, 1)).toStrictEqual(new Date('03.23.2024'));
+		expect(DateHandler.getDayNDaysAway(date, 0)).toStrictEqual(date);
+		expect(DateHandler.getDayNDaysAway(date, -1)).toStrictEqual(new Date('03.21.2024'));
+	});
+
+	it('GetWeek', () => {
+		// friday
+		expect(DateHandler.getWeek(new Date('03.22.2024'))).toStrictEqual([
+			new Date('03.18.2024'),
+			new Date('03.24.2024')
+		]);
+		// sunday
+		expect(DateHandler.getWeek(new Date('03.24.2024'))).toStrictEqual([
+			new Date('03.18.2024'),
+			new Date('03.24.2024')
+		]);
+		// monday
+		expect(DateHandler.getWeek(new Date('03.25.2024'))).toStrictEqual([
+			new Date('03.25.2024'),
+			new Date('03.31.2024')
+		]);
+	});
+	it('hasdaypassed', () => {
+		expect(DateHandler.hasDayPassed(new Date('03.22.2024'))).toBe(true);
+		expect(DateHandler.hasDayPassed(new Date('03.21.2124'))).toBe(false);
+	});
+	it('isTimestampToday', () => {
+		expect(DateHandler.isTimestampToday(Timestamp.fromDate(new Date('03.21.2024')))).toBe('before');
+		expect(DateHandler.isTimestampToday(Timestamp.fromDate(new Date('03.21.2124')))).toBe('after');
 	});
 });

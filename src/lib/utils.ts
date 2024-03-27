@@ -1,19 +1,78 @@
-import type { Dish, Ingredient } from './types';
+import type { User } from 'firebase/auth';
+import { DBService, PlanQueries } from './Firebase';
+import type { Dish, Ingredient, PlanEntry } from './types';
+import { Timestamp } from 'firebase/firestore';
 
-/** Display the date in the date number and month only. Ex: 12. feb,
- * if no datevalue, return emptyMessage, else return empty string
- */
-export function showDate(date: Date | undefined, emptyMessage = '') {
-	if (date === undefined) {
-		if (emptyMessage) {
-			return emptyMessage;
+export class DateHandler {
+	/** Display the date in the date number and month only. Ex: 12. feb,
+	 * if no datevalue, return emptyMessage, else return empty string
+	 * @param date The date to display
+	 * @param emptyMessage The message to display if no date
+	 */
+	public static showDate(date: Timestamp | undefined, emptyMessage = '') {
+		if (date === undefined || typeof date !== 'object') {
+			if (emptyMessage) {
+				return emptyMessage;
+			}
+			return '';
+		}
+		const date2 = date.toDate();
+		const dateStr = date2.toDateString();
+		// remove month and year:
+		const dateArr = dateStr.split(' ');
+		return dateArr[0] + ' ' + dateArr[2];
+	}
+
+	/** Returns the next monday from the provided date.. */
+	public static getNextMonday(date: Date): Date {
+		let daysToMonday = 8 - date.getDay();
+		if (daysToMonday === 8) {
+			// getDay is 0 on sunday..
+			daysToMonday = 1;
+		}
+		const nextMonday = this.getDayNDaysAway(date, daysToMonday);
+		return nextMonday;
+	}
+
+	public static getNextDay(date: Date): Date {
+		return this.getDayNDaysAway(date, 1);
+	}
+
+	/** Returns the date the set distance away. Works both back and forewards.. */
+	public static getDayNDaysAway(date: Date, distance: number) {
+		return new Date(date.getFullYear(), date.getMonth(), date.getDate() + distance);
+	}
+
+	/** Checks if the provided date preceeds the current date */
+	public static hasDayPassed(date: Date) {
+		return date < new Date();
+	}
+
+	/** Returns a date range of the current week */
+	public static getWeek(date: Date) {
+		const day = date.getDay();
+		if (day === 0) {
+			return [this.getDayNDaysAway(date, -6), date];
+		}
+		return [this.getDayNDaysAway(date, -(day - 1)), this.getDayNDaysAway(date, 7 - day)];
+	}
+
+	public static isTimestampToday(timestamp: Timestamp): 'before' | 'after' | 'today' | '' {
+		const date = timestamp.toDate();
+		const today = new Date();
+		if (
+			date.getFullYear() === today.getFullYear() &&
+			date.getMonth() === today.getMonth() &&
+			date.getDate() === today.getDate()
+		) {
+			return 'today';
+		} else if (date < today) {
+			return 'before';
+		} else if (date > today) {
+			return 'after';
 		}
 		return '';
 	}
-	const dateStr = date.toDateString();
-	// remove month and year:
-	const dateArr = dateStr.split(' ');
-	return dateArr[0] + ' ' + dateArr[2];
 }
 
 /** Static class for Dish validation methods */
@@ -68,7 +127,7 @@ export class DishValidator {
 	/** Make sure the uploaded file is an image */
 	public static validateImage(file: File) {
 		if (!file) return this.VALID;
-		const imgTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/svg+xml'];
+		const imgTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/svg+xml', 'image/webp'];
 		if (imgTypes.includes(file.type)) {
 			return this.VALID;
 		}
@@ -92,5 +151,29 @@ export class DishValidator {
 			}
 		}
 		return this.VALID;
+	}
+}
+
+/** Handles various plan related functions */
+export class PlansHandler {
+	/** Creates plans for the upcoming week if it does not exist.
+	 * @param user The logged in user
+	 * @param date optional if the date is not the next monday...
+	 */
+	public static async CreateMissingPlans(user: User | null, date: Date | null = null) {
+		let nextMonday;
+		if (!date) {
+			nextMonday = DateHandler.getNextMonday(new Date());
+		} else {
+			nextMonday = date;
+		}
+		const query = PlanQueries.getPlans(user, [
+			nextMonday,
+			DateHandler.getDayNDaysAway(nextMonday, 6)
+		]);
+		const plans = (await DBService.getResources(query)) as PlanEntry[];
+		if (plans.length === 0) {
+			await DBService.createWeekPlans(nextMonday, user);
+		}
 	}
 }

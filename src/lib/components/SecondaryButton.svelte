@@ -9,7 +9,7 @@
 </script>
 
 <Button
-	classNames="rounded-lg border-[1px] px-5 border-green bg-gradient-to-r from-gray-100 to-gray-100 via-white hover:from-green hover:to-green hover:text-white {classNames}"
+	classNames="{classNames} rounded-lg border-[1px] px-5 border-green bg-gradient-to-r from-gray-100 to-gray-100 via-white hover:from-green hover:to-green hover:text-white "
 	{type}
 	{formaction}
 	on:click

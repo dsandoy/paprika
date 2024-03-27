@@ -16,6 +16,9 @@
 	/** apply styles to the content section here...*/
 	export let classNamesContent = '';
 
+	/** whether the dropdown should be relative to the button*/
+	export let relative = false;
+
 	onMount(() => {
 		document.body.addEventListener('click', handleClickOutside);
 	});
@@ -43,7 +46,7 @@
 	const transitionSettings = disableAnimation ? {} : { y: 100, duration: 200 };
 </script>
 
-<div bind:this={dropdownElement}>
+<div bind:this={dropdownElement} class:relative>
 	<section class={classNamesButton}>
 		<button on:click={toggleDropdown} on:keydown={toggleDropdown}>
 			<slot name="button">
