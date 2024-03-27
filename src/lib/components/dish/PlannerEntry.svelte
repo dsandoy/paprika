@@ -39,9 +39,9 @@
 	$: smallSize = window.matchMedia('(max-width: 800px)').matches;
 </script>
 
-<div class="flex flex-row w-[100%] lg:w-[26rem] gap-5 align-center items-center p-4">
+<div class="flex flex-row lg:w-[26rem] align-center items-center p-4">
 	<Checkbox bind:checked={plannerEntry.checked} />
-	<p class="lg:w-24 text-sm text-center">{DateHandler.showDate(plannerEntry.date)}</p>
+	<p class="lg:w-24 w-24 text-sm text-center">{DateHandler.showDate(plannerEntry.date)}</p>
 	<Dropdown
 		bind:isOpen
 		classNamesButton="flex items-center gap-3 cursor-pointer"
@@ -51,7 +51,7 @@
 		<!-- dropdown "button" -->
 		<div
 			data-ui={isOpen}
-			class="border-[1px] border-grey-300 flex flex-row h-14 w-64 gap-4 rounded data-isOpen:border-green align-center items-center hover:border-green p-2"
+			class="border-[1px] border-grey-300 flex flex-row h-14 w-60 lg:w-64 gap-4 rounded data-isOpen:border-green align-center items-center hover:border-green p-2"
 			slot="button"
 		>
 			{#if chosenDish}
@@ -71,7 +71,11 @@
 				</div>
 			{/if}
 
-			<h3 class="h-16">Legg til Middag: {DateHandler.showDate(plannerEntry.date)}</h3>
+			<span class="mb-8 flex gap-8 items-center">
+				<h3>Legg til Middag:</h3>
+				<span class="text-sm text-gray-600">{DateHandler.showDate(plannerEntry.date)}</span>
+			</span>
+
 			<DishSearch dishes={$dishes} bind:filteredDishes />
 			<div class="overflow-y-auto h-[10rem]">
 				{#each filteredDishes as dish}

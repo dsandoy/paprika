@@ -7,7 +7,7 @@
 </script>
 
 {#if imagesrc}
-	<img src={imagesrc} alt="dishimg" class={classNames} />
+	<img src={imagesrc} alt="dishimg" class="{classNames} rounded" />
 {:else}
 	<Button classNames="{classNames} text-gray-400 flex justify-center items-center">
 		<Icons iconName="zondicons:camera" height="2.0rem" classNames=""></Icons>
