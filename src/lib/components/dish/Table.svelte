@@ -2,16 +2,10 @@
 	import { DateHandler } from '$lib/utils';
 	import SecondaryButton from '../SecondaryButton.svelte';
 	import Icons from '../Icons.svelte';
-	import { DishQueries, auth, firestore } from '$lib/Firebase';
-	import { collectionStore, userStore } from 'sveltefire';
-	import type { Dish } from '$lib/types';
-
-	const user = userStore(auth);
-	const q = DishQueries.dishes($user);
-	const dishes = collectionStore<Dish>(firestore, q);
+	import { dishes } from '$lib/stores';
 </script>
 
-{#if $dishes.length === 0}
+{#if !$dishes || $dishes?.length === 0}
 	<div>Ingen middager er funnet...</div>
 {:else}
 	<table
