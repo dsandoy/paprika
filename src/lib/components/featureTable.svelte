@@ -3,11 +3,19 @@
 
 	const functionalities = [
 		{
+			description: 'Innlogging med Google',
+			checked: true
+		},
+		{
 			description: 'Opprett dine egne matretter',
 			checked: true
 		},
 		{
 			description: 'Rediger og slett dine egne matretter',
+			checked: false
+		},
+		{
+			description: 'Middagsplanlegger',
 			checked: true
 		},
 		{
@@ -19,17 +27,17 @@
 			checked: false
 		},
 		{
-			description: 'Custom middagsplanlegger',
-			checked: true
+			description: 'Oversiktlig dashbord',
+			checked: false
 		},
 		{
-			description: 'Oversiktlig dashbord',
+			description: 'Mørkt tema',
 			checked: false
 		}
 	];
 </script>
 
-<table class="border-collapse rounded ml-20">
+<table class="border-collapse rounded">
 	<thead>
 		<tr>
 			<th class="border-b border-green/30 text-left p-2 px-4">Funksjonalitet</th>
