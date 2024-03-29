@@ -12,7 +12,7 @@ import {
 	updateDoc,
 	where
 } from 'firebase/firestore';
-import { GoogleAuthProvider, getAuth, signInWithRedirect, type User } from 'firebase/auth';
+import { GoogleAuthProvider, getAuth, type User } from 'firebase/auth';
 import type { Dish, PlanEntry } from './types';
 import { getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage';
 import { DateHandler } from './utils';
@@ -33,11 +33,6 @@ const googleProvider = new GoogleAuthProvider();
 googleProvider.addScope('profile');
 googleProvider.addScope('email');
 export { googleProvider };
-
-/** Sign in through firebase with Google */
-export async function SignInWithGoogle() {
-	await signInWithRedirect(auth, googleProvider);
-}
 
 export async function SignOut() {
 	await auth.signOut();
@@ -101,9 +96,18 @@ export class DBService {
 	/** Retrieves the provided data requested by the query
 	 *  @param query The query to fetch
 	 */
-	public static async getResources(query: Query) {
+	public static async getResources(query: Query | undefined) {
+		if (!query) {
+			return;
+		}
 		const snapshot = await getDocs(query);
-		const docs = snapshot.docs.map((doc) => doc.data());
+		const docs: Dish[] | { id?: string }[] = [];
+		snapshot.forEach((doc) => {
+			const data = doc.data();
+			const docEntry = { id: doc.id, ...data } as unknown as Dish;
+			docs.push(docEntry);
+		});
+
 		return docs;
 	}
 
@@ -123,6 +127,9 @@ export class DishQueries {
 	 *  @param user The logged in user
 	 */
 	public static dishes(user: User | null) {
+		if (!user) {
+			return;
+		}
 		const dishesRef = collection(firestore, 'dishes') as CollectionReference<Dish>;
 		return query<Dish>(dishesRef, where('user', '==', user?.uid));
 	}
@@ -135,6 +142,9 @@ export class PlanQueries {
 	 *  @param user The logged in user
 	 */
 	public static getPlans(user: User | null, dateRange: Date[]) {
+		if (!user) {
+			return;
+		}
 		const dishesRef = collection(firestore, 'dishplans') as CollectionReference<PlanEntry>;
 		return query<PlanEntry>(
 			dishesRef,

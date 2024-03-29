@@ -2,17 +2,14 @@
 	import { DateHandler } from '$lib/utils';
 	import SecondaryButton from '../SecondaryButton.svelte';
 	import Icons from '../Icons.svelte';
-	import { DishQueries, auth, firestore } from '$lib/Firebase';
-	import { collectionStore, userStore } from 'sveltefire';
-	import type { Dish } from '$lib/types';
-
-	const user = userStore(auth);
-	const q = DishQueries.dishes($user);
-	const dishes = collectionStore<Dish>(firestore, q);
+	import { dishes } from '$lib/stores';
 </script>
 
-{#if $dishes.length === 0}
-	<div>Ingen middager er funnet...</div>
+{#if !$dishes || $dishes?.length === 0}
+	<div>
+		Du har ingen middager ennå! Trykk Legg til for å gjøre noe med det (Sørg for at du er innlogget)
+		...
+	</div>
 {:else}
 	<table
 		class="bg-white w-[80%] mb-8 flex flex-col items-center justify-center overflow-y-auto py-48 overscroll-contain"
@@ -29,7 +26,9 @@
 		<!-- row section -->
 		<div class="border-x-[1px] border-solidborder-grey-300 w-[100%]">
 			{#each $dishes as dish}
-				<div class="flex flex-row justify-between items-center px-5 py-3">
+				<div
+					class="flex flex-row justify-between items-center px-5 py-3 odd:bg-white even:bg-slate-50"
+				>
 					{#if !dish.customImage}
 						<div class="w-12 lg:w-16">
 							<button

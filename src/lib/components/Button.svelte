@@ -7,7 +7,7 @@
 </script>
 
 <button
-	class="{classNames}h-11 flex justify-center items-center text-lg cursor-pointer"
+	class="{classNames} h-11 flex justify-center items-center text-lg cursor-pointer"
 	{type}
 	data-ui={data_ui}
 	on:click

@@ -1,100 +1,103 @@
 <script lang="ts">
-	import { SignInWithGoogle } from '$lib/Firebase';
-	import ColoredSection from '$lib/components/ColoredSection.svelte';
-	import PrimaryButton from '$lib/components/PrimaryButton.svelte';
+	import { auth } from '$lib/Firebase';
+	import DemoImage from '$lib/components/DemoImage.svelte';
 	import SecondaryButton from '$lib/components/SecondaryButton.svelte';
 	import SideBar from '$lib/components/SideBar.svelte';
 	import FeatureTable from '$lib/components/featureTable.svelte';
 	import ProfileDropdown from '$lib/components/user/ProfileDropdown.svelte';
-	import { SignedIn, SignedOut } from 'sveltefire';
-	// TODO GO for column based and not relative based style approach!
-	// dark mode toggle in toolbar...
+	import { user } from '$lib/stores';
+	import { onMount } from 'svelte';
+
+	const usr = auth.currentUser;
+	if (usr) {
+		user.set(usr);
+	}
+
+	let smallSize = true;
+	onMount(() => {
+		smallSize = window.matchMedia('(max-width: 800px)').matches;
+	});
 </script>
 
 <header class="w-svw h-16 flex bg-green justify-between px-5 items-center text-white">
 	<SideBar />
-	<a href="/dishes"
-		><img class=" h-14 lg:w-16 lg:h-16" src="/paprika_logos/green.png" alt="Logo img" />
-	</a>
+	<a href="/dishes"><img class=" h-14 lg:w-16 lg:h-16" src="/logo-green.svg" alt="Logo img" /> </a>
 	<div>
 		<ProfileDropdown></ProfileDropdown>
 	</div>
 </header>
 
-<section class="flex flex-col items-center justify-center">
-	<ColoredSection classNames="bg-transparent">
-		<!-- <img
-			class="h-36 lg:h-48 absolute right-[5rem] top-[5rem]"
-			src="paprika_logos/white_g.png"
-			alt="Logo img"
-		/> -->
-		<h1 class="text-5xl text-center absolute left-0 top[-10rem] right-0">
+<div class="flex flex-col items-center justify-center">
+	<!-- top section -->
+	<section
+		class="flex flex-col items-center justify-center w-full h-[85svh] bg-gradient-to-tr from-red/20 to-green/20 via-white pt-12"
+	>
+		<h3 class="text-3xl lg:text-5xl w-full p-4 mb-5 text-center">
 			Ta kontroll over middagene med Paprika!
-		</h1>
-		<SignedIn let:user let:signOut>
-			<a href="/dishes">
-				<PrimaryButton>Til middager</PrimaryButton>
-			</a>
-			<div
-				class="flex items-center justfy-center flex-col border-l-[8px] border-green p-3 lg:p-5 pr-16 rounded bg-gray-100 w-72 lg:w-96 mt-24"
-			>
-				<div class="flex flex-row gap-3">
-					{#if user.photoURL}
-						<img class="rounded-lg h-12 lg:h-16" src={user.photoURL} alt="profile" />
-					{/if}
-					<div class="signedInText mb-5">
-						<small>Logget inn som</small><br />
-						<strong class="text-sm lg:text-base">{user.displayName}</strong>
-					</div>
+		</h3>
+		<SecondaryButton
+			type="button"
+			on:click={() => (window.location.href = '/login')}
+			classNames="flex flex-row  h-10 lg:h-12 justify-center items-center gap-3 text-base"
+		>
+			<img src="google-logo.png" alt="Google logo" class="h-6" />
+			Kom i gang
+		</SecondaryButton>
+	</section>
+
+	<!-- Dinnner planner section -->
+	<section class="w-screen pt-0">
+		{#if !smallSize}
+			<div class="bg-red/50 rounded p-8 grid lg:grid-cols-3 grid-cols-1 relative">
+				<div>
+					<span class="lg:absolute lg:top-[-3rem] lg:left-[5rem]">
+						<DemoImage
+							classNames="h-[28rem]"
+							text="1. Se planen din"
+							smallText="Planen viser denne og neste uke"
+							img="peaks/plan1.png"
+						/>
+					</span>
 				</div>
-				<SecondaryButton on:click={signOut} type="button" classNames="w-24 h-8 px-2 text-sm"
-					>Logg ut</SecondaryButton
-				>
+				<div class="flex flex-col gap-3 justify-center items-center">
+					<h3 class="text-xl lg:text-3xl w-full text-center text-black">
+						Med Paprika blir middagsplanlegging enkelt!
+					</h3>
+					<p>Kun 3 enkle steg:</p>
+					<DemoImage
+						classNames="h-[16rem]"
+						text="2. Velg Dag"
+						smallText="Velg dagen du vil endre på"
+						img="peaks/plan2.png"
+					/>
+				</div>
+				<div class="flex flex-col justify-center items-center">
+					<span class="lg:absolute lg:bottom-[-2rem]">
+						<DemoImage
+							classNames="h-[14rem]"
+							text="3. Velg middag"
+							img="peaks/plan3.png"
+							smallText="Søk eller bla etter ønsket middag"
+						/>
+					</span>
+				</div>
 			</div>
-		</SignedIn>
-		<SignedOut>
+		{/if}
+	</section>
+	<!-- feature table section -->
+	<section
+		class="flex flex-col justify-center items-center w-full gap-10 py-10 bg-gradient-to-br from-red/20 to-green/20 via-white"
+	>
+		<FeatureTable />
+		{#if !smallSize}
 			<SecondaryButton
 				type="button"
-				on:click={SignInWithGoogle}
-				classNames="flex flex-row w-48 lg:w-64 h-12 lg:h-14 justify-center items-center gap-3"
+				on:click={() => (window.location.href = '/login')}
+				classNames="flex flex-row  h-10 lg:h-12 justify-center items-center gap-3 text-base"
 			>
 				<img src="google-logo.png" alt="Google logo" class="h-6" />
 				Logg Inn
 			</SecondaryButton>
-			<div
-				class="flex items-center justify-center flex-col border-l-[8px] border-red p-3 mt-24 pr-16 rounded bg-gray-100 w-64 lg:w-96 gap-4"
-			>
-				<div class="text-sm lg:text-base">Du er ikke innlogget!</div>
-			</div>
-		</SignedOut>
-	</ColoredSection>
-	<ColoredSection classNames="bg-gray-200 pl-8">
-		<h3 class="text-base lg:text-2xl text-center w-full p-4">
-			Med Paprika blir middagsplanlegging enkelt!
-		</h3>
-		<ol class="p-4 rounded border-[0px] border-red border-l-[6px]">
-			<li>1. Se hva du har planlagt de neste dagene</li>
-			<li>2. Trykk på rette du vil lage for å se oppskriften</li>
-			<li>3. Lag i vei!</li>
-		</ol>
-		<img
-			class="rounded absolute right-[30px] bottom-[25px] h-36 w-52 bg-gray-200"
-			src="nonsense"
-			alt="mypicture"
-		/>
-	</ColoredSection>
-	<ColoredSection classNames="bg-transparent ">
-		<h3>Lag Handlelista!</h3>
-		<p>
-			Paprika kan autmatisk lage handlelista for deg! Velg hvilke dager du vil handle for og voila!
-		</p>
-	</ColoredSection>
-	<ColoredSection classNames="bg-green text-white">
-		<h3>Legg til og oppdater matrettene dine!</h3>
-		<p>
-			Legg til matretter du liker, og hva som er ingrediensene du trenger å handle for å ta i bruk
-			Paprikas utrolige funksjoner!
-		</p>
-		<FeatureTable></FeatureTable>
-	</ColoredSection>
-</section>
+		{/if}
+	</section>
+</div>

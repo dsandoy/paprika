@@ -1,11 +1,10 @@
 <script lang="ts">
-	import { ingredients } from '$lib/stores';
+	import { dishes, ingredients, user } from '$lib/stores';
 	import { DishValidator } from '$lib/utils.js';
 	import PrimaryButton from '$lib/components/PrimaryButton.svelte';
 	import SecondaryButton from '$lib/components/SecondaryButton.svelte';
 	import BottomCircles from '$lib/components/BottomCircles.svelte';
-	import { collectionStore, userStore } from 'sveltefire';
-	import { DBService, DishQueries, auth, firestore } from '$lib/Firebase';
+	import { DBService } from '$lib/Firebase';
 	import type { Dish } from '$lib/types.js';
 
 	let formElement: HTMLFormElement;
@@ -16,9 +15,6 @@
 	let customImageUrl: string | null = null;
 	let customImage: File | undefined;
 	let errorMessage = '';
-
-	const user = userStore(auth);
-	const dishes = collectionStore<Dish>(firestore, DishQueries.dishes($user));
 
 	/** Tell the user that the ingredient is already in the list */
 	function validateIngredients() {
@@ -93,8 +89,10 @@
 			return;
 		}
 
-		const url = await DBService.uploadImage(customImage as File);
-		dish.customImage = url;
+		if (customImage) {
+			const url = await DBService.uploadImage(customImage as File);
+			dish.customImage = url;
+		}
 		await DBService.createDish(dish);
 		window.location.href = '/dishes/add/success';
 	}
