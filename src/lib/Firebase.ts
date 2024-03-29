@@ -101,7 +101,13 @@ export class DBService {
 			return;
 		}
 		const snapshot = await getDocs(query);
-		const docs = snapshot.docs.map((doc) => doc.data());
+		const docs: Dish[] | { id?: string }[] = [];
+		snapshot.forEach((doc) => {
+			const data = doc.data();
+			const docEntry = { id: doc.id, ...data } as unknown as Dish;
+			docs.push(docEntry);
+		});
+
 		return docs;
 	}
 

@@ -3,20 +3,23 @@
 	import type { Dish, PlanEntry } from '$lib/types.js';
 	import { DateHandler } from '$lib/utils';
 	import Dropdown from '../Dropdown.svelte';
-	import { collectionStore, userStore } from 'sveltefire';
-	import { DBService, DishQueries, auth, firestore } from '$lib/Firebase';
+	import { DBService } from '$lib/Firebase';
 	import DishSearch from '../DishSearch.svelte';
 	import DishImage from './DishImage.svelte';
+	import { dishes } from '$lib/stores';
 
 	export let plannerEntry: PlanEntry;
 
-	const user = userStore(auth);
-	const dishes = collectionStore<Dish>(firestore, DishQueries.dishes($user));
-
 	let isOpen = false;
 	let filteredDishes: Dish[] = [];
+
 	let chosenDish: Dish | undefined = undefined;
-	$: chosenDish = plannerEntry.dish ? $dishes.find((d) => d.id === plannerEntry.dish) : undefined;
+
+	function fetchDish() {
+		chosenDish = plannerEntry.dish ? $dishes.find((d) => d.id === plannerEntry.dish) : undefined;
+	}
+
+	$: fetchDish(), $dishes;
 
 	function updateDish(dish: Dish) {
 		if (smallSize) {
@@ -29,6 +32,7 @@
 			plannerEntry.dish = dish.id;
 		}
 		plannerEntry = plannerEntry;
+		fetchDish();
 		DBService.updatePlanEntry(plannerEntry);
 	}
 

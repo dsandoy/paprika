@@ -6,7 +6,10 @@
 </script>
 
 {#if !$dishes || $dishes?.length === 0}
-	<div>Ingen middager er funnet...</div>
+	<div>
+		Du har ingen middager ennå! Trykk Legg til for å gjøre noe med det (Sørg for at du er innlogget)
+		...
+	</div>
 {:else}
 	<table
 		class="bg-white w-[80%] mb-8 flex flex-col items-center justify-center overflow-y-auto py-48 overscroll-contain"

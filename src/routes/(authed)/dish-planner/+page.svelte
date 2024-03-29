@@ -1,25 +1,47 @@
 <script lang="ts">
-	import { PlanQueries, auth, firestore } from '$lib/Firebase';
+	import { DBService, DishQueries, PlanQueries } from '$lib/Firebase';
 	import Button from '$lib/components/Button.svelte';
 	import Checkbox from '$lib/components/Checkbox.svelte';
 	import SecondaryButton from '$lib/components/SecondaryButton.svelte';
 	import PlannerEntry from '$lib/components/dish/PlannerEntry.svelte';
+	import { currentPlans, dishes, nextWeekPlans, user } from '$lib/stores';
+	import type { Dish, PlanEntry } from '$lib/types';
 	import { DateHandler, PlansHandler } from '$lib/utils';
 	import { onMount } from 'svelte';
-	import { collectionStore, userStore } from 'sveltefire';
 
-	const currentWeek = DateHandler.getWeek(new Date());
 	const nextWeek = DateHandler.getWeek(DateHandler.getNextMonday(new Date()));
-	const user = userStore(auth);
-	const currentPlans = collectionStore(firestore, PlanQueries.getPlans($user, currentWeek));
-	const nextWeekPlans = collectionStore(firestore, PlanQueries.getPlans($user, nextWeek));
+	const currentWeek = DateHandler.getWeek(new Date());
 
 	onMount(() => {
 		// create missing plans for current and next week..
-		const date = DateHandler.getNextMonday(DateHandler.getDayNDaysAway(new Date(), -7));
-		PlansHandler.CreateMissingPlans($user, date);
-		PlansHandler.CreateMissingPlans($user);
+		if ($user) {
+			const date = DateHandler.getNextMonday(DateHandler.getDayNDaysAway(new Date(), -7));
+			PlansHandler.CreateMissingPlans($user, date);
+			PlansHandler.CreateMissingPlans($user);
+		}
 	});
+
+	function getPlans() {
+		if ($user) {
+			const q = PlanQueries.getPlans($user, currentWeek);
+			DBService.getResources(q).then((result) => {
+				currentPlans.set(result as PlanEntry[]);
+			});
+			const q2 = PlanQueries.getPlans($user, nextWeek);
+			DBService.getResources(q2).then((result) => {
+				nextWeekPlans.set(result as PlanEntry[]);
+			});
+		}
+	}
+
+	function getDishes() {
+		const q = DishQueries.dishes($user);
+		DBService.getResources(q).then((result) => {
+			dishes.set(result as Dish[]);
+		});
+	}
+	$: getDishes(), $user;
+	$: getPlans(), $user;
 
 	let allCheckedThis = false;
 	let allCheckedNext = false;
