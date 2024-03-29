@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
 	import BottomCircles from '$lib/components/BottomCircles.svelte';
 	import SecondaryButton from '$lib/components/SecondaryButton.svelte';
 	import { auth, googleProvider } from '$lib/Firebase';
@@ -10,7 +11,8 @@
 		getRedirectResult(auth).then((result) => {
 			if (result) {
 				user.set(result.user);
-				window.location.href = '/dishes';
+				// window.location.href = '/dishes';
+				goto('/dishes');
 			}
 		});
 	});

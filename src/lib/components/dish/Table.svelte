@@ -26,7 +26,9 @@
 		<!-- row section -->
 		<div class="border-x-[1px] border-solidborder-grey-300 w-[100%]">
 			{#each $dishes as dish}
-				<div class="flex flex-row justify-between items-center px-5 py-3">
+				<div
+					class="flex flex-row justify-between items-center px-5 py-3 odd:bg-white even:bg-slate-50"
+				>
 					{#if !dish.customImage}
 						<div class="w-12 lg:w-16">
 							<button

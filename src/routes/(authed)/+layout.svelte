@@ -7,7 +7,6 @@
 	import { onMount } from 'svelte';
 
 	onMount(() => {
-		/** If the user is logged in, redirect to the dishes page */
 		onAuthStateChanged(auth, (u) => {
 			if (u) {
 				user.set(u);

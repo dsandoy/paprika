@@ -3,6 +3,7 @@
 	import SecondaryButton from '../SecondaryButton.svelte';
 	import { SignOut } from '$lib/Firebase';
 	import { user } from '$lib/stores';
+	import Button from '../Button.svelte';
 </script>
 
 {#if $user}
@@ -19,13 +20,15 @@
 		</span>
 		<div slot="content" class="flex flex-col gap-4">
 			<p class="text-sm">{$user?.displayName || 'Ingen brukernavn'}</p>
-			<SecondaryButton classNames="w-24 h-8 px-2 text-sm" on:click={SignOut}
+			<SecondaryButton classNames="w-24 h-8 px-2 text-sm hover:bg-red" on:click={SignOut}
 				>Logg ut</SecondaryButton
 			>
 		</div>
 	</Dropdown>
 {:else}
-	<SecondaryButton>
-		<a href="/login">Logg inn</a>
-	</SecondaryButton>
+	<Button
+		classNames="w-20 h-9 px-2 text-sm text-gray-900 bg-white rounded-lg hover:bg-nice-blue hover:text-white"
+	>
+		<a href="/login"> Logg inn</a>
+	</Button>
 {/if}
