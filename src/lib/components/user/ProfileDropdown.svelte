@@ -4,6 +4,7 @@
 	import { SignOut } from '$lib/Firebase';
 	import { user } from '$lib/stores';
 	import Button from '../Button.svelte';
+	import Icons from '../Icons.svelte';
 </script>
 
 {#if $user}
@@ -15,11 +16,13 @@
 			{#if $user && $user.photoURL}
 				<img class="rounded-lg h-10 lg:h-11" src={$user.photoURL} alt="profile" />
 			{:else}
-				<img class="rounded-lg h-10 lg:h-11" src="/google-logo.png" alt="profile" />
+				<span class="p-8">
+					<Icons iconName="zondicons:user" classNames="h-10 lg:h-11" />
+				</span>
 			{/if}
 		</span>
 		<div slot="content" class="flex flex-col gap-4">
-			<p class="text-sm">{$user?.displayName || 'Ingen brukernavn'}</p>
+			<p class="text-sm">{$user?.displayName || 'TestUser'}</p>
 			<SecondaryButton classNames="w-24 h-8 px-2 text-sm hover:bg-red" on:click={SignOut}
 				>Logg ut</SecondaryButton
 			>
