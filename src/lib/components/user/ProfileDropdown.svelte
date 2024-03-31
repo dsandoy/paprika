@@ -1,10 +1,16 @@
 <script lang="ts">
 	import Dropdown from '../Dropdown.svelte';
 	import SecondaryButton from '../SecondaryButton.svelte';
-	import { SignOut } from '$lib/Firebase';
 	import { user } from '$lib/stores';
 	import Button from '../Button.svelte';
 	import Icons from '../Icons.svelte';
+	import { auth } from '$lib/Firebase';
+	import { goto } from '$app/navigation';
+
+	async function SignOut() {
+		await auth.signOut();
+		goto('/');
+	}
 </script>
 
 {#if $user}

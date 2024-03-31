@@ -34,10 +34,6 @@ googleProvider.addScope('profile');
 googleProvider.addScope('email');
 export { googleProvider };
 
-export async function SignOut() {
-	await auth.signOut();
-}
-
 /** Handle the create and update of database elements */
 export class DBService {
 	/** Create a dish at the database.. Returns its id if successfull and "" else
