@@ -62,7 +62,7 @@
 	<h1 class="text-3xl lg:text-5xl rounded mt-8 mb-8">Middagsplanlegger</h1>
 	<div class="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:w-auto">
 		<!-- This week -->
-		<section class="flex flex-col items-center">
+		<section class="flex flex-col items-center relative">
 			<div
 				class="flex gap-8 lg:gap-12 pb-3 justify-center items-center border-b-2 border-b-gray-200"
 			>
@@ -81,7 +81,7 @@
 			<div class="lg:hidden h-[2px] w-[90%] mt-8 bg-gray-300"></div>
 		</section>
 		<!-- next week -->
-		<section class="flex flex-col items-center">
+		<section class="flex flex-col items-center relative">
 			<div
 				class="flex gap-8 lg:gap-12 pb-3 justify-center items-center border-b-2 border-b-gray-200"
 			>
