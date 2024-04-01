@@ -98,10 +98,10 @@
 	}
 </script>
 
-<section class="flex flex-col items-center justify-center">
-	<h2 class="mb-12 mt-12">Legg til ny Matrett</h2>
+<section class="flex flex-col items-center w-full h-full justify-center">
+	<h2 class="mb-12 mt-12 text-3xl">Legg til ny Matrett</h2>
 	<form
-		class="w-[80%] md:w-[60%] xl:w-[40%] flex flex-col justify-center items-center"
+		class="w-[70%] md:w-[40%] xl:w-[30%] flex flex-col justify-center items-center"
 		method="post"
 		bind:this={formElement}
 		enctype="multipart/form-data"
@@ -163,14 +163,16 @@
 			</div>
 			<div class="w-[50%] pl-5">
 				<h3 class="px-5 text-gray-400">ingredienser</h3>
-				{#each $ingredients as ingredient}
-					<button
-						type="button"
-						class="block hover:bg-red hover:text-white rounded-lg pl-5 pr-5"
-						on:click={() => ($ingredients = $ingredients.filter((i) => i !== ingredient))}
-						>{ingredient}</button
-					>
-				{/each}
+				<div class="overflow-auto h-48">
+					{#each $ingredients as ingredient}
+						<button
+							type="button"
+							class="block hover:bg-red hover:text-white rounded-lg pl-5 pr-5"
+							on:click={() => ($ingredients = $ingredients.filter((i) => i !== ingredient))}
+							>{ingredient}</button
+						>
+					{/each}
+				</div>
 			</div>
 			<!-- include ingredients -->
 			<input type="hidden" value={$ingredients} name="ingredients" />

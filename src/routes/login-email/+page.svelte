@@ -24,9 +24,9 @@
 <section
 	class="h-svh flex flex-col items-center justify-start gap-4 bg-gradient-to-tl from-red/20 to-green/30 via-white"
 >
-	<img class="h-44 lg:h-52 mt-56" src="logo-red.svg" alt="Logo img" />
+	<img class="h-44 lg:h-52 lg:mt-56 mt-24" src="logo-red.svg" alt="Logo img" />
 	<h1 class="text-2xl">Velkommen til Paprika</h1>
-	<div class="w-1/2 lg:w-[30%]">
+	<div class="w-1/2 lg:w-[25%]">
 		<input type="email" placeholder="Epost" bind:value={email} class="input" />
 		<input type="password" placeholder="Passord" bind:value={password} class="input" />
 	</div>

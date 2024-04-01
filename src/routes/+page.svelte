@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { auth } from '$lib/Firebase';
 	import DemoImage from '$lib/components/DemoImage.svelte';
+	import FadeInElement from '$lib/components/FadeInElement.svelte';
 	import SecondaryButton from '$lib/components/SecondaryButton.svelte';
 	import SideBar from '$lib/components/SideBar.svelte';
 	import FeatureTable from '$lib/components/featureTable.svelte';
@@ -46,9 +47,9 @@
 	</section>
 
 	<!-- Dinnner planner section -->
-	<section class="w-screen pt-0">
-		{#if !smallSize}
-			<div class="bg-red/50 rounded p-8 grid lg:grid-cols-3 grid-cols-1 relative">
+	{#if !smallSize}
+		<section class="w-screen pt-0 h-[28rem]">
+			<div class="bg-red/50 rounded h-full p-8 grid lg:grid-cols-3 grid-cols-1 relative">
 				<div>
 					<span class="lg:absolute lg:top-[-3rem] lg:left-[5rem]">
 						<DemoImage
@@ -59,34 +60,38 @@
 						/>
 					</span>
 				</div>
-				<div class="flex flex-col gap-3 justify-center items-center">
-					<h3 class="text-xl lg:text-3xl w-full text-center text-black">
-						Med Paprika blir middagsplanlegging enkelt!
-					</h3>
-					<p>Kun 3 enkle steg:</p>
-					<DemoImage
-						classNames="h-[16rem]"
-						text="2. Velg Dag"
-						smallText="Velg dagen du vil endre på"
-						img="peaks/plan2.png"
-					/>
-				</div>
+				<FadeInElement>
+					<div class="flex flex-col gap-3 justify-center items-center">
+						<h3 class="text-xl lg:text-3xl w-full text-center text-black">
+							Med Paprika blir middagsplanlegging enkelt!
+						</h3>
+						<p>Kun 3 enkle steg:</p>
+						<DemoImage
+							classNames="h-[16rem]"
+							text="2. Velg Dag"
+							smallText="Velg dagen du vil endre på"
+							img="peaks/plan2.png"
+						/>
+					</div>
+				</FadeInElement>
 				<div class="flex flex-col justify-center items-center">
 					<span class="lg:absolute lg:bottom-[-2rem]">
-						<DemoImage
-							classNames="h-[14rem]"
-							text="3. Velg middag"
-							img="peaks/plan3.png"
-							smallText="Søk eller bla etter ønsket middag"
-						/>
+						<FadeInElement>
+							<DemoImage
+								classNames="h-[14rem]"
+								text="3. Velg middag"
+								img="peaks/plan3.png"
+								smallText="Søk eller bla etter ønsket middag"
+							/>
+						</FadeInElement>
 					</span>
 				</div>
 			</div>
-		{/if}
-	</section>
+		</section>
+	{/if}
 	<!-- feature table section -->
 	<section
-		class="flex flex-col justify-center items-center w-full gap-10 py-10 bg-gradient-to-br from-red/20 to-green/20 via-white"
+		class="flex flex-col justify-center items-center w-full gap-10 py-10 bg-gradient-to-br from-red/20 to-green/20 via-white h-[40rem]"
 	>
 		<FeatureTable />
 		{#if !smallSize}
