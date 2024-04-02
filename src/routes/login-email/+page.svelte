@@ -8,16 +8,27 @@
 
 	let email = '';
 	let password = '';
+	let errorMessage = '';
 
 	function signIn() {
+		if (email === '' || password === '') {
+			errorMessage = 'Du må fylle ut epost og passord';
+			return;
+		}
 		signInWithEmailAndPassword(auth, email, password)
 			.then((result) => {
 				user.set(result.user);
 				goto('/dishes');
 			})
-			.catch((error) => {
-				console.log(error);
+			.catch(() => {
+				errorMessage = 'Ugyldig epost eller passord';
+				errorMessage = errorMessage;
 			});
+	}
+
+	function resetErrorMessage() {
+		errorMessage = '';
+		errorMessage = errorMessage;
 	}
 </script>
 
@@ -26,10 +37,29 @@
 >
 	<img class="h-44 lg:h-52 lg:mt-56 mt-24" src="logo-red.svg" alt="Logo img" />
 	<h1 class="text-2xl">Velkommen til Paprika</h1>
-	<div class="w-1/2 lg:w-[25%]">
-		<input type="email" placeholder="Epost" bind:value={email} class="input" />
-		<input type="password" placeholder="Passord" bind:value={password} class="input" />
+	<div class="w-[23rem]">
+		<input
+			type="email"
+			placeholder="Epost"
+			bind:value={email}
+			class="input"
+			required
+			on:change={resetErrorMessage}
+		/>
+		<input
+			type="password"
+			placeholder="Passord"
+			bind:value={password}
+			class="input"
+			required
+			on:change={resetErrorMessage}
+		/>
 	</div>
+	{#if errorMessage}
+		<div class="text-red">
+			{errorMessage}
+		</div>
+	{/if}
 
 	<SecondaryButton
 		on:click={() => signIn()}

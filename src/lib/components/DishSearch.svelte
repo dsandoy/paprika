@@ -23,11 +23,11 @@
 	$: search(), searchWord;
 </script>
 
-<span class="relative">
+<div class="relative">
 	<Icons
 		iconName="zondicons:search"
 		height="1.5rem"
 		classNames="absolute text-green top-3 right-5"
 	/>
 	<input placeholder="Søk" type="text" class="pl-6 input" bind:value={searchWord} />
-</span>
+</div>
