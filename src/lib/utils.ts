@@ -137,8 +137,11 @@ export class DishValidator {
 	/** Validates all fields of a dish simultaneously
 	 *  To be used before submitting a dish to the database
 	 */
-	public static validateAll(dish: Dish, dishes: Dish[]) {
-		let result = this.validateName(dish.name, dishes);
+	public static validateAll(dish: Dish, dishes: Dish[], nameOkay = false) {
+		let result = this.VALID;
+		if (!nameOkay) {
+			result = this.validateName(dish.name, dishes);
+		}
 		if (result !== this.VALID) return result;
 		result = this.validateURL(dish.url);
 		if (result !== this.VALID) return result;

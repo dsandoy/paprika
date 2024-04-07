@@ -18,7 +18,9 @@
 	let name_text = '';
 	let customImageUrl: string | undefined;
 	let customImage: File | undefined;
+	let hasImageChanged = false;
 	let errorMessage = '';
+	let dishID: string | undefined = '';
 
 	async function getDish() {
 		let dish: Dish | undefined;
@@ -35,6 +37,7 @@
 			console.log('failed to load the dish somehow');
 			error(420, 'Failed to locate the dish');
 		}
+		dishID = dish.id;
 		ingredients.set(dish.ingredients || []);
 		url_text = dish.url;
 		name_text = dish.name;
@@ -95,30 +98,33 @@
 		}
 		if (DishValidator.validateImage(customImage) === DishValidator.VALID) {
 			customImageUrl = URL.createObjectURL(customImage);
+			hasImageChanged = true;
 		}
 	}
 
-	/** TODO */
 	async function UpdateDish() {
 		const dish: Dish = {
+			id: dishID,
 			name: name_text,
 			url: url_text,
 			user: $user?.uid as string,
+			customImage: customImageUrl,
 			ingredients: $ingredients
 		};
-		const result = DishValidator.validateAll(dish, $dishes);
+		const result = DishValidator.validateAll(dish, $dishes, true);
 		if (result !== DishValidator.VALID) {
+			console.warn('Validation failed: the data failed the validateAll function');
 			errorMessage = 'Ugyldig input';
 			errorMessage = errorMessage;
 			return;
 		}
 
-		if (customImage) {
+		if (customImage && hasImageChanged) {
 			const url = await DBService.uploadImage(customImage as File);
 			dish.customImage = url;
 		}
-		await DBService.createDish(dish);
-		window.location.href = '/dishes/add/success';
+		await DBService.updateDish(dish);
+		window.location.href = '/dishes';
 	}
 </script>
 
@@ -187,7 +193,7 @@
 			</div>
 			<div class="w-[50%] pl-5">
 				<h3 class="px-5 text-gray-400">ingredienser</h3>
-				<div class="overflow-auto h-48">
+				<div class="overflow-auto h-48 lg:h-64">
 					{#each $ingredients as ingredient}
 						<button
 							type="button"

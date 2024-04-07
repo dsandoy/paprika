@@ -60,7 +60,7 @@ export class DBService {
 	 *  @param file The file to upload
 	 */
 	public static async uploadImage(file: File) {
-		const randomNumber = Math.floor(Math.random() * 100);
+		const randomNumber = Math.floor(Math.random() * 10000);
 		const storageRef = ref(storage, `dishes/${randomNumber}-${file.name}`);
 		await uploadBytes(storageRef, file);
 		const url = await getDownloadURL(storageRef);
@@ -126,6 +126,18 @@ export class DBService {
 		})
 			.then(() => console.log('Updated planEntry'))
 			.catch((error) => console.error('Failed to update planEntry: ', error));
+	}
+
+	public static async updateDish(dish: Dish) {
+		const docRef = doc(collection(firestore, DISHES_DOC), dish.id);
+		await updateDoc(docRef, {
+			name: dish.name,
+			url: dish.url,
+			customImage: dish?.customImage || '',
+			ingredients: dish.ingredients
+		})
+			.then(() => console.log('Updated dish in DB'))
+			.catch(() => console.error('Failed to update dish'));
 	}
 }
 
