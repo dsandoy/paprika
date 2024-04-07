@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { DateHandler } from '$lib/utils';
+	import type { Dish } from '$lib/types';
 	import SecondaryButton from '../SecondaryButton.svelte';
 	import Icons from '../Icons.svelte';
 
