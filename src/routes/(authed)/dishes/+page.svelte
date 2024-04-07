@@ -1,5 +1,7 @@
 <script lang="ts">
+	import Card from '$lib/components/dish/Card.svelte';
 	import Table from '$lib/components/dish/Table.svelte';
+	import Icons from '$lib/components/Icons.svelte';
 	import PrimaryButton from '$lib/components/PrimaryButton.svelte';
 	import { DBService, DishQueries } from '$lib/Firebase.js';
 	import { dishes, user } from '$lib/stores.js';
@@ -19,19 +21,20 @@
 </script>
 
 <section class="flex flex-col items-center align-center w-svw h-[92svh] m-0">
+	<h2 class="text-3xl mt-16 mb-4">Matretter</h2>
 	<div
-		class="border-b-[1px] border-grey-300 border-solid flex flex-row content-center justify-between w-[80%] h-12 mt-28"
+		class="border-b-[1px] border-grey-300 border-solid flex flex-row content-center justify-between w-[80%] h-12"
 	>
-		<div>
+		<div class="flex flex-row">
 			<button
-				class="w-16 h-12 lg:w-20 text-base lg:text-lg"
+				class="w-10 h-12 lg:w-16 text-base lg:text-lg flex items-center justify-center"
 				class:selected-tab={viewMode === 'table'}
-				on:click={() => (viewMode = 'table')}>Tabell</button
+				on:click={() => (viewMode = 'table')}><Icons iconName="zondicons:list" /></button
 			>
 			<button
-				class="w-16 lg:w-20 h-12 text-base lg:text-lg"
+				class="w-10 lg:w-16 h-12 text-base lg:text-lg flex items-center justify-center"
 				class:selected-tab={viewMode === 'images'}
-				on:click={() => (viewMode = 'images')}>Bilder</button
+				on:click={() => (viewMode = 'images')}><Icons iconName="mage:dashboard-fill" /></button
 			>
 		</div>
 		<a href="/dishes/add">
@@ -45,6 +48,12 @@
 			<Table />
 		{/if}
 	{:else if viewMode === 'images'}
-		<div class="mt-64">Bilder kommer snart...</div>
+		<div
+			class="grid grid-cols-2 md:grid-cols-2 xl:grid-cols-4 lg:grid-cols-3 gap-8 lg:gap-16 mt-12 p-4 overflow-auto h-[80%]"
+		>
+			{#each $dishes as dish}
+				<Card {dish} />
+			{/each}
+		</div>
 	{/if}
 </section>
