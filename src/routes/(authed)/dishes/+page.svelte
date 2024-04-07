@@ -2,6 +2,8 @@
 	import Card from '$lib/components/dish/Card.svelte';
 	import Table from '$lib/components/dish/Table.svelte';
 	import DishSearch from '$lib/components/DishSearch.svelte';
+	import Dropdown from '$lib/components/Dropdown.svelte';
+	import Button from '$lib/components/Button.svelte';
 	import Icons from '$lib/components/Icons.svelte';
 	import PrimaryButton from '$lib/components/PrimaryButton.svelte';
 	import { DBService, DishQueries } from '$lib/Firebase.js';
@@ -10,7 +12,9 @@
 
 	export let data;
 
-	let viewMode: 'table' | 'images' = 'table';
+	let viewMode: 'table' | 'card' = 'table';
+
+	let isOpen = false;
 
 	function getDishes() {
 		const q = DishQueries.dishes($user);
@@ -20,25 +24,51 @@
 	}
 	$: getDishes(), $user;
 
+	function selectTable() {
+		viewMode = 'table';
+		isOpen = false;
+	}
+
+	function selectCard() {
+		viewMode = 'card';
+		isOpen = false;
+	}
+
 	let filteredDishes: Dish[] = [];
 </script>
 
 <section class="flex flex-col items-center align-center w-svw h-[92svh] m-0">
 	<h2 class="text-3xl mt-16 mb-4">Matretter</h2>
-	<div
-		class="border-b-[1px] border-grey-300 border-solid flex flex-row content-center justify-between w-[80%] h-12"
-	>
-		<div class="flex flex-row">
-			<button
-				class="w-10 h-12 lg:w-16 text-base lg:text-lg flex items-center justify-center"
-				class:selected-tab={viewMode === 'table'}
-				on:click={() => (viewMode = 'table')}><Icons iconName="zondicons:list" /></button
+	<div class=" flex flex-row content-center gap-4 justify-between w-[80%] h-12">
+		<div class="flex flex-row gap-3">
+			<Dropdown
+				classNamesButton=""
+				relative
+				bind:isOpen
+				classNamesContent="border-green border-[1px] rounded absolute bg-white z-value-1"
 			>
-			<button
-				class="w-10 lg:w-16 h-12 text-base lg:text-lg flex items-center justify-center"
-				class:selected-tab={viewMode === 'images'}
-				on:click={() => (viewMode = 'images')}><Icons iconName="mage:dashboard-fill" /></button
-			>
+				<button
+					slot="button"
+					class="w-10 h-12 lg:w-16 text-base lg:text-lg flex items-center justify-center"
+					data-ui={viewMode === 'table'}
+				>
+					{#if viewMode === 'table'}
+						<Icons iconName="zondicons:list" />
+					{:else if viewMode === 'card'}
+						<Icons iconName="mage:dashboard-fill" />
+					{/if}
+				</button>
+				<div slot="content">
+					<Button on:click={() => selectTable()} classNames="gap-2 flex hover:bg-green/20 p-2 pl-4">
+						<Icons iconName="zondicons:list" />
+						<p>Tabell</p>
+					</Button>
+					<Button on:click={() => selectCard()} classNames="gap-2 flex hover:bg-green/20 p-2 pl-4">
+						<Icons iconName="mage:dashboard-fill" />
+						<p>Bilder</p>
+					</Button>
+				</div>
+			</Dropdown>
 		</div>
 		<DishSearch dishes={$dishes} bind:filteredDishes />
 		<a href="/dishes/add">
@@ -55,7 +85,7 @@
 		{:else}
 			<Table bind:dishes={filteredDishes} />
 		{/if}
-	{:else if viewMode === 'images'}
+	{:else if viewMode === 'card'}
 		<div
 			class="grid grid-cols-2 md:grid-cols-2 xl:grid-cols-4 lg:grid-cols-3 gap-8 lg:gap-16 mt-12 p-4 overflow-auto h-[80%]"
 		>
