@@ -1,6 +1,7 @@
 <script lang="ts">
 	import Card from '$lib/components/dish/Card.svelte';
 	import Table from '$lib/components/dish/Table.svelte';
+	import DishSearch from '$lib/components/DishSearch.svelte';
 	import Icons from '$lib/components/Icons.svelte';
 	import PrimaryButton from '$lib/components/PrimaryButton.svelte';
 	import { DBService, DishQueries } from '$lib/Firebase.js';
@@ -18,6 +19,8 @@
 		});
 	}
 	$: getDishes(), $user;
+
+	let filteredDishes: Dish[] = [];
 </script>
 
 <section class="flex flex-col items-center align-center w-svw h-[92svh] m-0">
@@ -37,21 +40,26 @@
 				on:click={() => (viewMode = 'images')}><Icons iconName="mage:dashboard-fill" /></button
 			>
 		</div>
+		<DishSearch dishes={$dishes} bind:filteredDishes />
 		<a href="/dishes/add">
-			<PrimaryButton>Legg Til</PrimaryButton>
+			<PrimaryButton classNames="gap-2"
+				><Icons iconName="twemoji:shallow-pan-of-food" /><span class="hidden lg:block"
+					>Legg til</span
+				></PrimaryButton
+			>
 		</a>
 	</div>
 	{#if viewMode === 'table'}
 		{#if !data}
 			<div>"Ingen middager"</div>
 		{:else}
-			<Table />
+			<Table bind:dishes={filteredDishes} />
 		{/if}
 	{:else if viewMode === 'images'}
 		<div
 			class="grid grid-cols-2 md:grid-cols-2 xl:grid-cols-4 lg:grid-cols-3 gap-8 lg:gap-16 mt-12 p-4 overflow-auto h-[80%]"
 		>
-			{#each $dishes as dish}
+			{#each filteredDishes as dish}
 				<Card {dish} />
 			{/each}
 		</div>

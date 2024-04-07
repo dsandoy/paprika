@@ -2,10 +2,11 @@
 	import { DateHandler } from '$lib/utils';
 	import SecondaryButton from '../SecondaryButton.svelte';
 	import Icons from '../Icons.svelte';
-	import { dishes } from '$lib/stores';
+
+	export let dishes: Dish[];
 </script>
 
-{#if !$dishes || $dishes?.length === 0}
+{#if !dishes || dishes?.length === 0}
 	<div>
 		Du har ingen middager ennå! Trykk Legg til for å gjøre noe med det (Sørg for at du er innlogget)
 		...
@@ -25,7 +26,7 @@
 		</div>
 		<!-- row section -->
 		<div class="border-x-[1px] border-solidborder-grey-300 w-[100%]">
-			{#each $dishes as dish}
+			{#each dishes as dish}
 				<a
 					class="flex flex-row justify-between items-center px-5 py-3 odd:bg-white even:bg-slate-50"
 					href="dishes/edit/{dish.name}"
