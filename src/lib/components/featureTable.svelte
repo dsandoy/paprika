@@ -12,8 +12,8 @@
 			checked: true
 		},
 		{
-			description: 'Rediger og slett dine egne matretter',
-			checked: false
+			description: 'Rediger dine egne matretter',
+			checked: true
 		},
 		{
 			description: 'Middagsplanlegger',
