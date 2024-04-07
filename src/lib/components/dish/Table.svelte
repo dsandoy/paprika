@@ -26,8 +26,9 @@
 		<!-- row section -->
 		<div class="border-x-[1px] border-solidborder-grey-300 w-[100%]">
 			{#each $dishes as dish}
-				<div
+				<a
 					class="flex flex-row justify-between items-center px-5 py-3 odd:bg-white even:bg-slate-50"
+					href="dishes/edit/{dish.name}"
 				>
 					{#if !dish.customImage}
 						<div class="w-12 lg:w-16">
@@ -55,7 +56,7 @@
 							<Icons />
 						</SecondaryButton>
 					</a>
-				</div>
+				</a>
 			{/each}
 		</div>
 	</table>

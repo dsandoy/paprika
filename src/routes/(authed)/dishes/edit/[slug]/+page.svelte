@@ -4,21 +4,45 @@
 	import PrimaryButton from '$lib/components/PrimaryButton.svelte';
 	import SecondaryButton from '$lib/components/SecondaryButton.svelte';
 	import BottomCircles from '$lib/components/BottomCircles.svelte';
-	import { DBService } from '$lib/Firebase';
+	import { DBService, DishQueries } from '$lib/Firebase';
 	import type { Dish } from '$lib/types.js';
+	import { error } from '@sveltejs/kit';
 
-	export let dish: Dish;
+	export let data: { dishName: string };
+
 	let formElement: HTMLFormElement;
 	let ingredientInput: HTMLInputElement;
+
 	let ingredient = '';
-	$ingredients = dish.ingredients || [''];
-	let url_text = dish.url;
-	let name_text = dish.name;
-	let customImageUrl: string | undefined = dish.customImage;
+	let url_text = '';
+	let name_text = '';
+	let customImageUrl: string | undefined;
 	let customImage: File | undefined;
 	let errorMessage = '';
 
-	/** Tell the user that the ingredient is already in the list */
+	async function getDish() {
+		let dish: Dish | undefined;
+		const q = DishQueries.dish($user, data.dishName);
+		await DBService.getResources(q)
+			.then((response) => {
+				dish = response as unknown as Dish;
+			})
+			.catch((error) => {
+				console.error('Failed to fetch the dish from database!', error);
+			});
+
+		if (dish === undefined) {
+			console.log('failed to load the dish somehow');
+			error(420, 'Failed to locate the dish');
+		}
+		ingredients.set(dish.ingredients || []);
+		url_text = dish.url;
+		name_text = dish.name;
+		customImageUrl = dish.customImage;
+		return dish;
+	}
+	getDish();
+
 	function validateIngredients() {
 		if ($ingredients.some((i) => i === ingredient)) {
 			ingredientInput.setCustomValidity('Denne ingrediensen er allerede lagt til');
@@ -28,7 +52,6 @@
 		ingredientInput.reportValidity();
 	}
 
-	/** add ingredient to client kept ingredients list */
 	const addIngrendient = () => {
 		// prevent empty or duplicated ingredients
 		if (!ingredient) return;
@@ -39,7 +62,6 @@
 		$ingredients = $ingredients;
 	};
 
-	/** offer a validation on the url in real time... */
 	function validateUrl() {
 		const url = formElement.children.namedItem('url') as HTMLInputElement;
 		if (DishValidator.validateURL(url_text) !== DishValidator.VALID) {
@@ -51,7 +73,6 @@
 		}
 	}
 
-	/** Validate the name in real time...*/
 	function validateName() {
 		const name = formElement.children.namedItem('name') as HTMLInputElement;
 		const result = DishValidator.validateName(name_text, $dishes);
@@ -77,6 +98,7 @@
 		}
 	}
 
+	/** TODO */
 	async function UpdateDish() {
 		const dish: Dish = {
 			name: name_text,
@@ -160,7 +182,7 @@
 					placeholder="Ingrediens"
 				/>
 				<SecondaryButton type="button" classNames="w-32" on:click={addIngrendient}
-					>Lagre endringer</SecondaryButton
+					>Legg til</SecondaryButton
 				>
 			</div>
 			<div class="w-[50%] pl-5">
@@ -180,7 +202,7 @@
 			<input type="hidden" value={$ingredients} name="ingredients" />
 		</div>
 		<PrimaryButton classNames="w-48" type="button" on:click={UpdateDish}
-			>Legg til matrett</PrimaryButton
+			>Lagre endringer</PrimaryButton
 		>
 		<div>
 			<p class="text-red">

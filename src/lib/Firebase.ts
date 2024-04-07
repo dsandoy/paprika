@@ -34,13 +34,16 @@ googleProvider.addScope('profile');
 googleProvider.addScope('email');
 export { googleProvider };
 
+export const DISHES_DOC = 'dishes';
+export const DISHPLANS_DOC = 'dishplans';
+
 /** Handle the create and update of database elements */
 export class DBService {
 	/** Create a dish at the database.. Returns its id if successfull and "" else
 	 *  @param dish The dish to create
 	 */
 	public static async createDish(dish: Dish) {
-		const docRef = doc(collection(firestore, 'dishes'));
+		const docRef = doc(collection(firestore, DISHES_DOC));
 		let result = -1;
 		await setDoc(docRef, dish)
 			.then(() => {
@@ -71,7 +74,7 @@ export class DBService {
 	public static async createWeekPlans(monday: Date, user: User | null) {
 		let date = monday;
 		for (let i = 0; i < 7; i++) {
-			const docRef = doc(collection(firestore, 'dishplans'));
+			const docRef = doc(collection(firestore, DISHPLANS_DOC));
 			const emtpyPlan: PlanEntry = {
 				date: Timestamp.fromDate(date),
 				user: user?.uid
@@ -103,13 +106,21 @@ export class DBService {
 			const docEntry = { id: doc.id, ...data } as unknown as Dish;
 			docs.push(docEntry);
 		});
-
-		return docs;
+		if (snapshot.docs.length > 1) return docs;
+		else {
+			try {
+				const doc = docs[0];
+				return doc;
+			} catch {
+				console.error('Failed to access the first doc element');
+				return;
+			}
+		}
 	}
 
 	/** Update the dish in the provided planEntry */
 	public static async updatePlanEntry(planEntry: PlanEntry) {
-		const docRef = doc(collection(firestore, 'dishplans'), planEntry.id);
+		const docRef = doc(collection(firestore, DISHPLANS_DOC), planEntry.id);
 		await updateDoc(docRef, {
 			dish: planEntry.dish
 		})
@@ -126,8 +137,19 @@ export class DishQueries {
 		if (!user) {
 			return;
 		}
-		const dishesRef = collection(firestore, 'dishes') as CollectionReference<Dish>;
+		const dishesRef = collection(firestore, DISHES_DOC) as CollectionReference<Dish>;
 		return query<Dish>(dishesRef, where('user', '==', user?.uid));
+	}
+
+	/** A query that fetches a single dish, based on its name and the logged in user
+	 * @param user The logged in user
+	 * @param name the dishname */
+	public static dish(user: User | null, name: string) {
+		if (!user) {
+			return;
+		}
+		const dishesRef = collection(firestore, DISHES_DOC) as CollectionReference<Dish>;
+		return query<Dish>(dishesRef, where('user', '==', user?.uid), where('name', '==', name));
 	}
 }
 
@@ -141,7 +163,7 @@ export class PlanQueries {
 		if (!user) {
 			return;
 		}
-		const dishesRef = collection(firestore, 'dishplans') as CollectionReference<PlanEntry>;
+		const dishesRef = collection(firestore, DISHPLANS_DOC) as CollectionReference<PlanEntry>;
 		return query<PlanEntry>(
 			dishesRef,
 			where('user', '==', user?.uid),
