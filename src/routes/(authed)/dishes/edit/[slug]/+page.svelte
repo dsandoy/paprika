@@ -7,6 +7,7 @@
 	import { DBService, DishQueries } from '$lib/Firebase';
 	import type { Dish } from '$lib/types.js';
 	import { error } from '@sveltejs/kit';
+	import { onMount } from 'svelte';
 
 	export let data: { dishName: string };
 
@@ -126,12 +127,17 @@
 		await DBService.updateDish(dish);
 		window.location.href = '/dishes';
 	}
+
+	let smallSize = true;
+	onMount(() => {
+		smallSize = window.matchMedia('(max-width: 800px)').matches;
+	});
 </script>
 
-<section class="flex flex-col items-center w-full h-full justify-center">
+<section class="flex flex-col items-center w-full h-full pb-8 justify-center">
 	<h2 class="mb-12 mt-12 text-3xl">Endre matrett</h2>
 	<form
-		class="w-[70%] md:w-[40%] xl:w-[30%] flex flex-col justify-center items-center"
+		class="w-[80%] md:w-[40%] xl:w-[50%] flex flex-col justify-center items-center"
 		method="post"
 		bind:this={formElement}
 		enctype="multipart/form-data"
@@ -176,10 +182,12 @@
 			</SecondaryButton>
 		</div>
 		<!-- ingredients -->
-		<div class="w-full border-[1px] p-5 rounded border-grey-300 flex flex-row mb-6">
-			<div class="flex flex-col w-[50%] items-center">
+		<div
+			class="w-full border-[1px] p-5 rounded border-grey-300 grid grid-cols-1 lg:grid-cols-2 gap-3 mb-6"
+		>
+			<div class="flex flex-col items-center">
 				<input
-					class="input"
+					class="input text-sm lg:text-base"
 					type="text"
 					name="temp-ingredients"
 					bind:this={ingredientInput}
@@ -187,17 +195,19 @@
 					on:input={validateIngredients}
 					placeholder="Ingrediens"
 				/>
-				<SecondaryButton type="button" classNames="w-32" on:click={addIngrendient}
-					>Legg til</SecondaryButton
+				<SecondaryButton
+					type="button"
+					classNames="w-32 text-base lg:text-lg"
+					on:click={addIngrendient}>Legg til</SecondaryButton
 				>
 			</div>
-			<div class="w-[50%] pl-5">
-				<h3 class="px-5 text-gray-400">ingredienser</h3>
+			<div>
+				<h3 class="px-5 pb-5 text-gray-400">ingredienser</h3>
 				<div class="overflow-auto h-48 lg:h-64">
 					{#each $ingredients as ingredient}
 						<button
 							type="button"
-							class="block hover:bg-red hover:text-white rounded-lg pl-5 pr-5"
+							class="block hover:bg-red hover:text-white lg:text-base text-sm rounded-lg pl-5 pr-5"
 							on:click={() => ($ingredients = $ingredients.filter((i) => i !== ingredient))}
 							>{ingredient}</button
 						>
@@ -216,5 +226,7 @@
 			</p>
 		</div>
 	</form>
-	<BottomCircles />
+	{#if !smallSize}
+		<BottomCircles />
+	{/if}
 </section>

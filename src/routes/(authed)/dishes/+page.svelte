@@ -7,7 +7,7 @@
 	import Icons from '$lib/components/Icons.svelte';
 	import PrimaryButton from '$lib/components/PrimaryButton.svelte';
 	import { DBService, DishQueries } from '$lib/Firebase.js';
-	import { dishes, user } from '$lib/stores.js';
+	import { dishes, ingredients, user } from '$lib/stores.js';
 	import type { Dish } from '$lib/types.js';
 
 	export let data;
@@ -15,6 +15,8 @@
 	let viewMode: 'table' | 'card' = 'table';
 
 	let isOpen = false;
+
+	ingredients.set(['']);
 
 	function getDishes() {
 		const q = DishQueries.dishes($user);
