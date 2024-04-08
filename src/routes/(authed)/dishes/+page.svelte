@@ -44,7 +44,7 @@
 	<div class=" flex flex-row content-center gap-4 justify-between w-[80%] h-12">
 		<div class="flex flex-row gap-3">
 			<Dropdown
-				classNamesButton=""
+				classNamesButton="px-3 lg:px-5"
 				relative
 				bind:isOpen
 				classNamesContent="border-green border-[1px] rounded absolute bg-white z-value-1"
