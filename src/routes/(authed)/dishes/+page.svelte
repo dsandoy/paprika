@@ -7,7 +7,7 @@
 	import Icons from '$lib/components/Icons.svelte';
 	import PrimaryButton from '$lib/components/PrimaryButton.svelte';
 	import { DBService, DishQueries } from '$lib/Firebase.js';
-	import { dishes, user } from '$lib/stores.js';
+	import { dishes, ingredients, user } from '$lib/stores.js';
 	import type { Dish } from '$lib/types.js';
 
 	export let data;
@@ -15,6 +15,8 @@
 	let viewMode: 'table' | 'card' = 'table';
 
 	let isOpen = false;
+
+	ingredients.set(['']);
 
 	function getDishes() {
 		const q = DishQueries.dishes($user);
@@ -42,7 +44,7 @@
 	<div class=" flex flex-row content-center gap-4 justify-between w-[80%] h-12">
 		<div class="flex flex-row gap-3">
 			<Dropdown
-				classNamesButton=""
+				classNamesButton="px-3 lg:px-5"
 				relative
 				bind:isOpen
 				classNamesContent="border-green border-[1px] rounded absolute bg-white z-value-1"
