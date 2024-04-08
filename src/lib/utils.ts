@@ -175,7 +175,7 @@ export class PlansHandler {
 			DateHandler.getDayNDaysAway(nextMonday, 6)
 		]);
 		const plans = (await DBService.getResources(query)) as PlanEntry[];
-		if (plans.length === 0) {
+		if (!plans || plans.length === 0) {
 			await DBService.createWeekPlans(nextMonday, user);
 		}
 	}
