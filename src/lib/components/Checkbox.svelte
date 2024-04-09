@@ -1,13 +1,20 @@
 <script lang="ts">
 	import Icons from './Icons.svelte';
 
+	export let classNames = '';
 	export let checked = false;
+	export let disableCheckToggle = false;
+
+	function toggleChecked() {
+		if (disableCheckToggle) return;
+		checked = !checked;
+	}
 </script>
 
 <button
-	on:click={() => (checked = !checked)}
+	on:click={toggleChecked}
 	data-ui={checked}
-	class="h-5 w-5 bg-gray-300 data-isOpen:bg-green rounded text-center flex justify-center items-center hover:border-[2px] hover:border-green"
+	class="{classNames} h-5 w-5 bg-gray-300 data-isOpen:bg-green rounded text-center flex justify-center items-center hover:border-[2px] hover:border-green"
 >
 	{#if checked}
 		<Icons iconName="zondicons:checkmark" height="1.0rem" classNames="text-white" />
