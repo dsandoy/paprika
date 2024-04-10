@@ -1,4 +1,5 @@
 import type { Timestamp } from 'firebase/firestore';
+import type { User } from 'firebase/auth';
 
 export type Ingredient = string;
 
@@ -36,4 +37,9 @@ export interface ShoppingListEntry {
 	dish?: string;
 }
 
-export type ShoppingList = ShoppingListEntry[];
+export interface ShoppingList {
+	id?: string;
+	/* the uid of the user */
+	user: string;
+	list: ShoppingListEntry[];
+}

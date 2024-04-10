@@ -1,5 +1,5 @@
 import { writable } from 'svelte/store';
-import type { Dish, PlanEntry } from './types';
+import type { ShoppingList, Dish, PlanEntry } from './types';
 import type { User } from 'firebase/auth';
 
 export const dishes = writable<Dish[]>([] as Dish[]);
@@ -17,3 +17,5 @@ export const currentPlans = writable<PlanEntry[]>([] as PlanEntry[]);
 
 /** The plan entries for the upcoming week */
 export const nextWeekPlans = writable<PlanEntry[]>([] as PlanEntry[]);
+
+export const shoppingList = writable<ShoppingList>({} as ShoppingList);
