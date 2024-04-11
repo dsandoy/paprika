@@ -1,5 +1,7 @@
 <script lang="ts">
+	import { DBShoppingList } from '$lib/Firebase';
 	import Checkbox from '$lib/components/Checkbox.svelte';
+	import { shoppingList } from '$lib/stores';
 	import Icons from '$lib/components/Icons.svelte';
 	import type { ShoppingListEntry } from '$lib/types.ts';
 	import EntryInput from './EntryInput.svelte';
@@ -8,15 +10,18 @@
 
 	let isEditMode = false;
 	let checked = entry.is_complete;
+	let entryText = entry.text;
 
 	function toggleIsComplete() {
 		checked = !checked;
 
 		if (entry.is_complete) {
 			entry.is_complete = false;
+			updateInDatabase(entry);
 		} else {
 			setTimeout(() => {
 				entry.is_complete = true;
+				updateInDatabase(entry);
 			}, 1000);
 		}
 	}
@@ -26,11 +31,24 @@
 		isEditMode = true;
 	}
 
-	let entryText = entry.text;
+	async function updateInDatabase(entry: ShoppingListEntry) {
+		try {
+			const index = $shoppingList.list.findIndex((el) => el.text === entry.text);
+			$shoppingList.list[index] = entry;
+		} catch (error) {
+			console.error(error);
+		}
+		try {
+			await DBShoppingList.update($shoppingList);
+		} catch (error) {
+			console.error(error);
+		}
+	}
 
-	function updateEntry() {
+	async function updateEntry() {
 		if (entryText == '') return;
 		entry.text = entryText;
+		await updateInDatabase(entry);
 		isEditMode = false;
 	}
 </script>

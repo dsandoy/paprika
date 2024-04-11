@@ -191,8 +191,7 @@ export class ListQueries {
 	/** @param user the logged in user */
 	public static get(user: User | null): Query<ShoppingList> | undefined {
 		if (!user) {
-			console.warn("No user provided to query, can't get shoppinglist...");
-			return;
+			throw new ValueError("No user provided to query, can't get shoppinglist...");
 		}
 		const listRef = collection(firestore, LIST_DOC) as CollectionReference<ShoppingList>;
 		return query<ShoppingList>(listRef, where('user', '==', user?.uid));

@@ -2,18 +2,27 @@
 	import ShoppingList from '$lib/components/shopping/ShoppingList.svelte';
 	import { shoppingList, user } from '$lib/stores';
 	import { ListQueries, DBShoppingList, NoDocumentError } from '$lib/Firebase';
+	import { update } from 'firebase/database';
 
 	async function getShoppingList() {
-		const q = ListQueries.get($user);
-		if (q !== undefined) {
+		if (!$user) {
+			console.log('user not loaded yet or not logged in');
+			return;
+		}
+		try {
+			const q = ListQueries.get($user);
 			try {
 				const list = await DBShoppingList.get(q);
 				shoppingList.set(list);
+				console.log('fetched shoppinglist');
 			} catch (error) {
 				if (error instanceof NoDocumentError) {
 					await createShoppingList();
 				} else console.error(error);
 			}
+		} catch (error) {
+			// should not happen but just in case
+			console.error(error);
 		}
 	}
 
@@ -21,6 +30,15 @@
 		try {
 			await DBShoppingList.create($user);
 			console.log('created new shoppinglist');
+		} catch (error) {
+			console.error(error);
+		}
+	}
+
+	async function updateDB() {
+		try {
+			await DBShoppingList.update($shoppingList);
+			console.log('updated shoppinglist in DB');
 		} catch (error) {
 			console.error(error);
 		}

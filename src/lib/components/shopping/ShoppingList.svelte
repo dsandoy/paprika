@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { DBShoppingList } from '$lib/Firebase';
-	import PrimaryButton from '$lib/components/PrimaryButton.svelte';
 	import type { ShoppingList, ShoppingListEntry } from '$lib/types';
 	import EntryInput from './EntryInput.svelte';
 	import ListEntry from './ListEntry.svelte';
@@ -63,13 +62,14 @@
 	}
 
 	countCompleted();
+
 	$: countCompleted(), shoppingList;
 </script>
 
 <div class="border-[1px] border-gray-200 rounded flex flex-col gap-5">
 	<section class="h-20 p-4 border-b-[1px] border-b-gray-200 flex flex-row justify-between">
 		<h2 class="text-3xl">{listName}</h2>
-		<PrimaryButton>Legg til fra matrett</PrimaryButton>
+		<!-- <PrimaryButton>Legg til fra matrett</PrimaryButton> -->
 	</section>
 
 	<section class="flex flex-col gap-4 p-8 max-h-[30rem] overflow-y-auto">
