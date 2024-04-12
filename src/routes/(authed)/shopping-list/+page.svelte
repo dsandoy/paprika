@@ -2,7 +2,6 @@
 	import ShoppingList from '$lib/components/shopping/ShoppingList.svelte';
 	import { shoppingList, user } from '$lib/stores';
 	import { ListQueries, DBShoppingList, NoDocumentError } from '$lib/Firebase';
-	import { update } from 'firebase/database';
 
 	async function getShoppingList() {
 		if (!$user) {
@@ -30,15 +29,6 @@
 		try {
 			await DBShoppingList.create($user);
 			console.log('created new shoppinglist');
-		} catch (error) {
-			console.error(error);
-		}
-	}
-
-	async function updateDB() {
-		try {
-			await DBShoppingList.update($shoppingList);
-			console.log('updated shoppinglist in DB');
 		} catch (error) {
 			console.error(error);
 		}
