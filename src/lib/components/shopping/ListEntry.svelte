@@ -60,7 +60,7 @@
 	<EntryInput bind:entryText on:change={updateEntry} />
 {:else}
 	<button
-		class="border-[1px] border-gray-200 rounded-lg px-4 p-2 flex flex-row justify-between items-center"
+		class="border-[1px] border-gray-200 rounded-lg px-4 p-2 flex flex-row justify-between items-center w-full hover:bg-gray-100"
 		on:click={toggleIsComplete}
 	>
 		<div class="flex flex-row gap-8 relative">
