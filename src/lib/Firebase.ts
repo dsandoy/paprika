@@ -189,7 +189,7 @@ export class PlanQueries {
 /** Queries for shoppingList */
 export class ListQueries {
 	/** @param user the logged in user */
-	public static get(user: User | null): Query<ShoppingList> | undefined {
+	public static get(user: User | null): Query<ShoppingList> {
 		if (!user) {
 			throw new ValueError("No user provided to query, can't get shoppinglist...");
 		}
