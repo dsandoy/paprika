@@ -29,3 +29,16 @@ export interface PlanEntry {
 	user?: string;
 	checked?: boolean;
 }
+
+export interface ShoppingListEntry {
+	text: string;
+	is_complete: boolean;
+	dish?: string;
+}
+
+export interface ShoppingList {
+	id?: string;
+	/* the uid of the user */
+	user: string;
+	list: ShoppingListEntry[];
+}

@@ -27,6 +27,27 @@ export default {
     data: {
       isOpen: 'ui~="true"',
     },
+    keyframes: {
+      wiggle: {
+        '0%, 100%': { transform: 'rotate(-3deg)' },
+        '50%': { transform: 'rotate(3deg)' },
+      },
+      sparkle: {
+        "0%": {
+          opacity: "0.6",
+          transform: "scale(0.8) ",
+
+        },
+        "100%": {
+          opacity: "1",
+          transform: "scale(1)",
+        }
+      }
+    },
+    animation: {
+      wiggle: 'confetti 1s ease-in-out infinite',
+      sparkle: 'sparkle 0.35s ease-in-out'
+    }
   },
   plugins: [],
 }

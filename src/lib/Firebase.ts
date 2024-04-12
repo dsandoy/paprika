@@ -13,7 +13,7 @@ import {
 	where
 } from 'firebase/firestore';
 import { GoogleAuthProvider, getAuth, type User } from 'firebase/auth';
-import type { Dish, PlanEntry } from './types';
+import type { Dish, PlanEntry, ShoppingList, ShoppingListEntry } from './types';
 import { getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage';
 import { DateHandler } from './utils';
 
@@ -36,6 +36,7 @@ export { googleProvider };
 
 export const DISHES_DOC = 'dishes';
 export const DISHPLANS_DOC = 'dishplans';
+export const LIST_DOC = 'shoppingList';
 
 /** Handle the create and update of database elements */
 export class DBService {
@@ -182,5 +183,87 @@ export class PlanQueries {
 			where('date', '>=', dateRange[0]),
 			where('date', '<=', dateRange[1])
 		);
+	}
+}
+
+/** Queries for shoppingList */
+export class ListQueries {
+	/** @param user the logged in user */
+	public static get(user: User | null): Query<ShoppingList> {
+		if (!user) {
+			throw new ValueError("No user provided to query, can't get shoppinglist...");
+		}
+		const listRef = collection(firestore, LIST_DOC) as CollectionReference<ShoppingList>;
+		return query<ShoppingList>(listRef, where('user', '==', user?.uid));
+	}
+}
+
+/** Error thrown if no document is found in the database */
+export class NoDocumentError extends Error {
+	public constructor(message: string) {
+		super(message);
+		this.name = 'NoDocumentError';
+	}
+}
+
+/** error thrown if a parameter value is invalid */
+export class ValueError extends Error {
+	public constructor(message: string) {
+		super(message);
+		this.name = 'ValueError';
+	}
+}
+
+/** database handler for shoppingList */
+export class DBShoppingList {
+	/**
+	 * @param query The query to fetch
+	 * @throws ValueError if query is invalid,
+	 * @throws Error  database call fails or if more than one document is found
+	 * @throws NoDocumentError if no document is found */
+	public static async get(query: Query<ShoppingList>) {
+		if (!query) {
+			throw new ValueError('No query provided');
+		}
+		const snapshot = await getDocs(query);
+		const docs: ShoppingList[] = [];
+		snapshot.forEach((doc) => {
+			const data = doc.data();
+			const docEntry = { id: doc.id, ...data } as unknown as ShoppingList;
+			docs.push(docEntry);
+		});
+		if (snapshot.docs.length == 0) {
+			throw new NoDocumentError('No document found');
+		}
+		if (snapshot.docs.length == 1) return docs[0];
+		throw new Error('More than one document found');
+	}
+
+	/** @param list the shopping list to update...
+	 * @throws ValueError if list doesn't have an id
+	 */
+	public static async update(list: ShoppingList) {
+		if (!list.id) {
+			throw new ValueError("List doesn't have an id, can't update list");
+		}
+		const docRef = doc(collection(firestore, LIST_DOC), list.id);
+		await updateDoc(docRef, {
+			list: list.list
+		})
+			.then(() => console.log('Updated shoppinglist'))
+			.catch((error) => console.error('Failed to update shoppinglist: ', error));
+	}
+
+	/** Create a new shopping list
+	 *  @param user The logged in user
+	 *  @throw ValueError if no user is provided
+	 */
+	public static async create(user: User | null) {
+		if (!user) throw new ValueError('No user provided or logged in');
+		const newList: ShoppingList = {
+			list: [] as ShoppingListEntry[],
+			user: user.uid
+		};
+		await setDoc(doc(collection(firestore, LIST_DOC)), newList);
 	}
 }

@@ -17,7 +17,7 @@
 		data_ui={isOpen}
 		classNames="data-isOpen:text-gray-300 hover:text-gray-300 px-0"
 	>
-		<Icons iconName="zondicons:menu" height="1.75rem" classNames="m-auto "></Icons>
+		<Icons iconName="zondicons:menu" height="1.75rem" classNames="m-auto " />
 	</Button>
 
 	<section slot="content" class="flex flex-col gap-4">
@@ -26,12 +26,16 @@
 			></Icons>Matretter</NavText
 		>
 		<NavText url="/dashboard" bind:isOpen>
-			<Icons iconName="zondicons:home" height="1.5rem" classNames="mr-5"></Icons>
+			<Icons iconName="zondicons:home" height="1.5rem" classNames="mr-5" />
 			Dashbord</NavText
 		>
 		<NavText url="/dish-planner" bind:isOpen>
-			<Icons iconName="zondicons:calendar" height="1.5rem" classNames="mr-5"></Icons>
+			<Icons iconName="zondicons:calendar" height="1.5rem" classNames="mr-5" />
 			Planlegger</NavText
 		>
+		<NavText url="/shopping-list" bind:isOpen>
+			<Icons iconName="zondicons:list" height="1.5rem" classNames="mr-5" />
+			Handleliste
+		</NavText>
 	</section>
 </Dropdown>
