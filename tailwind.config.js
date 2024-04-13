@@ -23,10 +23,6 @@ export default {
       DEFAULT: "5px",
       "lg": "84px",
     },
-    },
-    data: {
-      isOpen: 'ui~="true"',
-    },
     keyframes: {
       wiggle: {
         '0%, 100%': { transform: 'rotate(-3deg)' },
@@ -48,6 +44,11 @@ export default {
       wiggle: 'confetti 1s ease-in-out infinite',
       sparkle: 'sparkle 0.35s ease-in-out'
     }
+    },
+    data: {
+      isOpen: 'ui~="true"',
+    },
+
   },
   plugins: [],
 }

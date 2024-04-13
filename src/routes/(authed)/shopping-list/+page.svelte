@@ -1,7 +1,8 @@
 <script lang="ts">
 	import ShoppingList from '$lib/components/shopping/ShoppingList.svelte';
 	import { shoppingList, user } from '$lib/stores';
-	import { ListQueries, DBShoppingList, NoDocumentError } from '$lib/Firebase';
+	import { ListQueries, DBShoppingList } from '$lib/Firebase';
+	import { NoDocumentError } from '$lib/errors';
 
 	async function getShoppingList() {
 		if (!$user) {

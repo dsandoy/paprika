@@ -1,7 +1,9 @@
-import type { Dish } from '$lib/types';
-import { DishValidator, DateHandler } from '$lib/utils';
+import { ArrayEmptyError, NotFoundError, ObjectExists, ValueError } from '$lib/errors';
+import type { Dish, ShoppingListEntry } from '$lib/types';
+import { DishValidator, DateHandler, ShoppingListHandler, PlansHandler } from '$lib/utils';
 import { Timestamp } from 'firebase/firestore';
 import { it, expect, describe } from 'vitest';
+import { Mocks, Results } from './mocks';
 
 describe('Test the DishValidator', () => {
 	const dishes: Dish[] = [
@@ -149,5 +151,97 @@ describe('Test DateHandle', () => {
 	it('isTimestampToday', () => {
 		expect(DateHandler.isTimestampToday(Timestamp.fromDate(new Date('03.21.2024')))).toBe('before');
 		expect(DateHandler.isTimestampToday(Timestamp.fromDate(new Date('03.21.2124')))).toBe('after');
+	});
+});
+
+describe('Test PlansHandler', () => {
+	it('test extract dishes from plans', () => {
+		const allDishes = Mocks.dishes;
+		const dishPlans = Mocks.dishPlans;
+
+		expect(PlansHandler.extractCheckedDishes(dishPlans, allDishes)).toStrictEqual(
+			Results.extractedDishes
+		);
+	});
+	it('test extract trow errors', () => {
+		const dishes: Dish[] = [];
+		const dishPlans = Mocks.dishPlans;
+
+		expect(() => PlansHandler.extractCheckedDishes(dishPlans, dishes)).toThrowError(NotFoundError);
+	});
+});
+
+describe('Test ShoppingListHandler', () => {
+	it('test sortList', () => {
+		const list = Mocks.list;
+		const sortedList: ShoppingListEntry[] = Results.sortedList;
+		expect(ShoppingListHandler.sortList(list)).toStrictEqual(sortedList);
+	});
+
+	it('test sortList empty', () => {
+		const list: ShoppingListEntry[] = [];
+		expect(() => ShoppingListHandler.sortList(list)).toThrowError(ArrayEmptyError);
+		const list2 = undefined as unknown as ShoppingListEntry[];
+		expect(() => ShoppingListHandler.sortList(list2)).toThrowError(ArrayEmptyError);
+	});
+
+	it('test addIngredient', () => {
+		const dish: Dish = {
+			name: 'test',
+			ingredients: ['apple', 'banana'],
+			url: '',
+			user: ''
+		};
+		const list = [] as ShoppingListEntry[];
+		expect(ShoppingListHandler.addIngredients(list, dish)).toStrictEqual([
+			{
+				text: 'apple',
+				is_complete: false,
+				dish: 'test'
+			},
+			{
+				text: 'banana',
+				is_complete: false,
+				dish: 'test'
+			}
+		]);
+	});
+
+	it('test addIngredient empty', () => {
+		const dish: Dish = {
+			name: 'test',
+			ingredients: [],
+			url: '',
+			user: ''
+		};
+		const list = [
+			{
+				text: 'apple',
+				is_complete: false
+			}
+		] as ShoppingListEntry[];
+		expect(ShoppingListHandler.addIngredients(list, dish)).toStrictEqual(list);
+		const dish2 = {
+			name: 'test',
+			url: '',
+			user: ''
+		};
+		expect(() => ShoppingListHandler.addIngredients(list, dish2)).toThrowError(ValueError);
+	});
+	it('Test dish already in shopping list', () => {
+		const dish: Dish = {
+			name: 'test',
+			ingredients: ['apple', 'banana'],
+			url: '',
+			user: ''
+		};
+		const list = [
+			{
+				text: 'apple',
+				is_complete: false,
+				dish: 'test'
+			}
+		];
+		expect(() => ShoppingListHandler.addIngredients(list, dish)).toThrowError(ObjectExists);
 	});
 });
