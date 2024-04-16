@@ -204,6 +204,14 @@ export class PlansHandler {
 }
 
 export class ShoppingListHandler {
+	/**@example
+	 *  ```javascript
+	 *  // sort and update shopping list
+	 	let list = $shoppingList.list;
+	 *  list = ShoppingListHandler.sortlist(list);
+		$shoppingList.list = list;
+	 * ```
+	 */
 	public static sortList(list: ShoppingListEntry[]) {
 		if (!list || list.length === 0) throw new ArrayEmptyError('No shopping list');
 		list.sort((a, b) => {
@@ -212,6 +220,14 @@ export class ShoppingListHandler {
 		return list;
 	}
 
+	/**@example
+	 *  ```javascript
+	 *  // update shoppinng list
+	 	let list = $shoppingList.list;
+	 *  list = ShoppingListHandler.addIngredients(list, dish);
+		$shoppingList.list = list;
+	 * ```
+	 */
 	public static addIngredients(list: ShoppingListEntry[], dish: Dish) {
 		if (!dish.ingredients) throw new ValueError('No ingredients in dish');
 		const ingredients = dish.ingredients;
@@ -222,7 +238,9 @@ export class ShoppingListHandler {
 		}
 
 		ingredients.forEach((i) => {
-			list.push({ text: i, is_complete: false, dish: dish.name });
+			if (i !== '') {
+				list.push({ text: i, is_complete: false, dish: dish.name });
+			}
 		});
 		return list;
 	}
