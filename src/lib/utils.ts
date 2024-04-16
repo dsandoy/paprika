@@ -1,7 +1,8 @@
 import type { User } from 'firebase/auth';
 import { DBService, PlanQueries } from './Firebase';
-import type { Dish, Ingredient, PlanEntry } from './types';
+import type { Dish, Ingredient, PlanEntry, ShoppingListEntry } from './types';
 import { Timestamp } from 'firebase/firestore';
+import { ArrayEmptyError, NotFoundError, ObjectExists, ValueError } from './errors';
 
 export class DateHandler {
 	/** Display the date in the date number and month only. Ex: 12. feb,
@@ -178,5 +179,69 @@ export class PlansHandler {
 		if (!plans || plans.length === 0) {
 			await DBService.createWeekPlans(nextMonday, user);
 		}
+	}
+
+	public static extractCheckedDishes(plans: PlanEntry[], dishes: Dish[]): Dish[] {
+		/** NOTE: Will trow from getDishFromID if dish id mismatch (which should not happen) */
+		const selectedDishes: Dish[] = [];
+		plans.forEach((plan) => {
+			if (plan.checked && plan.dish) {
+				selectedDishes.push(this.getDishFromID(plan.dish, dishes));
+			}
+		});
+
+		return selectedDishes;
+	}
+
+	protected static getDishFromID(id: string, dishes: Dish[]): Dish {
+		const dish = dishes.find((dish) => dish.id == id);
+		if (dish) {
+			return dish;
+		} else {
+			throw new NotFoundError('id not found in dishes!');
+		}
+	}
+}
+
+export class ShoppingListHandler {
+	/**@example
+	 *  ```javascript
+	 *  // sort and update shopping list
+	 	let list = $shoppingList.list;
+	 *  list = ShoppingListHandler.sortlist(list);
+		$shoppingList.list = list;
+	 * ```
+	 */
+	public static sortList(list: ShoppingListEntry[]) {
+		if (!list || list.length === 0) throw new ArrayEmptyError('No shopping list');
+		list.sort((a, b) => {
+			return a.text < b.text ? -1 : 1;
+		});
+		return list;
+	}
+
+	/**@example
+	 *  ```javascript
+	 *  // update shoppinng list
+	 	let list = $shoppingList.list;
+	 *  list = ShoppingListHandler.addIngredients(list, dish);
+		$shoppingList.list = list;
+	 * ```
+	 */
+	public static addIngredients(list: ShoppingListEntry[], dish: Dish) {
+		if (!dish.ingredients) throw new ValueError('No ingredients in dish');
+		const ingredients = dish.ingredients;
+
+		if (ingredients.length == 0) return list;
+		if (list.find((i) => i.dish === dish.name)) {
+			throw new ObjectExists('Dish already in shopping list');
+		}
+
+		ingredients.forEach((i) => {
+			if (i !== '') {
+				list.push({ text: i, is_complete: false, dish: dish.name });
+			}
+		});
+		return list;
 	}
 }

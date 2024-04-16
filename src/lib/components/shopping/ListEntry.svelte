@@ -63,16 +63,16 @@
 		class="border-[1px] border-gray-200 rounded-lg px-4 p-2 flex flex-row justify-between items-center w-full hover:bg-gray-100"
 		on:click={toggleIsComplete}
 	>
-		<div class="flex flex-row gap-8 relative">
+		<div class="flex flex-row lg:gap-8 gap-4 relative items-center">
 			<Checkbox bind:checked classNames="rounded-lg h-8 w-8" disableCheckToggle />
 			{#if checked && !entry.is_complete}
 				<div
 					class="animation-sparkle absolute bottom-[-6px] left-[-7px] z-2 animate-sparkle h-[2.8rem] w-[2.8rem] rounded-lg border-dotted border-[3px] border-green opacity-0"
 				></div>
 			{/if}
-			<p data-ui={checked} class="lg:text-lg data-isOpen:line-through">{entry.text}</p>
+			<p data-ui={checked} class="lg:text-lg text-sm data-isOpen:line-through">{entry.text}</p>
 		</div>
-		<div class="flex flex-row gap-8 items-center">
+		<div class="flex flex-row gap-2 lg:gap-8 items-center">
 			<span class="text-xs text-nice-blue pr-8"
 				>{#if entry.dish}{entry.dish}{/if}</span
 			>

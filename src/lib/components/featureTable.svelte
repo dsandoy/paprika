@@ -21,11 +21,11 @@
 		},
 		{
 			description: 'Handleliste',
-			checked: false
+			checked: true
 		},
 		{
 			description: 'Opprett handleliste fra middagsplanlegger',
-			checked: false
+			checked: true
 		},
 		{
 			description: 'Oversiktlig dashbord',

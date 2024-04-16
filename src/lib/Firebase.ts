@@ -16,6 +16,7 @@ import { GoogleAuthProvider, getAuth, type User } from 'firebase/auth';
 import type { Dish, PlanEntry, ShoppingList, ShoppingListEntry } from './types';
 import { getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage';
 import { DateHandler } from './utils';
+import { NoDocumentError, ValueError } from './errors';
 
 const app = initializeApp({
 	apiKey: 'AIzaSyDQkAHO5mLvZm4VnRG84CsA7Jico7ouXGU',
@@ -195,22 +196,6 @@ export class ListQueries {
 		}
 		const listRef = collection(firestore, LIST_DOC) as CollectionReference<ShoppingList>;
 		return query<ShoppingList>(listRef, where('user', '==', user?.uid));
-	}
-}
-
-/** Error thrown if no document is found in the database */
-export class NoDocumentError extends Error {
-	public constructor(message: string) {
-		super(message);
-		this.name = 'NoDocumentError';
-	}
-}
-
-/** error thrown if a parameter value is invalid */
-export class ValueError extends Error {
-	public constructor(message: string) {
-		super(message);
-		this.name = 'ValueError';
 	}
 }
 
