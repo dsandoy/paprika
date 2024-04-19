@@ -39,9 +39,11 @@
 	let filteredDishes: Dish[] = [];
 </script>
 
-<section class="flex flex-col items-center align-center w-svw h-[92svh] m-0">
-	<h2 class="text-3xl mt-16 mb-4">Matretter</h2>
-	<div class=" flex flex-row content-center gap-4 justify-between w-[80%] h-12">
+<section class="flex flex-col items-center align-center w-svw h-[92svh] m-0 bg-green/10">
+	<div class="w-full pl-4">
+		<h2 class="text-3xl mt-8 mb-4">Matretter</h2>
+	</div>
+	<div class=" flex flex-row content-center gap-4 justify-between w-full pl-4 pr-4 lg:w-[80%] h-12">
 		<div class="flex flex-row gap-3">
 			<Dropdown
 				classNamesButton="px-3 lg:px-5"

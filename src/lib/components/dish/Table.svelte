@@ -14,7 +14,7 @@
 	</div>
 {:else}
 	<table
-		class="bg-white w-[80%] mb-8 flex flex-col items-center justify-center overflow-y-auto py-48 overscroll-contain"
+		class="bg-white w-full lg:w-[80%] mb-8 flex flex-col items-center justify-center overflow-y-auto py-48 overscroll-contain"
 	>
 		<!-- header section -->
 		<div
@@ -29,7 +29,7 @@
 		<div class="border-x-[1px] border-solidborder-grey-300 w-[100%]">
 			{#each dishes as dish}
 				<a
-					class="flex flex-row justify-between items-center px-5 py-3 odd:bg-white even:bg-slate-50"
+					class="flex flex-row justify-between items-center px-5 py-3 odd:bg-green/10 even:bg-slate-50"
 					href="dishes/edit/{dish.name}"
 				>
 					{#if !dish.customImage}

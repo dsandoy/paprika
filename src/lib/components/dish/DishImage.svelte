@@ -9,7 +9,9 @@
 {#if imagesrc}
 	<img src={imagesrc} alt="dishimg" class="{classNames} rounded" />
 {:else}
-	<Button classNames="{classNames} text-gray-400 flex justify-center items-center">
+	<Button
+		classNames="{classNames} text-gray-400 flex justify-center items-center rounded bg-gray-200"
+	>
 		<Icons iconName="zondicons:camera" height="2.0rem" classNames=""></Icons>
 	</Button>
 {/if}

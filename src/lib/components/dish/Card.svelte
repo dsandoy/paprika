@@ -9,7 +9,7 @@
 </script>
 
 <div
-	class="flex items-center justify-center flex-col gap-3 p-4 border-[1px] border-gray-200 rounded h-64"
+	class="flex items-center justify-center flex-col gap-3 p-4 border-[1px] border-gray-200 rounded bg-white"
 >
 	<div>
 		<a href="dishes/edit/{dish.name}" title="Endre matrett">
