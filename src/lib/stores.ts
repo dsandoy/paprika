@@ -18,4 +18,6 @@ export const currentPlans = writable<PlanEntry[]>([] as PlanEntry[]);
 /** The plan entries for the upcoming week */
 export const nextWeekPlans = writable<PlanEntry[]>([] as PlanEntry[]);
 
+export const closePlans = writable<Dish[]>([]);
+
 export const shoppingList = writable<ShoppingList>({} as ShoppingList);
