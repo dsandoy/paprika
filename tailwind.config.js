@@ -4,11 +4,14 @@ export default {
   theme: {
     extend: {
     colors: {
-      "green": "#89A492",
+      "green": {
+        50: "#F3F6F4",
+        DEFAULT: "#89A492",
+      },
       "grey": {
-        100: "e3e3e3",
-        200: "cfcfcf",
-        300: "bfbfbf",
+        100: "#e3e3e3",
+        200: "#cfcfcf",
+        300: "#bfbfbf",
       },
       "white": "#FDFFFE",
       "red": "#dc8491",

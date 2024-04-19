@@ -1,7 +1,6 @@
 <script lang="ts">
 	import BottomCircles from '$lib/components/BottomCircles.svelte';
 	import DishImage from '$lib/components/dish/DishImage.svelte';
-	import PrimaryButton from '$lib/components/PrimaryButton.svelte';
 	import { DBService, DishQueries, PlanQueries } from '$lib/Firebase';
 	import { closePlans, dishes, user } from '$lib/stores';
 	import { DateHandler } from '$lib/utils';
@@ -9,6 +8,7 @@
 	import { ValueError } from '$lib/errors';
 	import Loading from '$lib/components/Loading.svelte';
 	import Icons from '$lib/components/Icons.svelte';
+	import { navigations } from '$lib/utils';
 
 	let loadDinners = false;
 
@@ -57,24 +57,6 @@
 
 	$: getDishes(), $user;
 	$: fetchDishPlan(), $dishes;
-
-	const navigations = [
-		{
-			url: '/dish-planner',
-			icon: 'zondicons:calendar',
-			name: 'Middager'
-		},
-		{
-			url: '/dishes',
-			icon: 'zondicons:location-food',
-			name: 'Matretter'
-		},
-		{
-			url: '/shopping-list',
-			icon: 'zondicons:list',
-			name: 'Handleliste'
-		}
-	];
 </script>
 
 <main class=" w-full h-[93svh] flex flex-col items-center left-0 right-0 gap-2 bg-green/10">
