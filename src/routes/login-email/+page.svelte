@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import BottomCircles from '$lib/components/BottomCircles.svelte';
+	import Loading from '$lib/components/Loading.svelte';
 	import SecondaryButton from '$lib/components/SecondaryButton.svelte';
 	import { auth } from '$lib/Firebase';
 	import { user } from '$lib/stores';
@@ -9,10 +10,13 @@
 	let email = '';
 	let password = '';
 	let errorMessage = '';
+	let loading = false;
 
 	function signIn() {
+		loading = true;
 		if (email === '' || password === '') {
 			errorMessage = 'Du må fylle ut epost og passord';
+			loading = false;
 			return;
 		}
 		signInWithEmailAndPassword(auth, email, password)
@@ -24,6 +28,7 @@
 				errorMessage = 'Ugyldig epost eller passord';
 				errorMessage = errorMessage;
 			});
+		loading = false;
 	}
 
 	function resetErrorMessage() {
@@ -64,7 +69,7 @@
 			on:click={() => signIn()}
 			classNames="flex flex-row w-32 h-10 lg:w-40 lg:h-12 justify-center items-center gap-3 lg:text-lg"
 		>
-			Logg inn
+			<Loading bind:loading>Logg inn</Loading>
 		</SecondaryButton>
 	</form>
 

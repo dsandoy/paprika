@@ -48,6 +48,14 @@
 		return dish;
 	}
 
+	function getName(dish: Dish) {
+		try {
+			return dish.name;
+		} catch {
+			return 'ingenting planlagt';
+		}
+	}
+
 	function getimageURL(dish: Dish) {
 		try {
 			return dish.customImage;
@@ -71,7 +79,7 @@
 <main class=" w-full h-[93svh] flex flex-col items-center left-0 right-0 gap-2 bg-green/10">
 	<!-- what is for dinner ?  -->
 	<div class="w-full p-4 mt-4">
-		<h1 class="text-2xl lg:text-center">Dashbord</h1>
+		<h1 class="text-2xl lg:text-3xl lg:text-center">Dashbord</h1>
 		<div class="flex flex-row gap-5 items-center justify-center pt-4">
 			{#each navigations as nav}
 				<a
@@ -87,37 +95,31 @@
 	<Loading bind:loading={loadDinners}>
 		{#if $closePlans}
 			<section class="flex flex-col gap-4 w-full p-4">
-				<h1 class="text-xl lg:text-center">Lag Middag</h1>
+				<h1 class="text-xl lg:text-2xl lg:text-center">Lag Middag</h1>
 				<div class="flex flex-col lg:flex-row gap-2 lg:gap-8 lg:items-center lg:justify-center">
-					{#if $closePlans[0]}
-						<a href={getUrl($closePlans[0])}>
-							<button class="flex flex-row gap-2 p-2 items-center w-full lg:w-64 bg-white rounded">
-								<DishImage classNames="h-11 w-11" imagesrc={getimageURL($closePlans[0])} />
-								<p class="text-xs text-slate-400">I går</p>
-								<p class="text-sm text-slate-400">{$closePlans[0].name}</p>
-							</button>
-						</a>
-					{/if}
-					{#if $closePlans[1]}
-						<a href={getUrl($closePlans[1])}>
-							<button
-								class="flex flex-row gap-3 p-2 items-center rounded w-full lg:w-64 bg-nice-blue/40"
-							>
-								<DishImage classNames="h-11 w-11" imagesrc={getimageURL($closePlans[1])} />
-								<p class="text-sm text-nice-blue/70 font-semibold">I dag</p>
-								<p class="text-base">{$closePlans[1].name}</p>
-							</button>
-						</a>
-					{/if}
-					{#if $closePlans[2]}
-						<a href={getUrl($closePlans[2])}>
-							<button class="flex flex-row gap-2 p-2 items-center w-full lg:w-64 bg-white rounded">
-								<DishImage classNames="h-11 w-11" imagesrc={getimageURL($closePlans[2])} />
-								<p class="text-xs text-slate-400">I morgen</p>
-								<p class="text-sm text-slate-400">{$closePlans[2].name}</p>
-							</button>
-						</a>
-					{/if}
+					<a href={getUrl($closePlans[0])}>
+						<button class="flex flex-row gap-2 p-2 items-center w-full lg:w-64 bg-white rounded">
+							<DishImage classNames="h-11 w-11" imagesrc={getimageURL($closePlans[0])} />
+							<p class="text-xs text-slate-400">I går</p>
+							<p class="text-sm text-slate-400">{getName($closePlans[0])}</p>
+						</button>
+					</a>
+					<a href={getUrl($closePlans[1])}>
+						<button
+							class="flex flex-row gap-3 p-2 items-center rounded w-full lg:w-64 bg-nice-blue/40"
+						>
+							<DishImage classNames="h-11 w-11" imagesrc={getimageURL($closePlans[1])} />
+							<p class="text-sm text-nice-blue/70 font-semibold">I dag</p>
+							<p class="text-base">{getName($closePlans[1])}</p>
+						</button>
+					</a>
+					<a href={getUrl($closePlans[2])}>
+						<button class="flex flex-row gap-2 p-2 items-center w-full lg:w-64 bg-white rounded">
+							<DishImage classNames="h-11 w-11" imagesrc={getimageURL($closePlans[2])} />
+							<p class="text-xs text-slate-400">I morgen</p>
+							<p class="text-sm text-slate-400">{getName($closePlans[2])}</p>
+						</button>
+					</a>
 				</div>
 			</section>
 		{/if}

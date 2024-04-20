@@ -45,7 +45,7 @@
 			<h2 class="text-3xl mt-8 mb-4 lg:mb-8 lg:text-center">Matretter</h2>
 		</div>
 		<div
-			class="flex flex-row content-center gap-4 justify-between w-full pl-4 pr-4 lg:w-[80%] h-12 bg-green-50"
+			class="flex flex-row content-center gap-4 justify-between w-full pl-4 pr-4 h-12 bg-green-50"
 		>
 			<div class="flex flex-row gap-3">
 				<Dropdown
@@ -60,9 +60,9 @@
 						data-ui={viewMode === 'table'}
 					>
 						{#if viewMode === 'table'}
-							<Icons iconName="zondicons:list" />
+							<Icons iconName="zondicons:list" height="2rem" />
 						{:else if viewMode === 'card'}
-							<Icons iconName="mage:dashboard-fill" />
+							<Icons iconName="mage:dashboard-fill" height="2rem" />
 						{/if}
 					</button>
 					<div slot="content">
@@ -102,7 +102,7 @@
 		{/if}
 	{:else if viewMode === 'card'}
 		<div
-			class="grid grid-cols-2 md:grid-cols-2 xl:grid-cols-4 lg:grid-cols-3 gap-8 lg:gap-16 mt-12 p-4 overflow-auto h-[80%]"
+			class="grid grid-cols-2 md:grid-cols-2 xl:grid-cols-4 lg:grid-cols-3 gap-8 lg:gap-16 mt-12 p-4 lg:w-[80%] w-full overflow-auto h-[80%]"
 		>
 			{#each filteredDishes as dish}
 				<Card {dish} />

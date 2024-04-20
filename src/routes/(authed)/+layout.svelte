@@ -27,7 +27,7 @@
 			{/each}
 		</div>
 	{/if}
-	<a href="/dashboard"
+	<a href="/dashboard" class="lg:pr-8"
 		><img class=" h-14 lg:w-16 lg:h-16" src="/logo-green.svg" alt="Logo img" />
 	</a>
 	<div>
