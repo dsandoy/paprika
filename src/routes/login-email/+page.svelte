@@ -18,7 +18,7 @@
 		signInWithEmailAndPassword(auth, email, password)
 			.then((result) => {
 				user.set(result.user);
-				goto('/dishes');
+				goto('/dashboard');
 			})
 			.catch(() => {
 				errorMessage = 'Ugyldig epost eller passord';
@@ -37,7 +37,7 @@
 >
 	<img class="h-44 lg:h-52 lg:mt-56 mt-24" src="logo-red.svg" alt="Logo img" />
 	<h1 class="text-2xl">Velkommen til Paprika</h1>
-	<div class="w-[23rem]">
+	<form class="w-[23rem] flex flex-col items-center justify-center">
 		<input
 			type="email"
 			placeholder="Epost"
@@ -54,20 +54,19 @@
 			required
 			on:change={resetErrorMessage}
 		/>
-	</div>
-	{#if errorMessage}
-		<div class="text-red">
-			{errorMessage}
-		</div>
-	{/if}
+		{#if errorMessage}
+			<div class="text-red">
+				{errorMessage}
+			</div>
+		{/if}
 
-	<SecondaryButton
-		on:click={() => signIn()}
-		type="button"
-		classNames="flex flex-row w-32 h-10 lg:w-40 lg:h-12 justify-center items-center gap-3 lg:text-lg"
-	>
-		Logg inn
-	</SecondaryButton>
+		<SecondaryButton
+			on:click={() => signIn()}
+			classNames="flex flex-row w-32 h-10 lg:w-40 lg:h-12 justify-center items-center gap-3 lg:text-lg"
+		>
+			Logg inn
+		</SecondaryButton>
+	</form>
 
 	<BottomCircles />
 </section>

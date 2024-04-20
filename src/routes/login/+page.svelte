@@ -13,7 +13,7 @@
 		getRedirectResult(auth).then((result) => {
 			if (result) {
 				user.set(result.user);
-				goto('/dishes');
+				goto('/dashboard');
 			}
 		});
 	});

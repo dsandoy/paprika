@@ -48,11 +48,20 @@
 		return dish;
 	}
 
-	function displayDishName(dish: Dish | undefined) {
-		if (dish) {
-			return dish.name;
+	function getimageURL(dish: Dish) {
+		try {
+			return dish.customImage;
+		} catch {
+			return '';
 		}
-		return '';
+	}
+
+	function getUrl(dish: Dish) {
+		try {
+			return dish.url;
+		} catch {
+			return '';
+		}
 	}
 
 	$: getDishes(), $user;
@@ -76,34 +85,42 @@
 		</div>
 	</div>
 	<Loading bind:loading={loadDinners}>
-		<section class="flex flex-col gap-4 w-full p-4">
-			<h1 class="text-xl lg:text-center">Lag Middag</h1>
-			<div class="flex flex-col lg:flex-row gap-2 lg:gap-8 lg:items-center lg:justify-center">
-				<a href={$closePlans[0].url}>
-					<button class="flex flex-row gap-2 p-2 items-center w-full lg:w-64 bg-white rounded">
-						<DishImage classNames="h-11 w-11" imagesrc={$closePlans[0].customImage} />
-						<p class="text-xs text-slate-400">I går</p>
-						<p class="text-sm text-slate-400">{displayDishName($closePlans[0])}</p>
-					</button>
-				</a>
-				<a href={$closePlans[1].url}>
-					<button
-						class="flex flex-row gap-3 p-2 items-center rounded w-full lg:w-64 bg-nice-blue/40"
-					>
-						<DishImage classNames="h-11 w-11" imagesrc={$closePlans[1].customImage} />
-						<p class="text-sm text-nice-blue/70 font-semibold">I dag</p>
-						<p class="text-base">{displayDishName($closePlans[1])}</p>
-					</button>
-				</a>
-				<a href={$closePlans[2].url}>
-					<button class="flex flex-row gap-2 p-2 items-center w-full lg:w-64 bg-white rounded">
-						<DishImage classNames="h-11 w-11" imagesrc={$closePlans[2].customImage} />
-						<p class="text-xs text-slate-400">I morgen</p>
-						<p class="text-sm text-slate-400">{displayDishName($closePlans[2])}</p>
-					</button>
-				</a>
-			</div>
-		</section>
+		{#if $closePlans}
+			<section class="flex flex-col gap-4 w-full p-4">
+				<h1 class="text-xl lg:text-center">Lag Middag</h1>
+				<div class="flex flex-col lg:flex-row gap-2 lg:gap-8 lg:items-center lg:justify-center">
+					{#if $closePlans[0]}
+						<a href={getUrl($closePlans[0])}>
+							<button class="flex flex-row gap-2 p-2 items-center w-full lg:w-64 bg-white rounded">
+								<DishImage classNames="h-11 w-11" imagesrc={getimageURL($closePlans[0])} />
+								<p class="text-xs text-slate-400">I går</p>
+								<p class="text-sm text-slate-400">{$closePlans[0].name}</p>
+							</button>
+						</a>
+					{/if}
+					{#if $closePlans[1]}
+						<a href={getUrl($closePlans[1])}>
+							<button
+								class="flex flex-row gap-3 p-2 items-center rounded w-full lg:w-64 bg-nice-blue/40"
+							>
+								<DishImage classNames="h-11 w-11" imagesrc={getimageURL($closePlans[1])} />
+								<p class="text-sm text-nice-blue/70 font-semibold">I dag</p>
+								<p class="text-base">{$closePlans[1].name}</p>
+							</button>
+						</a>
+					{/if}
+					{#if $closePlans[2]}
+						<a href={getUrl($closePlans[2])}>
+							<button class="flex flex-row gap-2 p-2 items-center w-full lg:w-64 bg-white rounded">
+								<DishImage classNames="h-11 w-11" imagesrc={getimageURL($closePlans[2])} />
+								<p class="text-xs text-slate-400">I morgen</p>
+								<p class="text-sm text-slate-400">{$closePlans[2].name}</p>
+							</button>
+						</a>
+					{/if}
+				</div>
+			</section>
+		{/if}
 	</Loading>
 
 	<BottomCircles></BottomCircles>
