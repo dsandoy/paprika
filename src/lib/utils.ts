@@ -245,3 +245,21 @@ export class ShoppingListHandler {
 		return list;
 	}
 }
+
+export const navigations = [
+	{
+		url: '/dish-planner',
+		icon: 'zondicons:calendar',
+		name: 'Middager'
+	},
+	{
+		url: '/dishes',
+		icon: 'zondicons:location-food',
+		name: 'Matretter'
+	},
+	{
+		url: '/shopping-list',
+		icon: 'zondicons:list',
+		name: 'Handleliste'
+	}
+];

@@ -38,7 +38,9 @@
 	$: getShoppingList(), $user;
 </script>
 
-<section class="flex flex-col gap-5 justify-center items-center">
+<section
+	class="lg:flex lg:flex-col gap-5 justify-center items-center bg-green-50 w-full min-h-[92svh]"
+>
 	<!-- <h1 class="text-5xl my-8">Handleliste</h1> -->
 	<div class="w-full lg:w-[60%] lg:my-8">
 		<ShoppingList shoppingList={$shoppingList} />

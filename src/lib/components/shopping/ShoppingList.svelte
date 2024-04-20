@@ -138,65 +138,69 @@
 		>
 	</section>
 
-	<section class="flex flex-col gap-4 p-4 lg:p-8">
-		{#if numTodo === 0}
-			<h3 class="text-center text-2xl">Handlelista er tom..</h3>
-		{:else}
-			<div class=" max-h-[25rem] lg:max-h-[30rem] overflow-y-auto">
-				{#each shoppingList.list as list}
-					{#if !list.is_complete}
-						<span class="flex justify-center items-center" transition:slide={{ duration: 250 }}>
-							<ListEntry bind:entry={list} />
-						</span>
-					{/if}
-				{/each}
-			</div>
-		{/if}
-	</section>
-
-	{#if enableCompleteSection}
-		{#if numCompleted !== 0}
-			<section
-				class="flex flex-col gap-4 p-4 lg:p-8 max-h-[25rem] lg:max-h-[35rem] overflow-y-auto border-t-[1px] border-t-gray-200"
-			>
-				<div class="flex flex-row justify-between items-center">
-					<div class="flex flex-row gap-5 items-center justify-center px-2">
-						<SecondaryButton
-							on:click={() => (hideComplete = !hideComplete)}
-							classNames="h-12 w-12 text-green"
-						>
-							{#if hideComplete}<Icons
-									height="1.5rem"
-									iconName="zondicons:view-show"
-								/>{:else}<Icons
-									height="1.5rem"
-									iconName="zondicons:view-hide"
-								/>{/if}</SecondaryButton
-						>
-						<h3 class="text-center text-2xl">Fullførte:</h3>
-					</div>
-					<DeleteDropdown text="alle fullførte" deleteFunction={deleteCompleted} />
+	<div class="min-h-[36rem]">
+		<section class="flex flex-col gap-4 p-4 lg:p-8">
+			{#if numTodo === 0}
+				<h3 class="text-center text-2xl">Handlelista er tom..</h3>
+			{:else}
+				<div class=" h-[25rem] lg:h-[23rem] lg:max-h-[30rem] overflow-y-auto">
+					{#each shoppingList.list as list}
+						{#if !list.is_complete}
+							<span class="flex justify-center items-center" transition:slide={{ duration: 250 }}>
+								<ListEntry bind:entry={list} />
+							</span>
+						{/if}
+					{/each}
 				</div>
-				{#if !hideComplete}
-					<div
-						class="max-h-[20rem] lg:max-h-[30rem] overflow-y-auto"
-						transition:slide={{ duration: 150 }}
-					>
-						{#each shoppingList.list as list}
-							{#if list.is_complete}
-								<span class="flex justify-center items-center" transition:slide={{ duration: 950 }}>
-									<ListEntry bind:entry={list} />
-								</span>
-							{/if}
-						{/each}
-					</div>
-				{/if}
-			</section>
-		{/if}
-	{/if}
+			{/if}
+		</section>
 
+		{#if enableCompleteSection}
+			{#if numCompleted !== 0}
+				<section
+					class="flex flex-col gap-4 p-4 lg:p-8 max-h-[25rem] lg:max-h-[35rem] overflow-y-auto border-t-[1px] border-t-gray-200"
+				>
+					<div class="flex flex-row justify-between items-center">
+						<div class="flex flex-row gap-5 items-center justify-center px-2">
+							<SecondaryButton
+								on:click={() => (hideComplete = !hideComplete)}
+								classNames="h-12 w-12 text-green"
+							>
+								{#if hideComplete}<Icons
+										height="1.5rem"
+										iconName="zondicons:view-show"
+									/>{:else}<Icons
+										height="1.5rem"
+										iconName="zondicons:view-hide"
+									/>{/if}</SecondaryButton
+							>
+							<h3 class="text-center text-2xl">Fullførte:</h3>
+						</div>
+						<DeleteDropdown text="alle fullførte" deleteFunction={deleteCompleted} />
+					</div>
+					{#if !hideComplete}
+						<div
+							class="max-h-[20rem] lg:max-h-[30rem] overflow-y-auto"
+							transition:slide={{ duration: 150 }}
+						>
+							{#each shoppingList.list as list}
+								{#if list.is_complete}
+									<span
+										class="flex justify-center items-center"
+										transition:slide={{ duration: 950 }}
+									>
+										<ListEntry bind:entry={list} />
+									</span>
+								{/if}
+							{/each}
+						</div>
+					{/if}
+				</section>
+			{/if}
+		{/if}
+	</div>
 	<section
-		class="sticky bottom-0 border-t-[1px] border-t-gray-200 px-8 pt-4 flex flex-col bg-white"
+		class="sticky bottom-0 border-t-[1px] w-full border-t-gray-200 px-8 pt-4 flex flex-col bg-green-50"
 	>
 		<EntryInput bind:entryText on:change={createNewEntry} />
 	</section>

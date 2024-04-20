@@ -2,6 +2,7 @@
 	import { goto } from '$app/navigation';
 	import BottomCircles from '$lib/components/BottomCircles.svelte';
 	import Icons from '$lib/components/Icons.svelte';
+	import Loading from '$lib/components/Loading.svelte';
 	import PrimaryButton from '$lib/components/PrimaryButton.svelte';
 	import SecondaryButton from '$lib/components/SecondaryButton.svelte';
 	import { auth, googleProvider } from '$lib/Firebase';
@@ -10,21 +11,26 @@
 	import { onMount } from 'svelte';
 
 	onMount(() => {
+		loading = true;
 		getRedirectResult(auth).then((result) => {
 			if (result) {
 				user.set(result.user);
-				goto('/dishes');
+				goto('/dashboard');
 			}
+			loading = false;
 		});
 	});
 
+	let loading = false;
+
 	/** Sign in through firebase with Google */
 	async function SignInWithGoogle() {
+		loading = true;
 		await signInWithRedirect(auth, googleProvider);
 	}
 
 	/** If the user is logged in, redirect to the dishes page */
-	$: if ($user) window.location.href = '/dishes';
+	$: if ($user) window.location.href = '/dashboard';
 </script>
 
 <section
@@ -41,7 +47,7 @@
 		classNames="flex flex-row w-56 h-12 lg:w-64 lg:h-14 justify-center text-sm items-center gap-3 lg:text-lg"
 	>
 		<img src="google-logo.png" alt="Google logo" class="h-6" />
-		Logg inn med Google
+		<Loading bind:loading>Logg inn med Google</Loading>
 	</SecondaryButton>
 	<!-- <a href="/dishes"><PrimaryButton>Til middager</PrimaryButton></a> -->
 	<div>

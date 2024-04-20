@@ -1,32 +1,27 @@
 <script lang="ts">
-	import { auth } from '$lib/Firebase';
 	import DemoImage from '$lib/components/DemoImage.svelte';
 	import FadeInElement from '$lib/components/FadeInElement.svelte';
 	import SecondaryButton from '$lib/components/SecondaryButton.svelte';
-	import SideBar from '$lib/components/SideBar.svelte';
 	import FeatureTable from '$lib/components/featureTable.svelte';
-	import ProfileDropdown from '$lib/components/user/ProfileDropdown.svelte';
 	import { user } from '$lib/stores';
 	import { onMount } from 'svelte';
 
-	const usr = auth.currentUser;
-	if (usr) {
-		user.set(usr);
+	function naviateToDashboard() {
+		if (!$user) return;
+		try {
+			window.location.href = '/dashboard';
+		} catch {
+			return;
+		}
 	}
 
 	let smallSize = true;
 	onMount(() => {
 		smallSize = window.matchMedia('(max-width: 800px)').matches;
 	});
-</script>
 
-<header class="w-svw h-16 flex bg-green justify-between px-5 items-center text-white">
-	<SideBar />
-	<a href="/dishes"><img class=" h-14 lg:w-16 lg:h-16" src="/logo-green.svg" alt="Logo img" /> </a>
-	<div>
-		<ProfileDropdown></ProfileDropdown>
-	</div>
-</header>
+	$: naviateToDashboard(), $user;
+</script>
 
 <div class="flex flex-col items-center justify-center">
 	<!-- top section -->

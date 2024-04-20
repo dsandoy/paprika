@@ -29,7 +29,7 @@
 		},
 		{
 			description: 'Oversiktlig dashbord',
-			checked: false
+			checked: true
 		},
 		{
 			description: 'Mørkt tema',
