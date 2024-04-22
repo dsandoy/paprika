@@ -7,6 +7,7 @@
 	import BottomCircles from '$lib/components/BottomCircles.svelte';
 	import { DBService } from '$lib/Firebase';
 	import type { Dish } from '$lib/types.js';
+	import Loading from '$lib/components/Loading.svelte';
 
 	let formElement: HTMLFormElement;
 	let ingredientInput: HTMLInputElement;
@@ -16,6 +17,7 @@
 	let customImageUrl: string | null = null;
 	let customImage: File | undefined;
 	let errorMessage = '';
+	let loading = false;
 
 	/** Tell the user that the ingredient is already in the list */
 	function validateIngredients() {
@@ -77,6 +79,7 @@
 	}
 
 	async function AddDish() {
+		loading = true;
 		const dish: Dish = {
 			name: name_text,
 			url: url_text,
@@ -87,6 +90,7 @@
 		if (result !== DishValidator.VALID) {
 			errorMessage = 'Ugyldig input';
 			errorMessage = errorMessage;
+			loading = false;
 			return;
 		}
 
@@ -96,6 +100,7 @@
 		}
 		await DBService.createDish(dish);
 		window.location.href = '/dishes/add/success';
+		loading = false;
 	}
 	let smallSize = true;
 	onMount(() => {
@@ -103,10 +108,12 @@
 	});
 </script>
 
-<section class="flex flex-col items-center w-full h-full pb-8 justify-center">
+<section
+	class="flex flex-col items-center absolute top-16 bottom-0 left-0 right-0 pb-8 justify-center bg-green-50"
+>
 	<h2 class="mb-12 mt-12 text-3xl">Legg til ny Matrett</h2>
 	<form
-		class="w-[80%] md:w-[50%] flex flex-col justify-center items-center"
+		class="w-[80%] md:w-auto flex flex-col justify-center items-center"
 		method="post"
 		bind:this={formElement}
 		enctype="multipart/form-data"
@@ -186,9 +193,9 @@
 			<!-- include ingredients -->
 			<input type="hidden" value={$ingredients} name="ingredients" />
 		</div>
-		<PrimaryButton classNames="w-48" type="button" on:click={AddDish}
-			>Legg til matrett</PrimaryButton
-		>
+		<PrimaryButton classNames="w-48" type="button" on:click={AddDish}>
+			<Loading bind:loading>Legg til matrett</Loading>
+		</PrimaryButton>
 		<div>
 			<p class="text-red">
 				{#if errorMessage}{errorMessage}{/if}

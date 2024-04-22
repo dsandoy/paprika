@@ -8,6 +8,7 @@
 	import type { Dish } from '$lib/types.js';
 	import { error } from '@sveltejs/kit';
 	import { onMount } from 'svelte';
+	import Loading from '$lib/components/Loading.svelte';
 
 	export let data: { dishName: string };
 
@@ -22,6 +23,7 @@
 	let hasImageChanged = false;
 	let errorMessage = '';
 	let dishID: string | undefined = '';
+	let loading = false;
 
 	async function getDish() {
 		let dish: Dish | undefined;
@@ -104,6 +106,7 @@
 	}
 
 	async function UpdateDish() {
+		loading = true;
 		const dish: Dish = {
 			id: dishID,
 			name: name_text,
@@ -117,6 +120,7 @@
 			console.warn('Validation failed: the data failed the validateAll function');
 			errorMessage = 'Ugyldig input';
 			errorMessage = errorMessage;
+			loading = false;
 			return;
 		}
 
@@ -126,6 +130,7 @@
 		}
 		await DBService.updateDish(dish);
 		window.location.href = '/dishes';
+		loading = false;
 	}
 
 	let smallSize = true;
@@ -134,10 +139,12 @@
 	});
 </script>
 
-<section class="flex flex-col items-center w-full h-full pb-8 justify-center">
+<section
+	class="flex flex-col items-center absolute top-16 bottom-0 right-0 left-0 bg-green-50 pb-8 justify-center"
+>
 	<h2 class="mb-12 mt-12 text-3xl">Endre matrett</h2>
 	<form
-		class="w-[80%] md:w-[40%] xl:w-[50%] flex flex-col justify-center items-center"
+		class="w-[80%] md:w-auto flex flex-col justify-center items-center"
 		method="post"
 		bind:this={formElement}
 		enctype="multipart/form-data"
@@ -217,8 +224,8 @@
 			<!-- include ingredients -->
 			<input type="hidden" value={$ingredients} name="ingredients" />
 		</div>
-		<PrimaryButton classNames="w-48" type="button" on:click={UpdateDish}
-			>Lagre endringer</PrimaryButton
+		<PrimaryButton classNames="w-48" type="button" on:click={UpdateDish}>
+			<Loading bind:loading>Lagre endringer</Loading></PrimaryButton
 		>
 		<div>
 			<p class="text-red">
