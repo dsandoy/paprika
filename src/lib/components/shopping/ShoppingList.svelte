@@ -89,6 +89,7 @@
 			let list = shoppingList.list;
 			list = ShoppingListHandler.addIngredients(list, dish);
 			shoppingList.list = list;
+			DBShoppingList.update(shoppingList);
 		} catch (error) {
 			console.warn(error);
 		}
@@ -143,7 +144,7 @@
 			{#if numTodo === 0}
 				<h3 class="text-center text-2xl">Handlelista er tom..</h3>
 			{:else}
-				<div class=" h-[25rem] lg:h-[23rem] lg:max-h-[30rem] overflow-y-auto">
+				<div class="lg:max-h-[30rem] overflow-y-auto">
 					{#each shoppingList.list as list}
 						{#if !list.is_complete}
 							<span class="flex justify-center items-center" transition:slide={{ duration: 250 }}>
