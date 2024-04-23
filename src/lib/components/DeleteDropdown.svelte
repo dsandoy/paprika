@@ -31,14 +31,20 @@
 		<Icons height="1.5rem" iconName="zondicons:trash" /></Button
 	>
 	<div slot="content">
-		<p>Er du sikker på at du vil slette {text}?</p>
+		<p class="mb-4">Er du sikker på at du vil slette {text}?</p>
 
 		<div class="flex flex-row justify-between items-center">
-			<Button on:click={deleteItem} classNames="rounded-lg h-12 w-12 bg-green text-white">
+			<Button
+				on:click={deleteItem}
+				classNames="rounded-lg h-14 w-14 bg-green text-white flex items-center justify-center"
+			>
 				<Icons height="1.5rem" iconName="zondicons:thumbs-up" />
 			</Button>
 
-			<Button on:click={cancel} classNames="rounded-lg h-12 w-12 bg-white text-red">
+			<Button
+				on:click={cancel}
+				classNames="rounded-lg h-14 w-14 bg-white text-red flex items-center justify-center"
+			>
 				<Icons height="1.5rem" iconName="zondicons:thumbs-down" />
 			</Button>
 		</div>
