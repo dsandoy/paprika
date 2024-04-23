@@ -89,6 +89,7 @@
 			let list = shoppingList.list;
 			list = ShoppingListHandler.addIngredients(list, dish);
 			shoppingList.list = list;
+			DBShoppingList.update(shoppingList);
 		} catch (error) {
 			console.warn(error);
 		}
