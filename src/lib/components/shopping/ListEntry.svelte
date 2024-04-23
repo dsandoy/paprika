@@ -57,7 +57,13 @@
 </script>
 
 {#if isEditMode}
-	<EntryInput bind:entryText on:change={updateEntry} />
+	<EntryInput
+		bind:entryText
+		on:change={updateEntry}
+		on:focusout={() => {
+			isEditMode = false;
+		}}
+	/>
 {:else}
 	<button
 		class="border-[1px] border-gray-200 rounded-lg px-4 p-2 flex flex-row justify-between items-center bg-white w-full hover:bg-gray-100"

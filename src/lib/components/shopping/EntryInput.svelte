@@ -8,4 +8,5 @@
 	placeholder="Legg til"
 	bind:value={entryText}
 	on:change
+	on:focusout
 />
