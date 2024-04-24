@@ -48,7 +48,7 @@
 	$: smallSize = determineWindowSize();
 </script>
 
-<div class="flex flex-row lg:w-[26rem] align-center items-center p-4">
+<div class="flex flex-row w-auto align-center items-center p-4">
 	<p
 		class="lg:w-24 w-24 text-sm text-center"
 		class:text-nice-blue={DateHandler.isTimestampToday(plannerEntry.date) === 'today'}
@@ -80,6 +80,8 @@
 				>
 					{chosenDish.name}
 				</p>
+			{:else}
+				<p class="w-full">Klikk meg</p>
 			{/if}
 		</div>
 		<!-- the change dish dropdown content  -->
