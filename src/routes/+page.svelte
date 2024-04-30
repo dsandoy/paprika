@@ -30,7 +30,7 @@
 		<SecondaryButton
 			type="button"
 			on:click={() => (window.location.href = '/login')}
-			classNames="flex flex-row  h-10 lg:h-14 justify-center items-center gap-3 text-base lg:text-lg font-semibold"
+			classNames="flex flex-row  h-16 lg:h-20 justify-center items-center gap-3 text-lg lg:text-xl"
 		>
 			<img src="logo-green.svg" alt="paprika logo" class="h-10" />
 			Kom i gang
@@ -48,7 +48,7 @@
 			<div class="">
 				<UrlDemo />
 			</div>
-			<div class="lg:pt-40 pt-10">
+			<div class="lg:pt-24 pt-0">
 				<ShoppingDemo />
 			</div>
 		</div>

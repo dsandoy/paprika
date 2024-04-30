@@ -60,8 +60,8 @@
 	<Dropdown
 		bind:isOpen
 		classNamesButton="flex items-center gap-3 cursor-pointer"
-		classNamesContent="absolute bg-white border-[1px] border-green rounded z-10 text-black lg:right-[-19rem] lg:bottom-[-8rem] right-[3rem] bottom-[8rem] p-5 w-[18rem] h-[22rem]"
-		relative={!smallSize}
+		classNamesContent="absolute bg-white border-[1px] border-green rounded z-10 text-black lg:right-[-19rem] lg:bottom-[-8rem] right-[3rem] bottom-[0rem] p-5 w-[18rem] h-[22rem]"
+		relative={true}
 	>
 		<!-- dropdown "button" -->
 		<div

@@ -82,7 +82,7 @@
 	<section
 		class="h-20 p-4 border-b-[1px] border-b-gray-200 flex flex-row items-center justify-between"
 	>
-		<h2 class="text-3xl">{listName}</h2>
+		<h2 class="lg:text-3xl text-xl">{listName}</h2>
 		<Dropdown
 			bind:isOpen
 			relative

@@ -5,8 +5,11 @@
 
 <div class=" flex flex-col items-center justify-center gap-6">
 	<div class="flex flex-col items-center justify-center gap-4">
-		<h2 class="text-3xl">1. Hva skal jeg ha til middag?</h2>
-		<p class="lg:w-[30rem]">
+		<div class="flex flex-row items-center justify-center gap-3">
+			<h2 class="lg:text-3xl text-2xl">1. Hva skal jeg ha til middag?</h2>
+			<img src="thinking.png" class="h-20 lg:h-32 rotate-[2deg]" alt="Thinking person" />
+		</div>
+		<p class="lg:w-[30rem] text-base lg:text-lg">
 			Ved å legge til matrettene dine får du enkelt inspirasjon til å ta valget! Liker du å
 			planlegge? Bestem middager for hele uka!
 		</p>

@@ -7,8 +7,11 @@
 
 <section class="flex flex-col justify-center items-center gap-8">
 	<div class="flex flex-col justify-center items-center gap-4">
-		<h3 class="text-3xl">2. Hvordan lager jeg det?</h3>
-		<p class="">Gå enkelt til oppskriften fra Paprika!</p>
+		<div class="flex flex-row justify-center items-center gap-3">
+			<img src="plate.png" alt="dinner dish" class="h-20 lg:h-40 rotate-[16deg]" />
+			<h3 class="lg:text-3xl text-2xl">2. Hvordan lager jeg det?</h3>
+		</div>
+		<p class="text-base lg:text-lg">Gå enkelt til oppskriften fra Paprika!</p>
 	</div>
 	<a href={dish.url}>
 		<button class="flex flex-row gap-2 p-2 items-center w-full lg:w-64 bg-white rounded">

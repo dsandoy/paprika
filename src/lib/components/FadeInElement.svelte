@@ -21,7 +21,7 @@
 		observer = new IntersectionObserver(handleIntersection, {
 			root: null, // Use the viewport as the root
 			rootMargin: '0px',
-			threshold: 0.4
+			threshold: 0.2
 		});
 
 		observer.observe(element);
