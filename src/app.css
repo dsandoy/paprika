@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 body {
-	@apply text-lg;
+	@apply text-lg font-libre;
 }
 
 .input {
@@ -19,4 +19,21 @@ body {
 
 .selected-tab {
 	@apply box-border;
+}
+
+@layer base {
+	@font-face {
+		font-family: 'Noto';
+		font-style: normal;
+		font-weight: 400;
+		font-display: swap;
+		src: url(/fonts/NotoSans-Regular.ttf) format('truetype');
+	}
+	@font-face {
+		font-family: 'Libre';
+		font-style: normal;
+		font-weight: 400;
+		font-display: swap;
+		src: url(/fonts/LibreBaskerville-Regular.ttf) format('truetype');
+	}
 }

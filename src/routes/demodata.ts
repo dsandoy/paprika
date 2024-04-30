@@ -1,4 +1,4 @@
-import type { Dish, PlanEntry } from '$lib/types';
+import type { Dish, PlanEntry, ShoppingListEntry, ShoppingList } from '$lib/types';
 import { DateHandler } from '$lib/utils';
 import { Timestamp } from 'firebase/firestore';
 import { writable } from 'svelte/store';
@@ -77,7 +77,28 @@ class DemoData {
 			date: Timestamp.fromDate(DateHandler.getNextDay(new Date()))
 		}
 	];
+
+	static listItems: ShoppingListEntry[] = [
+		{
+			text: 'Melk',
+			is_complete: false
+		},
+		{
+			text: 'Smør',
+			is_complete: false
+		},
+		{
+			text: 'Brød',
+			is_complete: false
+		}
+	];
+
+	static shoppingList: ShoppingList = {
+		user: '',
+		list: this.listItems
+	};
 }
 
 export const demoDishes = writable<Dish[]>(DemoData.dishes);
 export const demoPlans = writable<PlanEntry[]>(DemoData.dishPlans);
+export const demoShopping = writable<ShoppingList>(DemoData.shoppingList);

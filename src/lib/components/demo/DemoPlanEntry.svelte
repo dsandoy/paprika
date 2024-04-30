@@ -66,7 +66,7 @@
 		<!-- dropdown "button" -->
 		<div
 			data-ui={isOpen}
-			class="border-[1px] border-grey-300 flex flex-row h-14 w-60 lg:w-64 gap-4 rounded data-isOpen:border-green align-center items-center hover:border-green p-2 bg-white"
+			class="border-[1px] border-grey-300/50 flex flex-row h-14 w-60 lg:w-64 gap-4 rounded data-isOpen:border-green align-center items-center hover:border-green p-2 bg-white"
 			slot="button"
 		>
 			{#if chosenDish}
@@ -81,7 +81,7 @@
 					{chosenDish.name}
 				</p>
 			{:else}
-				<p class="w-full">Klikk meg</p>
+				<p class="w-full text-gray-400">Klikk meg</p>
 			{/if}
 		</div>
 		<!-- the change dish dropdown content  -->
