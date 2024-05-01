@@ -200,9 +200,7 @@
 			{/if}
 		{/if}
 	</div>
-	<section
-		class="sticky bottom-0 border-t-[1px] w-full border-t-gray-200 px-8 pt-4 flex flex-col bg-green-50"
-	>
+	<section class="border-t-[1px] w-full border-t-gray-200 px-8 pt-4 flex flex-col bg-green-50">
 		<EntryInput bind:entryText on:change={createNewEntry} />
 	</section>
 </div>
