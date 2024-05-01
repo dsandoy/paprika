@@ -37,10 +37,10 @@
 	}
 </script>
 
-<section
-	class="h-svh flex flex-col items-center justify-start gap-4 bg-gradient-to-tl from-red/20 to-green/30 via-white"
+<main
+	class="absolute top-0 bottom-0 right-0 left-0 bg-gradient-to-tl from-red/20 to-green/30 via-white flex flex-col items-center justify-center gap-4"
 >
-	<img class="h-44 lg:h-52 lg:mt-56 mt-24" src="logo-red.svg" alt="Logo img" />
+	<img class="h-44 lg:h-52" src="logo-red.svg" alt="Logo img" />
 	<h1 class="text-2xl">Velkommen til Paprika</h1>
 	<form class="w-[23rem] flex flex-col items-center justify-center">
 		<input
@@ -74,4 +74,4 @@
 	</form>
 
 	<BottomCircles />
-</section>
+</main>
