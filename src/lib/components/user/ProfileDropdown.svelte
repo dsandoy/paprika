@@ -29,7 +29,7 @@
 		</span>
 		<div slot="content" class="flex flex-col gap-4">
 			<p class="text-sm">{$user?.displayName || 'TestUser'}</p>
-			<SecondaryButton classNames="w-24 h-8 px-2 text-sm hover:bg-red" on:click={SignOut}
+			<SecondaryButton classNames="w-28 h-10 px-2 text-sm hover:bg-red rounded" on:click={SignOut}
 				>Logg ut</SecondaryButton
 			>
 		</div>

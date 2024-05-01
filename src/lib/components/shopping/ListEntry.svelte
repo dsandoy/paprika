@@ -70,10 +70,10 @@
 		on:click={toggleIsComplete}
 	>
 		<div class="flex flex-row lg:gap-8 gap-4 relative items-center">
-			<Checkbox bind:checked classNames="rounded-lg h-8 w-8" disableCheckToggle />
+			<Checkbox bind:checked classNames="rounded-lg h-6 w-6" disableCheckToggle />
 			{#if checked && !entry.is_complete}
 				<div
-					class="animation-sparkle absolute bottom-[-6px] left-[-7px] z-2 animate-sparkle h-[2.8rem] w-[2.8rem] rounded-lg border-dotted border-[3px] border-green opacity-0"
+					class="animation-sparkle absolute bottom-[-6px] left-[-7px] z-2 animate-sparkle h-[2.4rem] w-[2.4rem] rounded-lg border-dotted border-[3px] border-green opacity-0"
 				></div>
 			{/if}
 			<p data-ui={checked} class="lg:text-lg text-sm data-isOpen:line-through">{entry.text}</p>
@@ -83,7 +83,7 @@
 				>{#if entry.dish}{entry.dish}{/if}</span
 			>
 			{#if !entry.is_complete}
-				<button class="rounded-lg" on:click={enableEditMode}
+				<button class="rounded-lg p-1 hover:text-green" on:click={enableEditMode}
 					><Icons iconName="zondicons:edit-pencil" height="1.2rem" /></button
 				>
 			{/if}
