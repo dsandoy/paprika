@@ -4,7 +4,7 @@
 </script>
 
 {#if imagesrc}
-	<img src={imagesrc} alt="dish" class="{classNames} rounded" />
+	<img src={imagesrc} alt="dish" class="{classNames} rounded-sm lg:rounded" />
 {:else}
-	<img src="logo-green.svg" alt="dish" class="{classNames} rounded" />
+	<img src="logo-green.svg" alt="dish" class="{classNames} rounded-sm lg:rounded" />
 {/if}

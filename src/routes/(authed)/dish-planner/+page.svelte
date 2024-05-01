@@ -131,16 +131,16 @@
 			<!-- This week -->
 			<section class="flex flex-col items-center relative">
 				<div
-					class="flex gap-8 lg:gap-12 pb-3 justify-center items-center border-b-2 border-b-gray-200"
+					class="flex gap-8 lg:gap-12 p-4 justify-center items-center border-b-2 border-b-gray-200"
 				>
 					<Button classNames="flex gap-4 w-auto" on:click={() => checkAll()}>
 						<Checkbox bind:checked={allCheckedThis} disableCheckToggle></Checkbox>
-						<p class="text-sm">Velg alle</p>
+						<p class="text-xs">Velg alle</p>
 					</Button>
-					<h3>Denne uka</h3>
+					<h3 class="text-sm">Denne uka</h3>
 					<SecondaryButton
 						on:click={() => updateShoppingList()}
-						classNames="text-xs h-auto w-auto p-2"
+						classNames="text-xs h-auto w-auto p-2 rounded-[15px]"
 					>
 						<Loading bind:loading={updateLoading}>Lag Handleliste</Loading>
 					</SecondaryButton>
@@ -155,14 +155,16 @@
 			<!-- next week -->
 			<section class="flex flex-col items-center relative">
 				<div
-					class="flex gap-8 lg:gap-12 pb-3 justify-center items-center border-b-2 border-b-gray-200"
+					class="flex gap-8 lg:gap-12 p-4 justify-center items-center border-b-2 border-b-gray-200"
 				>
 					<Button classNames="flex gap-4 w-auto" on:click={() => checkAll(true)}>
-						<Checkbox bind:checked={allCheckedNext}></Checkbox>
-						<p class="text-sm">Velg alle</p>
+						<Checkbox bind:checked={allCheckedNext} disableCheckToggle></Checkbox>
+						<p class="text-xs">Velg alle</p>
 					</Button>
-					<h3>Neste Uke</h3>
-					<SecondaryButton classNames="text-xs h-auto w-auto p-2">Lag Handleliste</SecondaryButton>
+					<h3 class="text-sm">Neste Uke</h3>
+					<SecondaryButton classNames="text-xs h-auto w-auto p-2 rounded-[15px]"
+						>Lag Handleliste</SecondaryButton
+					>
 				</div>
 				{#if $nextWeekPlans}
 					{#each $nextWeekPlans as plannerEntry}

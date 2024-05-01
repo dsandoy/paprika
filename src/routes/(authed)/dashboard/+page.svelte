@@ -83,7 +83,7 @@
 		<div class="flex flex-row gap-5 items-center justify-center pt-4">
 			{#each navigations as nav}
 				<a
-					class="text-sm p-2 pl-4 pr-4 gap-2 rounded flex flex-col items-center justify-center bg-white hover:bg-grey-100"
+					class="text-sm p-4 lg:pl-6 lg:pr-6 gap-2 rounded flex flex-col items-center justify-center bg-white hover:bg-grey-100"
 					href={nav.url}
 				>
 					<Icons iconName={nav.icon} height="2rem" />
@@ -108,7 +108,7 @@
 					</a>
 					<a href={getUrl($closePlans[1])}>
 						<button
-							class="flex flex-row gap-3 p-2 items-center rounded w-full lg:w-64 bg-nice-blue/40 hover:bg-nice-blue/60"
+							class="flex flex-row gap-3 p-2 items-center rounded w-full lg:w-64 bg-nice-blue/20 hover:bg-nice-blue/40"
 						>
 							<DishImage classNames="h-11 w-11" imagesrc={getimageURL($closePlans[1])} />
 							<p class="text-sm text-nice-blue/70 font-semibold">I dag</p>
