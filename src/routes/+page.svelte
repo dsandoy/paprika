@@ -1,10 +1,10 @@
 <script lang="ts">
-	import DemoImage from '$lib/components/DemoImage.svelte';
-	import FadeInElement from '$lib/components/FadeInElement.svelte';
 	import SecondaryButton from '$lib/components/SecondaryButton.svelte';
 	import FeatureTable from '$lib/components/featureTable.svelte';
 	import { user } from '$lib/stores';
-	import { onMount } from 'svelte';
+	import ShoppingDemo from './ShoppingDemo.svelte';
+	import DinnerDemo from './DinnerDemo.svelte';
+	import UrlDemo from './URLDemo.svelte';
 
 	function naviateToDashboard() {
 		if (!$user) return;
@@ -15,89 +15,60 @@
 		}
 	}
 
-	let smallSize = true;
-	onMount(() => {
-		smallSize = window.matchMedia('(max-width: 800px)').matches;
-	});
-
 	$: naviateToDashboard(), $user;
 </script>
 
-<div class="flex flex-col items-center justify-center">
+<div class="flex flex-col items-center justify-center w-full">
 	<!-- top section -->
 	<section
-		class="flex flex-col items-center justify-center w-full h-[85svh] bg-gradient-to-tr from-red/20 to-green/20 via-white pt-12"
+		class="bg-[url('headerbg.png')] bg-no-repeat bg-cover bg-fixed bg-top lg:bg-left-top w-full h-[40rem] lg:h-[44.5rem] flex flex-col items-center"
 	>
-		<h3 class="text-3xl lg:text-5xl w-full p-4 mb-5 text-center">
+		<h1 class="text-3xl lg:text-5xl w-full p-4 mb-8 mt-8 font-bold text-center">
 			Ta kontroll over middagene med Paprika!
-		</h3>
+		</h1>
+		<h3 class="text-1xl lg:text-3xl mb-16">Middagsplanlegging gjort på 1 2 3!</h3>
 		<SecondaryButton
 			type="button"
 			on:click={() => (window.location.href = '/login')}
-			classNames="flex flex-row  h-10 lg:h-12 justify-center items-center gap-3 text-base"
+			classNames="flex flex-row  h-16 lg:h-20 justify-center items-center gap-3 text-lg lg:text-xl"
 		>
-			<img src="google-logo.png" alt="Google logo" class="h-6" />
+			<img src="logo-green.svg" alt="paprika logo" class="h-10" />
 			Kom i gang
 		</SecondaryButton>
 	</section>
 
+	<section class=" w-full bg-gradient-to-tr pt-12 from-red/20 to-green/20 via-white p-8">
+		<DinnerDemo />
+	</section>
+
 	<!-- Dinnner planner section -->
-	{#if !smallSize}
-		<section class="w-screen pt-0 h-[28rem]">
-			<div class="bg-red/50 rounded h-full p-8 grid lg:grid-cols-3 grid-cols-1 relative">
-				<div>
-					<span class="lg:absolute lg:top-[-3rem] lg:left-[5rem]">
-						<DemoImage
-							classNames="h-[28rem]"
-							text="1. Se planen din"
-							smallText="Planen viser denne og neste uke"
-							img="peaks/plan1.png"
-						/>
-					</span>
-				</div>
-				<FadeInElement>
-					<div class="flex flex-col gap-3 justify-center items-center">
-						<h3 class="text-xl lg:text-3xl w-full text-center text-black">
-							Med Paprika blir middagsplanlegging enkelt!
-						</h3>
-						<p>Kun 3 enkle steg:</p>
-						<DemoImage
-							classNames="h-[16rem]"
-							text="2. Velg Dag"
-							smallText="Velg dagen du vil endre på"
-							img="peaks/plan2.png"
-						/>
-					</div>
-				</FadeInElement>
-				<div class="flex flex-col justify-center items-center">
-					<span class="lg:absolute lg:bottom-[-2rem]">
-						<FadeInElement>
-							<DemoImage
-								classNames="h-[14rem]"
-								text="3. Velg middag"
-								img="peaks/plan3.png"
-								smallText="Søk eller bla etter ønsket middag"
-							/>
-						</FadeInElement>
-					</span>
-				</div>
+
+	<section class="w-screen pt-0">
+		<div class="bg-red/50 rounded h-[28rem] lg:p-8 p-4 relative grid lg:grid-cols-2 grid-cols-1">
+			<div class="">
+				<UrlDemo />
 			</div>
-		</section>
-	{/if}
+			<div class="lg:pt-24 pt-0">
+				<ShoppingDemo />
+			</div>
+		</div>
+	</section>
 	<!-- feature table section -->
 	<section
-		class="flex flex-col justify-center items-center w-full gap-10 py-10 bg-gradient-to-br from-red/20 to-green/20 via-white h-[40rem]"
+		class="flex flex-col justify-center lg:items-start items-center w-full gap-14 lg:py-4 py-[30rem] bg-gradient-to-br from-red/20 to-green/20 via-white"
 	>
-		<FeatureTable />
-		{#if !smallSize}
+		<div class="flex flex-col justify-center items-center lg:w-[50%] w-full">
+			<FeatureTable />
+		</div>
+		<div class="flex justify-center items-center w-full">
 			<SecondaryButton
 				type="button"
 				on:click={() => (window.location.href = '/login')}
-				classNames="flex flex-row  h-10 lg:h-12 justify-center items-center gap-3 text-base"
+				classNames="flex flex-row  h-12 lg:h-16 justify-center items-center gap-3 text-base"
 			>
-				<img src="google-logo.png" alt="Google logo" class="h-6" />
+				<img src="logo-red.svg" alt="paprika logo" class="h-10" />
 				Logg Inn
 			</SecondaryButton>
-		{/if}
+		</div>
 	</section>
 </div>

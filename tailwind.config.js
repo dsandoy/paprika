@@ -3,6 +3,10 @@ export default {
   content: ['./src/**/*.{html,ts,js,svelte}'],
   theme: {
     extend: {
+    fontFamily: {
+      'sans': ['Noto', 'sans-serif'],
+      'libre': ['Libre', 'sans-serif'],
+    },
     colors: {
       "green": {
         50: "#F3F6F4",
