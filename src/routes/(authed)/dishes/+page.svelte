@@ -9,6 +9,7 @@
 	import { DBService, DishQueries } from '$lib/Firebase.js';
 	import { dishes, ingredients, user } from '$lib/stores.js';
 	import type { Dish } from '$lib/types.js';
+	import { onMount } from 'svelte';
 
 	export let data;
 
@@ -18,14 +19,26 @@
 
 	ingredients.set(['']);
 
-	function getDishes() {
-		const q = DishQueries.dishes($user);
-		DBService.getResources(q).then((result) => {
-			dishes.set(result as Dish[]);
-		});
+	// function getDishes() {
+	// 	const q = DishQueries.dishes($user);
+	// 	DBService.getResources(q).then((result) => {
+	// 		dishes.set(result as Dish[]);
+	// 	});
+	// }
+	// $: getDishes(), $user;
+	//
+	function setDishes() {
+		if (!data.dishes) {
+			try {
+				console.log(data.error);
+			} catch {
+				console.log('failed to get error as well');
+			}
+		}
+		console.log('Dishes: ', data.dishes);
+		dishes.set(data.dishes);
 	}
-	$: getDishes(), $user;
-
+	setDishes();
 	function selectTable() {
 		viewMode = 'table';
 		isOpen = false;
