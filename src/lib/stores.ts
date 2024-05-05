@@ -1,5 +1,6 @@
 import { writable } from 'svelte/store';
-import type { ShoppingList, Dish, PlanEntry } from './types';
+import type { ShoppingList, PlanEntry } from './types';
+import type { Dish } from '@prisma/client';
 import type { User } from 'firebase/auth';
 
 export const dishes = writable<Dish[]>([] as Dish[]);

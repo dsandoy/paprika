@@ -2,57 +2,40 @@
 	import Card from '$lib/components/dish/Card.svelte';
 	import Table from '$lib/components/dish/Table.svelte';
 	import DishSearch from '$lib/components/DishSearch.svelte';
-	import Dropdown from '$lib/components/Dropdown.svelte';
-	import Button from '$lib/components/Button.svelte';
 	import Icons from '$lib/components/Icons.svelte';
-	import PrimaryButton from '$lib/components/PrimaryButton.svelte';
-	import { DBService, DishQueries } from '$lib/Firebase.js';
 	import { dishes, ingredients, user } from '$lib/stores.js';
-	import type { Dish } from '$lib/types.js';
-	import { onMount } from 'svelte';
+	import type { Dish } from '@prisma/client';
 
 	export let data;
 
 	let viewMode: 'table' | 'card' = 'table';
 
-	let isOpen = false;
-
 	ingredients.set(['']);
 
-	// function getDishes() {
-	// 	const q = DishQueries.dishes($user);
-	// 	DBService.getResources(q).then((result) => {
-	// 		dishes.set(result as Dish[]);
-	// 	});
-	// }
-	// $: getDishes(), $user;
-	//
 	function setDishes() {
 		if (!data.dishes) {
 			try {
 				console.log(data.error);
 			} catch {
-				console.log('failed to get error as well');
+				return;
 			}
 		}
-		console.log('Dishes: ', data.dishes);
-		dishes.set(data.dishes);
+		dishes.set(data.dishes as Dish[]);
 	}
 	setDishes();
+
 	function selectTable() {
 		viewMode = 'table';
-		isOpen = false;
 	}
 
 	function selectCard() {
 		viewMode = 'card';
-		isOpen = false;
 	}
 
 	let filteredDishes: Dish[] = [];
 </script>
 
-<section class="flex flex-col items-center align-center w-svw h-[92svh] m-0 bg-green/10">
+<section class="flex flex-col items-center align-center w-svw h-[92svh] m-0">
 	<div class="sticky top-0 bg-green-50 w-full lg:w-[80%]">
 		<div class="w-full pl-4">
 			<h2 class="text-3xl mt-8 mb-4 lg:mb-8 lg:text-center">Matretter</h2>
@@ -61,48 +44,39 @@
 			class="flex flex-row content-center gap-4 justify-between w-full pl-4 pr-4 h-12 bg-green-50"
 		>
 			<div class="flex flex-row gap-3">
-				<Dropdown
-					classNamesButton="px-3 lg:px-5"
-					relative
-					bind:isOpen
-					classNamesContent="border-green border-[1px] rounded absolute bg-white z-value-1"
-				>
-					<button
-						slot="button"
-						class="w-10 h-12 lg:w-16 text-base lg:text-lg flex items-center justify-center"
-						data-ui={viewMode === 'table'}
-					>
+				<div class="dropdown dropdown-bottom">
+					<div tabindex="0" role="button" class="btn m-1">
 						{#if viewMode === 'table'}
-							<Icons iconName="zondicons:list" height="2rem" />
-						{:else if viewMode === 'card'}
-							<Icons iconName="mage:dashboard-fill" height="2rem" />
-						{/if}
-					</button>
-					<div slot="content">
-						<Button
-							on:click={() => selectTable()}
-							classNames="gap-2 flex hover:bg-green/20 p-2 pl-4"
-						>
 							<Icons iconName="zondicons:list" />
-							<p>Tabell</p>
-						</Button>
-						<Button
-							on:click={() => selectCard()}
-							classNames="gap-2 flex hover:bg-green/20 p-2 pl-4"
-						>
+						{:else if viewMode === 'card'}
 							<Icons iconName="mage:dashboard-fill" />
-							<p>Bilder</p>
-						</Button>
+						{/if}
 					</div>
-				</Dropdown>
+					<ul
+						tabindex="-1"
+						class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52"
+					>
+						<li>
+							<button on:click={selectTable}>
+								<Icons iconName="zondicons:list" />
+								Tabell
+							</button>
+						</li>
+						<li>
+							<button on:click={selectCard}>
+								<Icons iconName="mage:dashboard-fill" />
+								Bilder
+							</button>
+						</li>
+					</ul>
+				</div>
 			</div>
 			<DishSearch dishes={$dishes} bind:filteredDishes />
 			<a href="/dishes/add">
-				<PrimaryButton classNames="gap-2"
-					><Icons iconName="zondicons:add-solid" /><span class="hidden lg:block">Legg til</span
-					></PrimaryButton
-				>
-			</a>
+				<button class="btn btn-primary gap-2 text-white"
+					><Icons iconName="zondicons:add-solid" /><span class="hidden lg:block">Legg til</span>
+				</button></a
+			>
 		</div>
 	</div>
 	{#if viewMode === 'table'}

@@ -1,32 +1,36 @@
 <script lang="ts">
 	import { dishes, ingredients, user } from '$lib/stores';
-	import { DishValidator } from '$lib/utils.js';
-	import PrimaryButton from '$lib/components/PrimaryButton.svelte';
-	import SecondaryButton from '$lib/components/SecondaryButton.svelte';
+	import { DishValidator, type ValidationResult } from '$lib/utils.js';
 	import { onMount } from 'svelte';
 	import BottomCircles from '$lib/components/BottomCircles.svelte';
 	import { DBService } from '$lib/Firebase';
 	import type { Dish } from '$lib/types.js';
 	import Loading from '$lib/components/Loading.svelte';
+	import TextInput from '$lib/components/forms/TextInput.svelte';
+	import Icons from '$lib/components/Icons.svelte';
+	import ErrorAlert from '$lib/components/forms/ErrorAlert.svelte';
+	import InfoDropdown from '$lib/components/dropdowns/InfoDropdown.svelte';
 
 	let formElement: HTMLFormElement;
-	let ingredientInput: HTMLInputElement;
 	let ingredient = '';
 	let url_text = '';
 	let name_text = '';
 	let customImageUrl: string | null = null;
 	let customImage: File | undefined;
-	let errorMessage = '';
 	let loading = false;
 
 	/** Tell the user that the ingredient is already in the list */
 	function validateIngredients() {
 		if ($ingredients.some((i) => i === ingredient)) {
-			ingredientInput.setCustomValidity('Denne ingrediensen er allerede lagt til');
-		} else {
-			ingredientInput.setCustomValidity('');
+			return {
+				is_valid: false,
+				message: 'Ingrediensen er allerede lagt til'
+			};
 		}
-		ingredientInput.reportValidity();
+		return {
+			is_valid: true,
+			message: ''
+		};
 	}
 
 	/** add ingredient to client kept ingredients list */
@@ -42,28 +46,13 @@
 
 	/** offer a validation on the url in real time... */
 	function validateUrl() {
-		const url = formElement.children.namedItem('url') as HTMLInputElement;
-		if (DishValidator.validateURL(url_text) !== DishValidator.VALID) {
-			url.setCustomValidity('Linken er ikke gyldig..');
-			url.reportValidity();
-		} else {
-			url.setCustomValidity('');
-			url.reportValidity();
-		}
+		return DishValidator.validateURL(url_text);
 	}
 
 	/** Validate the name in real time...*/
 	function validateName() {
-		const name = formElement.children.namedItem('name') as HTMLInputElement;
 		const result = DishValidator.validateName(name_text, $dishes);
-		if (result === DishValidator.EMPTY) {
-			name.setCustomValidity('Navnet kan ikke være tomt..');
-		} else if (result === DishValidator.IN_USE) {
-			name.setCustomValidity('Du har allerede en matrett med dette navet');
-		} else {
-			name.setCustomValidity('');
-		}
-		name.reportValidity();
+		return result as ValidationResult;
 	}
 
 	/** Let the user see the image they uploaded..*/
@@ -78,6 +67,11 @@
 		}
 	}
 
+	let v: ValidationResult = {
+		is_valid: true,
+		message: ''
+	};
+
 	async function AddDish() {
 		loading = true;
 		const dish: Dish = {
@@ -87,9 +81,8 @@
 			ingredients: $ingredients
 		};
 		const result = DishValidator.validateAll(dish, $dishes);
-		if (result !== DishValidator.VALID) {
-			errorMessage = 'Ugyldig input';
-			errorMessage = errorMessage;
+		v = result;
+		if (!result.is_valid) {
 			loading = false;
 			return;
 		}
@@ -108,99 +101,114 @@
 	});
 </script>
 
-<section
-	class="flex flex-col items-center absolute top-16 bottom-0 left-0 right-0 pb-8 justify-center bg-green-50"
->
+<section class="flex flex-col items-center pb-8 justify-center bg-green-50">
 	<h2 class="mb-12 mt-12 text-3xl">Legg til ny Matrett</h2>
 	<form
-		class="w-[80%] md:w-auto flex flex-col justify-center items-center"
+		class="w-[95%] md:w-auto flex flex-col justify-center items-center gap-4"
 		method="post"
 		bind:this={formElement}
 		enctype="multipart/form-data"
 	>
-		<!-- set name  -->
-		<input
-			class="input"
-			type="text"
-			name="name"
-			bind:value={name_text}
-			on:input={validateName}
-			placeholder="Navn"
-			required
-		/>
-		<!-- set recipe url -->
-		<input
-			class="input"
-			type="text"
-			name="url"
-			placeholder="Link til oppskrift"
-			bind:value={url_text}
-			on:input={validateUrl}
-		/>
-
-		<!-- upload image -->
-		<div class="flex flex-row justify-center items-center w-full mb-5 gap-5">
-			{#if customImageUrl}
-				<img src={customImageUrl} class="w-24 h-24" alt="uploaded" />
-			{/if}
-			<SecondaryButton type="button" classNames="w-36">
-				<label class="cursor-pointer" for="upload_image"
-					>Velg Bilde
-					<input
-						class="hidden"
-						type="file"
-						id="upload_image"
-						name="image"
-						accept="image/*"
-						on:change={handleImageUpload}
-					/>
-				</label>
-			</SecondaryButton>
-		</div>
-		<!-- ingredients -->
-		<div
-			class="w-full border-[1px] p-5 rounded border-grey-300 grid grid-cols-1 lg:grid-cols-2 gap-3 mb-6"
-		>
-			<div class="flex flex-col items-center">
-				<input
-					class="input"
-					type="text"
-					name="temp-ingredients"
-					bind:this={ingredientInput}
-					bind:value={ingredient}
-					on:input={validateIngredients}
-					placeholder="Ingrediens"
-				/>
-				<SecondaryButton
-					type="button"
-					classNames="w-32 text-base lg:text-lg"
-					on:click={addIngrendient}>Legg til</SecondaryButton
-				>
-			</div>
-			<div>
-				<h3 class="px-5 pb-5 text-gray-400">ingredienser</h3>
-				<div class="overflow-auto h-48">
-					{#each $ingredients as ingredient}
-						<button
-							type="button"
-							class="block hover:bg-red hover:text-white text-sm lg:text-base rounded-lg pl-5 pr-5"
-							on:click={() => ($ingredients = $ingredients.filter((i) => i !== ingredient))}
-							>{ingredient}</button
-						>
-					{/each}
+		<div class="card shadow-lg border-[1px] border-grey-100 w-full p-4">
+			<h3 class="text-grey-300 text-right p-3">Matrettdetaljer</h3>
+			<div class="grid grid-cols-1 lg:grid-cols-2 w-full">
+				<!-- upload image -->
+				<div class="flex lg:flex-col flex-row justify-center items-center w-full mb-5 gap-5">
+					{#if customImageUrl}
+						<img src={customImageUrl} class="w-24 h-24 rounded" alt="uploaded" />
+					{:else}
+						<img class="h-24 w-24 bg-grey-100 rounded" src="/logo-green.svg" alt="upload" />
+					{/if}
+					<label
+						class="cursor-pointer btn btn-outline w-46 font-normal btn-primary"
+						for="upload_image"
+						>Velg Bilde
+						<input
+							class="hidden"
+							type="file"
+							id="upload_image"
+							name="image"
+							accept="image/*"
+							on:change={handleImageUpload}
+						/>
+					</label>
+				</div>
+				<div class="flex flex-col gap-4">
+					<!-- set name  -->
+					<TextInput
+						bind:value={name_text}
+						name="name"
+						placeholder="Søtjordepler med paprika"
+						required
+						validateFunction={validateName}
+					>
+						<span slot="before">Navn</span>
+					</TextInput>
+					<!-- set recipe url -->
+					<TextInput
+						name="url"
+						placeholder="Link til oppskrift"
+						bind:value={url_text}
+						validateFunction={validateUrl}
+					>
+						<span slot="before">URL</span>
+					</TextInput>
 				</div>
 			</div>
-			<!-- include ingredients -->
-			<input type="hidden" value={$ingredients} name="ingredients" />
 		</div>
-		<PrimaryButton classNames="w-48" type="button" on:click={AddDish}>
+
+		<!-- ingredients -->
+		<div class="w-full p-5 mb-6 card shadow-lg border-grey-100 border-[1px]">
+			<h3 class="px-5 pb-5 text-grey-300 flex items-center justify-end gap-3">
+				ingredienser <InfoDropdown
+					>Ved å legge til ingredienser kan Paprika genere handleliste for deg</InfoDropdown
+				>
+			</h3>
+			<div class="grid grid-cols-1 lg:grid-cols-2 gap-6 w-full">
+				<!-- include ingredients -->
+				<input type="hidden" value={$ingredients} name="ingredients" />
+				<div class="flex flex-col items-center gap-6">
+					<TextInput
+						name="temp-ingredients"
+						bind:value={ingredient}
+						validateFunction={validateIngredients}
+						placeholder="5dL melk"
+					>
+						<span slot="before">Ny</span></TextInput
+					>
+					<button
+						type="button"
+						class=" btn btn-primary btn-outline w-32 text-base font-normal"
+						on:click={addIngrendient}>Legg til</button
+					>
+				</div>
+				<div>
+					<div class="overflow-auto h-48">
+						{#each $ingredients as ingredient}
+							<button
+								type="button"
+								class="flex flex-row hover:bg-red hover:text-white focus:bg-red focus:text-white text-sm lg:text-base btn min-h-0 h-8 font-normal bg-inherit border-none shadow-none pl-5 pr-5"
+								on:click={() => ($ingredients = $ingredients.filter((i) => i !== ingredient))}
+								>{ingredient}
+								<Icons
+									iconName="zondicons:trash"
+									classNames="text-base-100"
+									height="1rem"
+								/></button
+							>
+						{/each}
+					</div>
+				</div>
+			</div>
+		</div>
+		<button
+			class="w-48 btn btn-primary text-white font-normal text-lg"
+			type="button"
+			on:click={AddDish}
+		>
 			<Loading bind:loading>Legg til matrett</Loading>
-		</PrimaryButton>
-		<div>
-			<p class="text-red">
-				{#if errorMessage}{errorMessage}{/if}
-			</p>
-		</div>
+		</button>
+		<ErrorAlert bind:v />
 	</form>
 	{#if !smallSize}
 		<BottomCircles />

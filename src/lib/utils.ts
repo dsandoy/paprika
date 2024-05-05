@@ -76,21 +76,45 @@ export class DateHandler {
 	}
 }
 
+export interface ValidationResult {
+	is_valid: boolean;
+	message: string;
+}
+
 /** Static class for Dish validation methods */
 export class DishValidator {
-	public static readonly INVALID_URL = -3;
+	public static readonly INVALID_URL: ValidationResult = {
+		is_valid: false,
+		message: 'Linken er ugyldig!'
+	};
 	/** Error code if the attribute is empty */
-	public static readonly EMPTY = -1;
+	public static EMPTY(name: string): ValidationResult {
+		return {
+			is_valid: false,
+			message: name + ' kan ikke være tomt'
+		};
+	}
 	/** Error code if the attribute is already in use*/
-	public static readonly IN_USE = -2;
+	public static IN_USE(name: string): ValidationResult {
+		return {
+			is_valid: false,
+			message: name + ' er allerede i bruk'
+		};
+	}
 	/** Error code if the attribute is invalid */
-	public static readonly INVALID_FILE_TYPE = -4;
+	public static readonly INVALID_FILE_TYPE: ValidationResult = {
+		is_valid: false,
+		message: 'Filtypen er ikke gyldig'
+	};
 	/** Code if the attribute is valid */
-	public static readonly VALID = 0;
+	public static readonly VALID: ValidationResult = {
+		is_valid: true,
+		message: ''
+	};
 
 	/** Validate that the inputed value is a url */
 	public static validateURL(url: string) {
-		if (!url) return 0;
+		if (!url) return this.VALID;
 		const pattern = new RegExp(
 			'^(https?:\\/\\/|http?:\\/\\/)?' + // protocol
 				'((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{1,}|' + // domain name
@@ -108,11 +132,11 @@ export class DishValidator {
 	 * Returns 0 if valid, EMPTY if empty, IN_USE if already in use
 	 */
 	public static validateName(name: string, dishes: Dish[]) {
-		if (name.length === 0) return this.EMPTY;
+		if (name.length === 0) return this.EMPTY('Navnet');
 
 		const names = dishes.map((d) => d.name);
 		if (names.includes(name)) {
-			return this.IN_USE;
+			return this.IN_USE('Navnet');
 		}
 		return this.VALID;
 	}
@@ -120,7 +144,7 @@ export class DishValidator {
 	/** Returns 0 if valid, IN_USE if already in use */
 	public static validateIngredients(ing: Ingredient, ingredients: Ingredient[]) {
 		if (ingredients.some((i) => i === ing)) {
-			return this.IN_USE;
+			return this.IN_USE('Ingrediensen');
 		}
 		return this.VALID;
 	}
@@ -150,8 +174,7 @@ export class DishValidator {
 		if (dish.ingredients) {
 			const uniq = [...new Set(dish.ingredients)];
 			if (uniq.length !== dish.ingredients.length) {
-				console.log('Ingrendients are not unique...');
-				return this.IN_USE;
+				return this.IN_USE('Ingrediensen');
 			}
 		}
 		return this.VALID;
