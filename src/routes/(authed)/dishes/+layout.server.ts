@@ -1,8 +1,9 @@
-import { DishQueries } from '$lib/server/queries';
+import { DemoData } from '../../demodata';
 
 export const load = async () => {
 	try {
-		const dishes = await DishQueries.getMany({ all: true });
+		// const dishes = await DishQueries.getMany({ all: true });
+		const dishes = DemoData.dishes;
 		if (dishes)
 			return {
 				dishes: dishes

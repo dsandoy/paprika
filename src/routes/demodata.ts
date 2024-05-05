@@ -3,7 +3,7 @@ import { DateHandler } from '$lib/utils';
 import { Timestamp } from 'firebase/firestore';
 import { writable } from 'svelte/store';
 
-class DemoData {
+export class DemoData {
 	static dishes: Dish[] = [
 		{
 			id: '1',

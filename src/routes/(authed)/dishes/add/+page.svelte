@@ -1,23 +1,33 @@
 <script lang="ts">
-	import { dishes, ingredients, user } from '$lib/stores';
+	import { dishes, ingredients } from '$lib/stores';
 	import { DishValidator, type ValidationResult } from '$lib/utils.js';
 	import { onMount } from 'svelte';
 	import BottomCircles from '$lib/components/BottomCircles.svelte';
-	import { DBService } from '$lib/Firebase';
 	import type { Dish } from '$lib/types.js';
 	import Loading from '$lib/components/Loading.svelte';
 	import TextInput from '$lib/components/forms/TextInput.svelte';
 	import Icons from '$lib/components/Icons.svelte';
 	import ErrorAlert from '$lib/components/forms/ErrorAlert.svelte';
 	import InfoDropdown from '$lib/components/dropdowns/InfoDropdown.svelte';
+	import { enhance } from '$app/forms';
 
+	export let data;
+	export let form;
 	let formElement: HTMLFormElement;
 	let ingredient = '';
 	let url_text = '';
 	let name_text = '';
-	let customImageUrl: string | null = null;
-	let customImage: File | undefined;
+	let imageURL: string | null = null;
+	let image: File | undefined;
 	let loading = false;
+
+	if (data.dishes) dishes.set(data.dishes as Dish[]);
+
+	try {
+		console.log('Dishes: ', data.dishes);
+	} catch {
+		console.warn('Did not render any dishes...');
+	}
 
 	/** Tell the user that the ingredient is already in the list */
 	function validateIngredients() {
@@ -57,44 +67,24 @@
 
 	/** Let the user see the image they uploaded..*/
 	function handleImageUpload(event: Event) {
-		customImage = (event.target as HTMLInputElement)?.files?.[0];
-		if (!customImage) {
-			customImageUrl = null;
+		image = (event.target as HTMLInputElement)?.files?.[0];
+		if (!image) {
+			imageURL = null;
 			return;
 		}
-		if (DishValidator.validateImage(customImage) === DishValidator.VALID) {
-			customImageUrl = URL.createObjectURL(customImage);
+		if (DishValidator.validateImage(image) === DishValidator.VALID) {
+			imageURL = URL.createObjectURL(image);
 		}
 	}
 
-	let v: ValidationResult = {
-		is_valid: true,
-		message: ''
-	};
+	let v: ValidationResult = form?.v || { is_valid: true, message: '' };
+	$: v = form?.v || v;
+	$: if (!v.is_valid) loading = false;
 
-	async function AddDish() {
+	function AddDish() {
 		loading = true;
-		const dish: Dish = {
-			name: name_text,
-			url: url_text,
-			user: $user?.uid as string,
-			ingredients: $ingredients
-		};
-		const result = DishValidator.validateAll(dish, $dishes);
-		v = result;
-		if (!result.is_valid) {
-			loading = false;
-			return;
-		}
-
-		if (customImage) {
-			const url = await DBService.uploadImage(customImage as File);
-			dish.customImage = url;
-		}
-		await DBService.createDish(dish);
-		window.location.href = '/dishes/add/success';
-		loading = false;
 	}
+
 	let smallSize = true;
 	onMount(() => {
 		smallSize = window.matchMedia('(max-width: 800px)').matches;
@@ -106,6 +96,8 @@
 	<form
 		class="w-[95%] md:w-auto flex flex-col justify-center items-center gap-4"
 		method="post"
+		use:enhance
+		novalidate
 		bind:this={formElement}
 		enctype="multipart/form-data"
 	>
@@ -114,8 +106,8 @@
 			<div class="grid grid-cols-1 lg:grid-cols-2 w-full">
 				<!-- upload image -->
 				<div class="flex lg:flex-col flex-row justify-center items-center w-full mb-5 gap-5">
-					{#if customImageUrl}
-						<img src={customImageUrl} class="w-24 h-24 rounded" alt="uploaded" />
+					{#if imageURL}
+						<img src={imageURL} class="w-24 h-24 rounded" alt="uploaded" />
 					{:else}
 						<img class="h-24 w-24 bg-grey-100 rounded" src="/logo-green.svg" alt="upload" />
 					{/if}
@@ -201,14 +193,14 @@
 				</div>
 			</div>
 		</div>
+		<ErrorAlert bind:v />
 		<button
 			class="w-48 btn btn-primary text-white font-normal text-lg"
-			type="button"
+			type="submit"
 			on:click={AddDish}
 		>
 			<Loading bind:loading>Legg til matrett</Loading>
 		</button>
-		<ErrorAlert bind:v />
 	</form>
 	{#if !smallSize}
 		<BottomCircles />
