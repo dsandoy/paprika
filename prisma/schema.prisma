@@ -20,6 +20,8 @@ model Dish {
   url String
   image String?
   user String
+  // createdAt DateTime @default(now())
+  // lastMade DateTime
   ingredients Ingredient[]
 
 }

@@ -1,10 +1,14 @@
 <script lang="ts">
-	import { DateHandler } from '$lib/utils';
 	import type { Dish } from '$lib/types';
-	import SecondaryButton from '../SecondaryButton.svelte';
 	import Icons from '../Icons.svelte';
 
 	export let dishes: Dish[];
+
+	function displayIngredients(dish: Dish) {
+		const ingredients = dish.ingredients;
+		if (ingredients) return ingredients.join(', ');
+		return '';
+	}
 </script>
 
 {#if !dishes || dishes?.length === 0}
@@ -13,51 +17,67 @@
 		...
 	</div>
 {:else}
-	<table class="w-full lg:w-[80%] flex flex-col items-center justify-center">
-		<!-- header section -->
-		<div
-			class="flex flex-row justify-between items-center h-12 px-5 border-solid border-b-[1px] border-grey-300 w-[100%]"
-		>
-			<div class="h-16 w-12 lg:w-16"></div>
-			<div class="w-24 lg:w-32 text-gray-400 text-base">Matrett</div>
-			<div class="w-24 lg:w-32 text-gray-400 text-base hidden lg:contents">Sist Laget</div>
-			<div class="w-12 lg:w-16 text-center text-gray-400 text-base">URL</div>
-		</div>
-		<!-- row section -->
-		<div class="border-x-[1px] border-solidborder-grey-300 w-[100%]">
-			{#each dishes as dish}
-				<a
-					class="flex flex-row justify-between items-center px-5 py-3 odd:bg-green-50 even:bg-slate-50"
-					href="dishes/edit/{dish.name}"
-				>
-					{#if !dish.customImage}
-						<div class="w-12 lg:w-16">
-							<button
-								class="bg-gray-200 h-12 w-12 lg:h-16 lg:w-16 flex align-center text-gray-500 items-center rounded hover:bg-gray-300 hover:text-gray-500"
-							>
-								<Icons iconName="zondicons:camera" height="2.3rem" classNames="m-auto"></Icons>
-							</button>
-						</div>
-					{:else}
-						<div class=" w-12 lg:w-16">
-							<img
-								src={dish.customImage}
-								alt="uploaded"
-								class="w-12 h-12 lg:w-16 lg:h-16 rounded"
-							/>
-						</div>
-					{/if}
-					<div class="w-24 lg:w-32 text-sm lg:text-lg">{dish.name}</div>
-					<div class="w-24 hidden lg:contents lg:w-32 text-xs lg:text-base">
-						{DateHandler.showDate(dish.lastMade, 'Ikke laget')}
-					</div>
-					<a href={dish.url} class="w-12 lg:w-16">
-						<SecondaryButton classNames="w-12 lg:w-16 h-8 text-sm px-2 lg:text-base">
-							<Icons />
-						</SecondaryButton>
-					</a>
-				</a>
-			{/each}
-		</div>
-	</table>
+	<div class="overflow-x-auto">
+		<table class="table">
+			<!--Head-->
+			<thead>
+				<tr>
+					<th class="hidden lg:block"></th>
+					<th>Matrett</th>
+					<th class="hidden lg:block">Ingredienser</th>
+					<th>URL</th>
+					<th></th>
+				</tr>
+			</thead>
+			<tbody>
+				{#each dishes as dish}
+					<tr>
+						<td class="hidden lg:block">
+							<!-- <div class="badge badge-success text-white">Ny</div> -->
+						</td>
+						<td>
+							<div class="flex flex-row gap-4 items-center justify-start">
+								{#if !dish.customImage}
+									<div class="w-12 lg:w-16">
+										<button
+											class="bg-gray-200 h-12 w-12 lg:h-16 lg:w-16 flex align-center text-gray-500 items-center rounded hover:bg-gray-300 hover:text-gray-500"
+										>
+											<Icons iconName="zondicons:camera" height="2.3rem" classNames="m-auto"
+											></Icons>
+										</button>
+									</div>
+								{:else}
+									<div class="avatar">
+										<div class="mask mask-squircle w-12 h-12 lg:w-16 lg:h-16">
+											<img src={dish.customImage} alt="Dish" />
+										</div>
+									</div>
+								{/if}
+								<div class="">{dish.name}</div>
+							</div>
+						</td>
+						<td class="hidden lg:block max-w-96">
+							{displayIngredients(dish)}
+						</td>
+						<td>
+							{#if dish.url !== ''}
+								<a href={dish.url} class="w-12 lg:w-16">
+									<button class="btn btn-primary text-white rounded-lg lg:rounded-sm">
+										<span class="hidden lg:block">Oppskrift</span>
+										<Icons height="1rem" />
+									</button>
+								</a>
+							{/if}
+						</td>
+						<td>
+							<a href="/dishes/edit/{dish.name}" class="btn btn-secondary rounded-lg lg:rounded-sm">
+								<span class="hidden lg:block">Endre</span>
+								<Icons iconName="zondicons:edit-pencil" height="1rem" />
+							</a>
+						</td>
+					</tr>
+				{/each}
+			</tbody>
+		</table>
+	</div>
 {/if}

@@ -23,7 +23,9 @@
 	$: search(), searchWord;
 </script>
 
-<label class="input input-bordered input-primary rounded flex items-center gap-2">
-	<input placeholder="Søk" type="text" class="grow" bind:value={searchWord} />
+<label
+	class="input input-bordered input-primary flex justify-center items-center gap-2 focus-within:outline-none focus-within:ring-2 focus-within:ring-primary"
+>
+	<input placeholder="Søk" type="text" class="w-24 lg:w-auto" bind:value={searchWord} />
 	<Icons iconName="zondicons:search" height="1.5rem" classNames="text-green" />
 </label>
