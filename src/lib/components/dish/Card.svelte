@@ -15,7 +15,7 @@
 </script>
 
 <button
-	class="card shadow-lg bg-white transform transition duration-300 hover:scale-110"
+	class="card shadow-lg bg-base-200 transform transition duration-300 hover:scale-110"
 	on:click={edit}
 >
 	<figure class="max-h-28 lg:max-h-40">

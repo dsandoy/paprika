@@ -36,13 +36,11 @@
 </script>
 
 <section class="flex flex-col items-center align-center w-full h-full m-0">
-	<div class="sticky top-0 bg-green-50 w-full lg:w-[80%] pb-8">
+	<div class="sticky top-0 w-full lg:w-[80%] pb-8">
 		<div class="w-full pl-4">
 			<h2 class="text-3xl mt-8 mb-4 lg:mb-8 lg:text-center">Matretter</h2>
 		</div>
-		<div
-			class="flex flex-row content-center gap-4 justify-between w-full pl-4 pr-4 h-12 bg-green-50"
-		>
+		<div class="flex flex-row content-center gap-4 justify-between w-full pl-4 pr-4 h-12">
 			<div class="flex flex-row justify-center items-center gap-3">
 				<div class="dropdown dropdown-top">
 					<div tabindex="0" role="button" class="btn m-1">
@@ -73,14 +71,23 @@
 			</div>
 			<div>
 				<DishSearch dishes={$dishes} bind:filteredDishes />
-				<span class="text-sm cursor-pointer">
-					Kategori:
-					<div class="badge badge-neutral">Matrett</div>
-				</span>
+				<div class="dropdown dropdown-top">
+					<span class="text-sm cursor-pointer" tabindex="-1">
+						Kategori:
+						<div class="badge badge-neutral">Matrett</div>
+					</span>
+					<p
+						class="dropdown-content z-[10] flex flex-row gap-2 items-center bg-base-300 text-xs p-4 rounded w-48"
+					>
+						<Icons iconName="zondicons:wrench" height="0.75rem" />
+						Her kan man snart endre søkskategori
+					</p>
+				</div>
 			</div>
 			<a href="/dishes/add">
-				<button class="btn btn-primary gap-2 text-white"
-					><Icons iconName="zondicons:add-solid" /><span class="hidden lg:block">Legg til</span>
+				<button class="btn btn-primary gap-2 text-white">
+					<span class="hidden lg:block">Legg til</span>
+					<Icons iconName="zondicons:add-solid" />
 				</button></a
 			>
 		</div>
@@ -89,7 +96,7 @@
 		{#if !data}
 			<div>"Ingen middager"</div>
 		{:else}
-			<div class="bg-green-50 pt-5 pb-12 flex items-center justify-center">
+			<div class=" pt-5 pb-12 flex items-center justify-center">
 				<Table bind:dishes={filteredDishes} />
 			</div>
 		{/if}

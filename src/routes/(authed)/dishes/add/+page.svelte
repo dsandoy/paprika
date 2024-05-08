@@ -91,7 +91,7 @@
 	});
 </script>
 
-<section class="flex flex-col items-center pb-8 justify-center bg-green-50">
+<section class="flex flex-col items-center pb-8 justify-center">
 	<h2 class="mb-12 mt-12 text-3xl">Legg til ny Matrett</h2>
 	<form
 		class="w-[95%] md:w-auto flex flex-col justify-center items-center gap-4"
@@ -101,8 +101,8 @@
 		bind:this={formElement}
 		enctype="multipart/form-data"
 	>
-		<div class="card shadow-lg border-[1px] border-grey-100 w-full p-4">
-			<h3 class="text-grey-300 text-right p-3">Matrettdetaljer</h3>
+		<div class="card shadow-lg bg-base-200 border-[1px] border-base-300 w-full p-4">
+			<h3 class="text-base-content/50 text-right p-3">Matrettdetaljer</h3>
 			<div class="grid grid-cols-1 lg:grid-cols-2 w-full">
 				<!-- upload image -->
 				<div class="flex lg:flex-col flex-row justify-center items-center w-full mb-5 gap-5">
@@ -112,7 +112,7 @@
 						<img class="h-24 w-24 bg-grey-100 rounded" src="/logo-green.svg" alt="upload" />
 					{/if}
 					<label
-						class="cursor-pointer btn btn-outline w-46 font-normal btn-primary"
+						class="cursor-pointer btn btn-outline w-46 font-normal btn-secondary"
 						for="upload_image"
 						>Velg Bilde
 						<input
@@ -150,8 +150,8 @@
 		</div>
 
 		<!-- ingredients -->
-		<div class="w-full p-5 mb-6 card shadow-lg border-grey-100 border-[1px]">
-			<h3 class="px-5 pb-5 text-grey-300 flex items-center justify-end gap-3">
+		<div class="w-full p-5 mb-6 card shadow-lg bg-base-200 border-base-300 border-[1px]">
+			<h3 class="px-5 pb-5 text-base-content/50 flex items-center justify-end gap-3">
 				ingredienser <InfoDropdown
 					>Ved å legge til ingredienser kan Paprika genere handleliste for deg</InfoDropdown
 				>
@@ -170,7 +170,7 @@
 					>
 					<button
 						type="button"
-						class=" btn btn-primary btn-outline w-32 text-base font-normal"
+						class=" btn btn-secondary btn-outline w-32 text-base font-normal"
 						on:click={addIngrendient}>Legg til</button
 					>
 				</div>
