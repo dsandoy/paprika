@@ -1,45 +1,22 @@
 <script lang="ts">
 	import BottomCircles from '$lib/components/BottomCircles.svelte';
 	import DishImage from '$lib/components/dish/DishImage.svelte';
-	import { DBService, DishQueries, PlanQueries } from '$lib/Firebase';
 	import { closePlans, dishes, user } from '$lib/stores';
-	import { DateHandler } from '$lib/utils';
-	import type { Dish, PlanEntry } from '$lib/types';
+	import type { Dish } from '$lib/types';
 	import { ValueError } from '$lib/errors';
 	import Loading from '$lib/components/Loading.svelte';
 	import Icons from '$lib/components/Icons.svelte';
 	import { navigations } from '$lib/utils';
+	import { DemoData } from '../../demodata';
 
 	let loadDinners = false;
 
 	function getDishes() {
-		loadDinners = true;
-		const q = DishQueries.dishes($user);
-		DBService.getResources(q).then((result) => {
-			dishes.set(result as Dish[]);
-		});
+		dishes.set(DemoData.dishes);
 	}
 
 	async function fetchDishPlan() {
-		const today = new Date();
-		const dataRange = [
-			DateHandler.getDayNDaysAway(today, -1),
-			DateHandler.getDayNDaysAway(today, 1)
-		];
-		const q = PlanQueries.getPlans($user, dataRange);
-		const dishPlans = (await DBService.getResources(q)) as unknown as PlanEntry[];
-		if (!dishPlans) return;
-
-		const dinnerDishes: Dish[] = [];
-		dishPlans.forEach((plan) => {
-			// fetch the dishes corresponding with
-			if (!plan.dish) return;
-			const dish = fetchDish(plan.dish);
-			dinnerDishes.push(dish);
-		});
-
-		closePlans.set(dinnerDishes);
-		loadDinners = false;
+		closePlans.set(DemoData.dishPlans);
 	}
 
 	function fetchDish(dishId: string) {

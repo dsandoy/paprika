@@ -12,7 +12,7 @@
 	>
 	<div
 		tabindex="-1"
-		class="dropdown-content z-[1] shadow bg-base-100 border-[1px] border-primary text-xs text-left p-2 rounded-sm w-52"
+		class="dropdown-content z-[1] shadow bg-base-100 border-[1px] border-primary text-xs text-base-content text-left p-2 rounded-sm w-52"
 	>
 		<slot />
 	</div>

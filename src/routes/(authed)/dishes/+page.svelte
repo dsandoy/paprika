@@ -43,7 +43,11 @@
 		<div class="flex flex-row content-center gap-4 justify-between w-full pl-4 pr-4 h-12">
 			<div class="flex flex-row justify-center items-center gap-3">
 				<div class="dropdown dropdown-top">
-					<div tabindex="0" role="button" class="btn m-1">
+					<div
+						tabindex="0"
+						role="button"
+						class="btn m-1 bg-base-200 border-base-300 hover:bg-base-300 hover:border-base-300"
+					>
 						{#if viewMode === 'table'}
 							<Icons iconName="zondicons:list" />
 						{:else if viewMode === 'card'}

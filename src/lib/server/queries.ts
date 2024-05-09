@@ -41,11 +41,20 @@ export class DishQueries {
 		}
 	}
 
-	public static async getMany(options: DQOptions = {}): Promise<Dish[]> {
+	public static async getMany(options: DQOptions = {}, session = null): Promise<Dish[]> {
 		try {
 			if (!options) {
-				// default behavior
-				throw new NotFoundError('Not implemented yet..');
+				if (session === null) throw new ValueError('Please provide a session!');
+
+				const dishes = await prisma.dish.findMany({
+					where: {
+						user: session.user.email
+					},
+					include: {
+						ingredients: true
+					}
+				});
+				return dishes;
 			}
 
 			if (options.all) {

@@ -1,43 +1,38 @@
 <script lang="ts">
-	import Dropdown from '../Dropdown.svelte';
-	import SecondaryButton from '../SecondaryButton.svelte';
-	import { user } from '$lib/stores';
-	import Button from '../Button.svelte';
 	import Icons from '../Icons.svelte';
-	import { auth } from '$lib/Firebase';
-	import { goto } from '$app/navigation';
-
-	async function SignOut() {
-		await auth.signOut();
-		goto('/');
-	}
+	import { page } from '$app/stores';
+	import { SignOut } from '@auth/sveltekit/components';
 </script>
 
-{#if $user}
-	<Dropdown
-		classNamesButton="flex items-center gap-3 cursor-pointer relative"
-		classNamesContent="w-48 absolute bg-gray-100 border-[1px] border-green z-10 text-black p-5 right-5 top-14 rounded "
-	>
-		<span slot="button">
-			{#if $user && $user.photoURL}
-				<img class="rounded-lg h-10 lg:h-11" src={$user.photoURL} alt="profile" />
+{#if $page.data.session}
+	<div class="dropdown dropdown-left dropdown-bottom">
+		<div tabindex="-1" class="mask mask-circle h-10 w-10 cursor-pointer">
+			{#if $page.data.session.user?.image}
+				<img src={$page.data.session.user.image} alt="profile" />
 			{:else}
-				<span class="p-8">
-					<Icons iconName="zondicons:user" classNames="h-10 lg:h-11" />
-				</span>
+				<Icons iconName="zondicons:user" />
 			{/if}
-		</span>
-		<div slot="content" class="flex flex-col gap-4">
-			<p class="text-sm">{$user?.displayName || 'TestUser'}</p>
-			<SecondaryButton classNames="w-28 h-10 px-2 text-sm hover:bg-red rounded" on:click={SignOut}
-				>Logg ut</SecondaryButton
-			>
 		</div>
-	</Dropdown>
+		<div class="dropdown-content bg-base-100 rounded-box shadow z-[1] w-52 border-border-[1px]">
+			<strong class="text-xs p-4 pl-6 pt-6">{$page.data.session.user?.name ?? 'User'}</strong>
+			<ul class="menu" tabindex="-1">
+				<li>
+					<a class="justify-between" href="/profile"
+						>Profil<Icons iconName="zondicons:user" height="0.75rem" /></a
+					>
+				</li>
+				<li>
+					<SignOut className=""
+						><button
+							class="flex flex-row justify-between items-center w-40 text-accent"
+							slot="submitButton"
+							>Logg ut <Icons iconName="zondicons:stand-by" height="0.75rem" /></button
+						></SignOut
+					>
+				</li>
+			</ul>
+		</div>
+	</div>
 {:else}
-	<Button
-		classNames="w-20 h-9 px-2 text-sm text-gray-900 bg-white rounded-lg hover:bg-nice-blue hover:text-white"
-	>
-		<a href="/login"> Logg inn</a>
-	</Button>
+	<a class="btn btn-primary btn-sm" href="/login"> Logg inn</a>
 {/if}
