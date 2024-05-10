@@ -21,6 +21,23 @@ export interface Dish {
 	user: string;
 }
 
+/** Dinner or dish had for dinner */
+export interface ClientDish {
+	id?: string;
+	/** What is the dish called */
+	name: string;
+	/** Url to the recipe */
+	url: string;
+	/** When it was last scheduled in the dinner scheduler */
+	lastMade?: Timestamp;
+	/** The image number of the dinner, used if no custom image */
+	image?: string;
+	/** Used when creating shopping list */
+	ingredients?: Ingredient[];
+	/** The user email that created the dinner */
+	user?: string;
+}
+
 export interface PlanEntry {
 	id?: string;
 	date: Timestamp;

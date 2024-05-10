@@ -64,9 +64,13 @@ export class DBService {
 	public static async uploadImage(file: File) {
 		const randomNumber = Math.floor(Math.random() * 10000);
 		const storageRef = ref(storage, `dishes/${randomNumber}-${file.name}`);
-		await uploadBytes(storageRef, file);
-		const url = await getDownloadURL(storageRef);
-		return url;
+		try {
+			await uploadBytes(storageRef, file);
+			const url = await getDownloadURL(storageRef);
+			return url;
+		} catch (error) {
+			console.error('Error uploading image: ', error);
+		}
 	}
 
 	/** Creates empty plan entries for the week starting on monday

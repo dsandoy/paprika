@@ -53,7 +53,7 @@
 	$: fetchDishPlan(), $dishes;
 </script>
 
-<main class="flex flex-col items-center left-0 right-0 absolute top-16 bottom-0 gap-2 bg-green/10">
+<main class="flex flex-col items-center left-0 right-0 absolute top-16 bottom-0 gap-2">
 	<!-- what is for dinner ?  -->
 	<div class="w-full p-4 mt-4">
 		<h1 class="text-2xl lg:text-3xl lg:text-center">Dashbord</h1>

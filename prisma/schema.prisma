@@ -4,6 +4,8 @@
 // Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
+// NOTE: When making changes, make sure to run npx prisma generate in the terminal. And create a migration or push to the db.
+
 generator client {
   provider = "prisma-client-js"
 }
@@ -17,11 +19,14 @@ datasource db {
 model Dish {
   id Int @id @default(autoincrement())
   name String
+  // url to recipe
   url String
+  // url to image
   image String?
+  // The user email
   user String
-  // createdAt DateTime @default(now())
-  // lastMade DateTime
+  createdAt DateTime @default(now())
+  lastMade DateTime?
   ingredients Ingredient[]
 
 }

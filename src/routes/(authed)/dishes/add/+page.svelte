@@ -23,12 +23,6 @@
 
 	if (data.dishes) dishes.set(data.dishes as Dish[]);
 
-	try {
-		console.log('Dishes: ', data.dishes);
-	} catch {
-		console.warn('Did not render any dishes...');
-	}
-
 	/** Tell the user that the ingredient is already in the list */
 	function validateIngredients() {
 		if ($ingredients.some((i) => i === ingredient)) {
@@ -112,7 +106,7 @@
 						<img class="h-24 w-24 bg-grey-100 rounded" src="/logo-green.svg" alt="upload" />
 					{/if}
 					<label
-						class="cursor-pointer btn btn-outline w-46 font-normal btn-secondary"
+						class="cursor-pointer btn w-46 btn-outline font-normal btn-accent"
 						for="upload_image"
 						>Velg Bilde
 						<input
@@ -152,13 +146,14 @@
 		<!-- ingredients -->
 		<div class="w-full p-5 mb-6 card shadow-lg bg-base-200 border-base-300 border-[1px]">
 			<h3 class="px-5 pb-5 text-base-content/50 flex items-center justify-end gap-3">
-				ingredienser <InfoDropdown
+				Ingredienser <InfoDropdown
 					>Ved å legge til ingredienser kan Paprika genere handleliste for deg</InfoDropdown
 				>
 			</h3>
 			<div class="grid grid-cols-1 lg:grid-cols-2 gap-6 w-full">
 				<!-- include ingredients -->
 				<input type="hidden" value={$ingredients} name="ingredients" />
+				<input type="hidden" value={data.user.email} name="user" />
 				<div class="flex flex-col items-center gap-6">
 					<TextInput
 						name="temp-ingredients"
@@ -170,7 +165,7 @@
 					>
 					<button
 						type="button"
-						class=" btn btn-secondary btn-outline w-32 text-base font-normal"
+						class="btn-accent btn btn-outline w-32 text-base font-normal"
 						on:click={addIngrendient}>Legg til</button
 					>
 				</div>
@@ -195,7 +190,7 @@
 		</div>
 		<ErrorAlert bind:v />
 		<button
-			class="w-48 btn btn-primary text-white font-normal text-lg"
+			class="btn btn-primary btn-lg text-white font-normal text-lg"
 			type="submit"
 			on:click={AddDish}
 		>

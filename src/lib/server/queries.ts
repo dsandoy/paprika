@@ -1,5 +1,7 @@
 import { NotFoundError, ValueError } from '$lib/errors';
 import prisma from '$lib/prisma';
+import type { ClientDish } from '$lib/types';
+import type { User } from '@auth/sveltekit';
 import type { Dish } from '@prisma/client';
 
 export class ObjectCreationError extends Error {
@@ -29,11 +31,18 @@ export type DQOptions = {
 };
 
 export class DishQueries {
-	public static async create(dish: Dish) {
-		if (!dish) throw new ValueError('A dish must be provided');
+	public static async create(dish: ClientDish) {
+		if (!dish) throw new ValueError('A dish  must be provided');
+		if (!dish.user) throw new ValueError('No user provided in the dish');
 		try {
 			const result = await prisma.dish.create({
-				data: dish
+				data: {
+					name: dish.name,
+					url: dish.url,
+					user: dish.user,
+					image: dish.image,
+					ingredients: { create: DishQueries.mapIngredients(dish.ingredients) }
+				}
 			});
 			if (!result) throw new ObjectCreationError('Failed to create dish');
 		} catch (error) {
@@ -41,20 +50,20 @@ export class DishQueries {
 		}
 	}
 
-	public static async getMany(options: DQOptions = {}, session = null): Promise<Dish[]> {
+	public static async getMany(user: User, options: DQOptions = {}): Promise<Dish[]> {
 		try {
 			if (!options) {
-				if (session === null) throw new ValueError('Please provide a session!');
-
+				if (!user.email) throw new ValueError('No user email provided');
 				const dishes = await prisma.dish.findMany({
 					where: {
-						user: session.user.email
+						user: user.email
 					},
 					include: {
 						ingredients: true
 					}
 				});
-				return dishes;
+				if (dishes) return dishes;
+				throw new NotFoundError('Dishes not found');
 			}
 
 			if (options.all) {
@@ -105,5 +114,16 @@ export class DishQueries {
 		} catch (error) {
 			throw new ObjectUpdateError('Failed to update dish');
 		}
+	}
+
+	public static mapIngredients(ingredients: string[] | undefined) {
+		if (ingredients === undefined) return [];
+		const mappedIngredients: { value: string }[] = [];
+		for (const ing of ingredients) {
+			mappedIngredients.push({
+				value: ing
+			});
+		}
+		return mappedIngredients;
 	}
 }
