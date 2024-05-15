@@ -211,7 +211,7 @@
 			</button>
 			<button
 				formaction="?/delete"
-				class="btn btn-accent btn-lg btn-outline text-white font-normal text-lg"
+				class="btn btn-accent btn-lg text-white font-normal text-lg"
 				on:click={() => (loadingDelete = true)}
 			>
 				<Loading bind:loading={loadingDelete}>Slett</Loading>

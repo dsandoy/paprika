@@ -10,7 +10,8 @@
 
 	let viewMode: 'table' | 'card' = 'table';
 
-	ingredients.set(['']);
+	// reset the ingredients in case the user if coming from a dish page...
+	ingredients.set([]);
 
 	function setDishes() {
 		if (!data.dishes) {

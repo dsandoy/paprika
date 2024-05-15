@@ -1,9 +1,8 @@
 import { writable } from 'svelte/store';
-import type { ShoppingList, PlanEntry, CreateIngredient } from './types';
-import type { Dish } from '@prisma/client';
+import type { ShoppingList, PlanEntry, CreateIngredient, ReadDish } from './types';
 import type { User } from 'firebase/auth';
 
-export const dishes = writable<Dish[]>([] as Dish[]);
+export const dishes = writable<ReadDish[]>([] as ReadDish[]);
 
 /** used to store the added ingrendients to a dish that is created or edited..
  */
@@ -18,6 +17,6 @@ export const currentPlans = writable<PlanEntry[]>([] as PlanEntry[]);
 /** The plan entries for the upcoming week */
 export const nextWeekPlans = writable<PlanEntry[]>([] as PlanEntry[]);
 
-export const closePlans = writable<Dish[]>([]);
+export const closePlans = writable<ReadDish[]>([]);
 
 export const shoppingList = writable<ShoppingList>({} as ShoppingList);
