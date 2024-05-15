@@ -23,6 +23,7 @@ export async function checkUser(event: RequestEvent) {
 	return session.user as User;
 }
 
+// TODO DO I need this?
 export class IngredientConverter {
 	/**
 	 *

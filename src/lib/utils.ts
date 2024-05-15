@@ -42,7 +42,7 @@ export class DateHandler {
 
 	/** Returns the date the set distance away. Works both back and forewards.. */
 	public static getDayNDaysAway(date: Date, distance: number) {
-		return new Date(date.getFullYear(), date.getMonth(), date.getDate() + distance);
+		return new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate() + distance));
 	}
 
 	/** Checks if the provided date preceeds the current date */

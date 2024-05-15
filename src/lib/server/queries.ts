@@ -1,6 +1,6 @@
 import { NotFoundError, ValueError } from '$lib/errors';
 import prisma from '$lib/prisma';
-import type { CreateDish, UpdateDish } from '$lib/types';
+import type { CreateDish, CreatePlan, UpdateDish, UpdatePlan } from '$lib/types';
 import type { Dish, Prisma } from '@prisma/client';
 
 export class ObjectCreationError extends Error {
@@ -198,5 +198,101 @@ export class ImageQueries {
 		} catch {
 			return;
 		}
+	}
+}
+
+export class PlanQueries {
+	public static async delete(id: number) {
+		if (!id) throw new ValueError('Please provide an id ');
+		await prisma.plan.delete({
+			where: {
+				id: id
+			}
+		});
+	}
+
+	/**
+	 *
+	 * @param plan the plan to create
+	 * ```ts
+	 * try {
+	 * await PlanQueries.create(plan);
+	 * } catch(e) {
+	 * console.error(e);
+	 * }
+	 * ```
+	 */
+	public static async create(plan: CreatePlan) {
+		if (!plan) throw new ValueError('No plan provided');
+		await prisma.plan.create({
+			data: plan
+		});
+	}
+
+	public static async createMany(plans: CreatePlan[]) {
+		if (!plans || plans.length == 0) throw new ValueError('No plans provided');
+		await prisma.plan.createMany({
+			data: plans
+		});
+	}
+
+	/**
+	 * Update the dish in the provided plan
+	 * @param plan the plan to create
+	 * @param dishId the id of the dish to update
+	 * ```ts
+	 * try {
+	 * await PlanQueries.update(plan, dish.id);
+	 * } catch(e) {
+	 * console.error(e);
+	 * }
+	 * ```
+	 */
+	public static async updateDish(plan: UpdatePlan, dishId: number) {
+		if (!plan) throw new ValueError('No plan provided');
+		if (!dishId) throw new ValueError('No dishId provided');
+		await prisma.plan.update({
+			where: {
+				id: plan.id
+			},
+			data: {
+				dishId: dishId
+			}
+		});
+	}
+
+	/**
+	 *
+	 * @param email user email
+	 * @param dates date range to fetch plans from
+	 * @returns plans
+	 * ```ts
+	 * try {
+	 * const plans = await PlanQueries.getPlans(email, dates);
+	 * } catch(e) {
+	 *if(e instance of NotFoundError) {
+	 *	// create missing plans
+	 *  PlansHandler.createMissingPlans(email, dates);
+	 * 		}
+	 * }
+	 * ```
+	 */
+	public static async getPlans(email: string | null, dates: Date[]) {
+		if (!email) throw new ValueError('No user provided');
+		if (!dates) throw new ValueError('No dates provided');
+		const plans = await prisma.plan.findMany({
+			where: {
+				user: email,
+				date: {
+					gte: dates[0],
+					lte: dates[1]
+				}
+			},
+			include: {
+				dish: true
+			}
+		});
+		if (!plans || plans.length == 0) throw new NotFoundError('No plans found');
+		return plans;
 	}
 }

@@ -1,3 +1,4 @@
+import type { Dish } from '@prisma/client';
 import type { Timestamp } from 'firebase/firestore';
 
 export interface PlanEntry {
@@ -75,4 +76,26 @@ export interface ReadDish {
 	url: string;
 	user: string;
 	ingredients?: ReadIngredient[];
+}
+
+export interface CreatePlan {
+	date: Date;
+	user: string;
+}
+
+export interface UpdatePlan {
+	id: number;
+	date: Date;
+	user: string;
+	dishId?: number;
+	dish?: ReadDish;
+}
+
+export interface ReadPlan {
+	id: number;
+	date: Date;
+	user: string;
+	dish: ReadDish | null;
+	dishId: number | null;
+	checked?: boolean;
 }

@@ -5,5 +5,7 @@ export async function load(event) {
 	if (!session?.user) {
 		redirect(307, '/login');
 	}
-	return {};
+	return {
+		user: session.user
+	};
 }
