@@ -1,14 +1,17 @@
-import { DemoData } from '../../demodata';
+import { DishQueries } from '$lib/server/queries';
+import { checkUser } from '$lib/server/utils';
 
-export const load = async () => {
+export const load = async (event) => {
 	try {
-		// const dishes = await DishQueries.getMany({ all: true });
-		const dishes = DemoData.dishes;
+		const user = await checkUser(event);
+		const dishes = await DishQueries.getMany(user.email as string);
 		if (dishes)
 			return {
+				user: user,
 				dishes: dishes
 			};
 		return {
+			user: user,
 			error: 'failed to get dishes'
 		};
 	} catch (error) {

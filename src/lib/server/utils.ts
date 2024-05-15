@@ -23,13 +23,44 @@ export async function checkUser(event: RequestEvent) {
 	return session.user as User;
 }
 
-/** Handle the comma separated list of ingredients and returns ingredient array*/
-export function handleIngredients(ingredients: string | null): string[] {
-	if (ingredients === null) {
-		return [];
+export class IngredientConverter {
+	/**
+	 *
+	 * @param ingredients array of ingredients, example: ["chicken", "lettuce", "tomato"]
+	 * @returns array of {value: string}, example: [{value: "chicken"}, {value: "lettuce"}, {value: "tomato"}]
+	 */
+	public static fromArrToObj(ingredients: string[]): { value: string }[] {
+		const mappedIngredients: { value: string }[] = [];
+		for (const ing of ingredients) {
+			mappedIngredients.push({
+				value: ing
+			});
+		}
+		return mappedIngredients;
 	}
-	const arr = ingredients.split(',');
-	return arr;
+
+	/**
+	 *
+	 * @param ingredients string, example: "chicken, lettuce, tomato"
+	 * @returns array of string, example: ["chicken", "lettuce", "tomato"]
+	 */
+	public static fromStringToArr(ingredients: string): string[] {
+		if (ingredients === null) {
+			return [];
+		}
+		const arr = ingredients.split(',');
+		return arr;
+	}
+
+	/**
+	 *
+	 * @param ingredients string, example: "chicken, lettuce, tomato"
+	 * @returns array of {value: string}, example: [{value: "chicken"}, {value: "lettuce"}, {value: "tomato"}]
+	 */
+	public static fromStringToObj(ingredients: string): { value: string }[] {
+		const arr = this.fromStringToArr(ingredients);
+		return this.fromArrToObj(arr);
+	}
 }
 
 export function getEmail(user: User | null) {

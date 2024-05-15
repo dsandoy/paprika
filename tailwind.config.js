@@ -92,6 +92,7 @@ export default {
   ],
   },
   plugins: [
+    require("@tailwindcss/typography"),
     require("daisyui"),
   ],
   darkTheme: 'dark',

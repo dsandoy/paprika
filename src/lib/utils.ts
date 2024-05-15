@@ -1,6 +1,7 @@
 import type { User } from 'firebase/auth';
 import { DBService, PlanQueries } from './Firebase';
-import type { Dish, Ingredient, PlanEntry, ShoppingListEntry } from './types';
+import type { ClientDish, Ingredient, PlanEntry, ShoppingListEntry } from './types';
+import type { Dish } from '@prisma/client';
 import { Timestamp } from 'firebase/firestore';
 import { ArrayEmptyError, NotFoundError, ObjectExists, ValueError } from './errors';
 
@@ -130,10 +131,17 @@ export class DishValidator {
 	}
 	/** Check that the name is not empty or already in use
 	 * Returns 0 if valid, EMPTY if empty, IN_USE if already in use
+	 * ```ts
+	 * // check if name is in dishes
+	 * const v = DishValidator.validateName('name', dishes);
+	 *  // check for uniquness only:
+	 * const v = DishValidator.validateName('name');
+	 * ```
 	 */
-	public static validateName(name: string, dishes: Dish[]) {
+	public static validateName(name: string, dishes: Dish[] | ClientDish[] = []) {
 		if (name.length === 0) return this.EMPTY('Navnet');
 
+		if (dishes.length === 0) return this.VALID;
 		const names = dishes.map((d) => d.name);
 		if (names.includes(name)) {
 			return this.IN_USE('Navnet');
@@ -162,7 +170,7 @@ export class DishValidator {
 	/** Validates all fields of a dish simultaneously
 	 *  To be used before submitting a dish to the database
 	 */
-	public static validateAll(dish: Dish, dishes: Dish[], nameOkay = false) {
+	public static validateAll(dish: ClientDish, dishes: ClientDish[], nameOkay = false) {
 		let result = this.VALID;
 		if (!nameOkay) {
 			result = this.validateName(dish.name, dishes);

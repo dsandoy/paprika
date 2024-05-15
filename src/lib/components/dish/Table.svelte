@@ -1,11 +1,11 @@
 <script lang="ts">
-	import type { Dish } from '$lib/types';
+	import type { Dish } from '@prisma/client';
 	import Icons from '../Icons.svelte';
 
 	export let dishes: Dish[];
 
 	function displayIngredients(dish: Dish) {
-		const ingredients = dish.ingredients;
+		const ingredients = dish.ingredients?.map((i) => i.value) || [];
 		if (ingredients) return ingredients.join(', ');
 		return '';
 	}
@@ -37,7 +37,7 @@
 						</td>
 						<td>
 							<div class="flex flex-row gap-4 items-center justify-start">
-								{#if !dish.customImage}
+								{#if !dish.imageId}
 									<div class="w-12 lg:w-16">
 										<button
 											class="bg-gray-200 h-12 w-12 lg:h-16 lg:w-16 flex align-center text-gray-500 items-center rounded hover:bg-gray-300 hover:text-gray-500"
@@ -49,7 +49,7 @@
 								{:else}
 									<div class="avatar">
 										<div class="mask mask-squircle w-12 h-12 lg:w-16 lg:h-16">
-											<img src={dish.customImage} alt="Dish" />
+											<img src={`/api/dishes/${dish.id}/image/${dish.imageId}`} alt="Dish" />
 										</div>
 									</div>
 								{/if}
@@ -70,7 +70,7 @@
 							{/if}
 						</td>
 						<td>
-							<a href="/dishes/edit/{dish.name}" class="btn btn-secondary rounded-lg lg:rounded-sm">
+							<a href="/dishes/edit/{dish.id}" class="btn btn-secondary rounded-lg lg:rounded-sm">
 								<span class="hidden lg:block">Endre</span>
 								<Icons iconName="zondicons:edit-pencil" height="1rem" />
 							</a>

@@ -44,6 +44,7 @@
 		"@auth/sveltekit": "^1.0.1",
 		"@iconify/svelte": "^3.1.6",
 		"@prisma/client": "^5.13.0",
+		"@tailwindcss/typography": "^0.5.13",
 		"@vercel/postgres": "^0.8.0",
 		"daisyui": "^4.10.5",
 		"firebase": "^9.23.0",

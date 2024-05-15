@@ -7,7 +7,7 @@
 
 	function edit() {
 		try {
-			window.location.href = 'dishes/edit/' + dish.name;
+			window.location.href = 'dishes/edit/' + dish.id;
 		} catch {
 			return;
 		}

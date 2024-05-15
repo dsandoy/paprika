@@ -1,8 +1,8 @@
 import { NotFoundError, ValueError } from '$lib/errors';
 import prisma from '$lib/prisma';
 import type { ClientDish } from '$lib/types';
-import type { User } from '@auth/sveltekit';
-import type { Dish } from '@prisma/client';
+import type { Dish, Prisma } from '@prisma/client';
+import type { Image } from '@prisma/client';
 
 export class ObjectCreationError extends Error {
 	public constructor(message: string) {
@@ -25,13 +25,8 @@ export class InvalidOptions extends Error {
 	}
 }
 
-export type DQOptions = {
-	all?: boolean;
-	where?: Partial<Dish>;
-};
-
 export class DishQueries {
-	public static async create(dish: ClientDish) {
+	public static async create(dish: ClientDish, image: Image | null = null) {
 		if (!dish) throw new ValueError('A dish  must be provided');
 		if (!dish.user) throw new ValueError('No user provided in the dish');
 		try {
@@ -40,8 +35,8 @@ export class DishQueries {
 					name: dish.name,
 					url: dish.url,
 					user: dish.user,
-					image: dish.image,
-					ingredients: { create: DishQueries.mapIngredients(dish.ingredients) }
+					ingredients: { create: DishQueries.mapIngredients(dish.ingredients) },
+					image: image ? { create: image } : undefined
 				}
 			});
 			if (!result) throw new ObjectCreationError('Failed to create dish');
@@ -50,49 +45,35 @@ export class DishQueries {
 		}
 	}
 
-	public static async getMany(user: User, options: DQOptions = {}): Promise<Dish[]> {
+	public static async getMany(email: string) {
 		try {
-			if (!options) {
-				if (!user.email) throw new ValueError('No user email provided');
-				const dishes = await prisma.dish.findMany({
-					where: {
-						user: user.email
-					},
-					include: {
-						ingredients: true
-					}
-				});
-				if (dishes) return dishes;
-				throw new NotFoundError('Dishes not found');
-			}
-
-			if (options.all) {
-				const dishes: Dish[] = await prisma.dish.findMany();
-				if (dishes) return dishes;
-
-				throw new NotFoundError('Dishes not found');
-			}
-
-			if (options.where) {
-				const dishes: Dish[] = await prisma.dish.findMany({
-					where: options.where
-				});
-				if (dishes) return dishes;
-				throw new NotFoundError('Dishes not found');
-			} else {
-				throw new InvalidOptions('please provide valid options' + options);
-			}
+			if (!email) throw new ValueError('No user email provided');
+			const dishes = await prisma.dish.findMany({
+				where: {
+					user: email
+				},
+				include: {
+					ingredients: true
+				}
+			});
+			if (dishes) return dishes;
+			throw new NotFoundError('Dishes not found');
 		} catch (error) {
 			throw new NotFoundError('Dishes not found' + error);
 		}
 	}
 
-	public static async getById(id: number) {
-		if (!id) throw new ValueError('Please provide where options');
+	public static async getById(id: number, email: string | null | undefined) {
+		if (!id) throw new ValueError('Please provide an id options');
+		if (!email) throw new ValueError('Please provide a valid email');
 		try {
-			const dish: Dish | null = await prisma.dish.findUnique({
+			const dish = await prisma.dish.findUnique({
 				where: {
-					id: id
+					id: id,
+					user: email
+				},
+				include: {
+					ingredients: true
 				}
 			});
 			if (dish) return dish;
@@ -104,15 +85,42 @@ export class DishQueries {
 
 	public static async update(dish: Dish) {
 		if (!dish || !dish.id) throw new ValueError('dish not valid!' + dish);
+		let data: Prisma.DishCreateInput;
 		try {
+			data = {
+				name: dish.name,
+				url: dish.url,
+				ingredients: {
+					updateMany: {
+						where: {
+							dishId: dish.id
+						},
+						data: dish.ingredients
+					}
+				}
+			};
+
+			if (dish.image)
+				if (dish.image.size >= 0) {
+					await prisma.image.deleteMany({
+						where: {
+							dishId: dish.id
+						}
+					});
+					data = {
+						...data,
+						image: { create: dish.image }
+					};
+				}
+
 			await prisma.dish.update({
 				where: {
 					id: dish.id
 				},
-				data: dish
+				data: data
 			});
 		} catch (error) {
-			throw new ObjectUpdateError('Failed to update dish');
+			throw new ObjectUpdateError('Failed to update dish' + error);
 		}
 	}
 

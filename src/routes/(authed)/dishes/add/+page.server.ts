@@ -4,7 +4,7 @@ import { DemoData } from '../../../demodata.js';
 import type { ClientDish } from '$lib/types.js';
 import { DishQueries } from '$lib/server/queries.js';
 import { checkUser, handleIngredients } from '$lib/server/utils.js';
-import { DBService } from '$lib/Firebase.js';
+import type { Image } from '@prisma/client';
 
 export const load = async (event) => {
 	// note that parent fetches dishes...
@@ -54,17 +54,24 @@ export const actions = {
 				data: dish
 			};
 
-		// try {
-		if (image) {
-			const url = await DBService.uploadImage(image);
-			console.log('URL of uploaded image!', url);
-			dish.image = url;
+		let imagePr: Omit<Image, 'id'> | null = null;
+		if (image instanceof File) {
+			const ciArray = await image?.arrayBuffer();
+			const ciBuffer = Buffer.from(ciArray);
+
+			imagePr = {
+				name: image.name,
+				size: image.size,
+				type: image.type,
+				lastModified: image.lastModified,
+				data: ciBuffer
+			};
 		}
 		// } catch (error) {
 		// console.error(error);
 		// }
 
-		await DishQueries.create(dish);
+		await DishQueries.create(dish, imagePr);
 
 		redirect(307, '/dishes/add/success');
 	}

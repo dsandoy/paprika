@@ -22,7 +22,8 @@ model Dish {
   // url to recipe
   url String
   // url to image
-  image String?
+  image Image? @relation(fields: [imageId], references: [id])
+  imageId Int
   // The user email
   user String
   createdAt DateTime @default(now())
@@ -37,4 +38,14 @@ model Ingredient {
   dish   Dish   @relation(fields: [dishId], references: [id])
   dishId Int
   @@index([dishId])
+}
+
+model Image {
+  id           Int    @id @default(autoincrement())
+  name         String
+  size         Int
+  type         String
+  lastModified Float
+  data         Bytes
+  Dish Dish[]
 }

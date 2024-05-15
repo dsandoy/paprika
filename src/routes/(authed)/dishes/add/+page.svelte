@@ -3,7 +3,6 @@
 	import { DishValidator, type ValidationResult } from '$lib/utils.js';
 	import { onMount } from 'svelte';
 	import BottomCircles from '$lib/components/BottomCircles.svelte';
-	import type { Dish } from '$lib/types.js';
 	import Loading from '$lib/components/Loading.svelte';
 	import TextInput from '$lib/components/forms/TextInput.svelte';
 	import Icons from '$lib/components/Icons.svelte';
@@ -13,19 +12,18 @@
 
 	export let data;
 	export let form;
-	let formElement: HTMLFormElement;
-	let ingredient = '';
+	let ingredient = { value: '' };
 	let url_text = '';
 	let name_text = '';
 	let imageURL: string | null = null;
 	let image: File | undefined;
 	let loading = false;
 
-	if (data.dishes) dishes.set(data.dishes as Dish[]);
+	if (data.dishes) dishes.set(data.dishes);
 
 	/** Tell the user that the ingredient is already in the list */
 	function validateIngredients() {
-		if ($ingredients.some((i) => i === ingredient)) {
+		if ($ingredients.some((i) => i.value === ingredient.value)) {
 			return {
 				is_valid: false,
 				message: 'Ingrediensen er allerede lagt til'
@@ -41,10 +39,10 @@
 	const addIngrendient = () => {
 		// prevent empty or duplicated ingredients
 		if (!ingredient) return;
-		if ($ingredients.some((i) => i === ingredient)) return;
+		if ($ingredients.some((i) => i.value === ingredient.value)) return;
 
 		$ingredients.push(ingredient);
-		ingredient = '';
+		ingredient = { value: '' };
 		$ingredients = $ingredients;
 	};
 
@@ -75,7 +73,7 @@
 	$: v = form?.v || v;
 	$: if (!v.is_valid) loading = false;
 
-	function AddDish() {
+	async function AddDish() {
 		loading = true;
 	}
 
@@ -92,7 +90,6 @@
 		method="post"
 		use:enhance
 		novalidate
-		bind:this={formElement}
 		enctype="multipart/form-data"
 	>
 		<div class="card shadow-lg bg-base-200 border-[1px] border-base-300 w-full p-4">
@@ -157,7 +154,7 @@
 				<div class="flex flex-col items-center gap-6">
 					<TextInput
 						name="temp-ingredients"
-						bind:value={ingredient}
+						bind:value={ingredient.value}
 						validateFunction={validateIngredients}
 						placeholder="5dL melk"
 					>
@@ -176,10 +173,10 @@
 								type="button"
 								class="flex flex-row hover:bg-red hover:text-white focus:bg-red focus:text-white text-sm lg:text-base btn min-h-0 h-8 font-normal bg-inherit border-none shadow-none pl-5 pr-5"
 								on:click={() => ($ingredients = $ingredients.filter((i) => i !== ingredient))}
-								>{ingredient}
+								>{ingredient.value}
 								<Icons
 									iconName="zondicons:trash"
-									classNames="text-base-100"
+									classNames="text-base-200"
 									height="1rem"
 								/></button
 							>
