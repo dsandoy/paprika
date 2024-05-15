@@ -6,14 +6,9 @@ export const GET = async ({ params, setHeaders }) => {
 		error(404, 'Dish not found');
 	}
 
-	const imageId = parseInt(params.imageId);
-	if (!imageId) {
-		error(404, 'Image not found');
-	}
-
 	const image = await prisma.image.findUnique({
 		where: {
-			id: imageId
+			dishId: parseInt(params.dishId)
 		}
 	});
 
@@ -26,8 +21,7 @@ export const GET = async ({ params, setHeaders }) => {
 	setHeaders({
 		'Content-Type': image.type,
 		'Content-Length': image.size.toString(),
-		'Last-Modified': new Date(image.lastModified).toUTCString(),
-		'Cache-Control': 'public, max-age=600'
+		'Last-Modified': new Date(image.lastModified).toUTCString()
 	});
 
 	return new Response(imageBlob, {

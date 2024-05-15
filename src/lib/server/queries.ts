@@ -1,8 +1,7 @@
 import { NotFoundError, ValueError } from '$lib/errors';
 import prisma from '$lib/prisma';
-import type { ClientDish } from '$lib/types';
+import type { CreateDish, UpdateDish } from '$lib/types';
 import type { Dish, Prisma } from '@prisma/client';
-import type { Image } from '@prisma/client';
 
 export class ObjectCreationError extends Error {
 	public constructor(message: string) {
@@ -26,26 +25,53 @@ export class InvalidOptions extends Error {
 }
 
 export class DishQueries {
-	public static async create(dish: ClientDish, image: Image | null = null) {
-		if (!dish) throw new ValueError('A dish  must be provided');
-		if (!dish.user) throw new ValueError('No user provided in the dish');
+	/** Converts a CreateDish to a Prisma.DishCreateInput */
+	private static processCreateDish(dish: CreateDish) {
+		const data: Prisma.DishCreateInput = {
+			name: dish.name,
+			url: dish.url,
+			user: dish.user
+		};
+		if (dish.ingredients) data.ingredients = { create: dish.ingredients };
+		if (dish.image) data.image = { create: dish.image };
+		return data;
+	}
+
+	/**
+	 *
+	 * @param dish Dish to be created
+	 * @returns dish if successful
+	 * ```ts
+	 * try {
+	 * 	 const result = await DishQueries.create(dish);
+	 * } catch(e) {
+	 * 	 console.error(e);
+	 * }
+	 * ```
+	 */
+	public static async create(dish: CreateDish) {
+		if (!dish) throw new ValueError('No dish provided');
+		if (!dish.name) throw new ValueError('No name provided');
+		if (!dish.user) throw new ValueError('No user provided');
+		const data = this.processCreateDish(dish);
+
 		try {
 			const result = await prisma.dish.create({
-				data: {
-					name: dish.name,
-					url: dish.url,
-					user: dish.user,
-					ingredients: { create: DishQueries.mapIngredients(dish.ingredients) },
-					image: image ? { create: image } : undefined
-				}
+				data: data
 			});
-			if (!result) throw new ObjectCreationError('Failed to create dish');
+			return result as Dish;
 		} catch (error) {
 			throw new ObjectCreationError('Failed to create dish' + error);
 		}
 	}
 
+	/**
+	 *
+	 * @param email user email of current user
+	 * @return array of dishes
+	 */
 	public static async getMany(email: string) {
+		// TODO: using email is bad for security I think
 		try {
 			if (!email) throw new ValueError('No user email provided');
 			const dishes = await prisma.dish.findMany({
@@ -56,10 +82,9 @@ export class DishQueries {
 					ingredients: true
 				}
 			});
-			if (dishes) return dishes;
-			throw new NotFoundError('Dishes not found');
+			return dishes;
 		} catch (error) {
-			throw new NotFoundError('Dishes not found' + error);
+			throw new NotFoundError('Failed to find dishes, reason: ' + error);
 		}
 	}
 
@@ -83,36 +108,45 @@ export class DishQueries {
 		}
 	}
 
-	public static async update(dish: Dish) {
-		if (!dish || !dish.id) throw new ValueError('dish not valid!' + dish);
-		let data: Prisma.DishCreateInput;
-		try {
-			data = {
-				name: dish.name,
-				url: dish.url,
-				ingredients: {
-					updateMany: {
-						where: {
-							dishId: dish.id
-						},
-						data: dish.ingredients
-					}
-				}
-			};
+	private static processUpdateDish(dish: UpdateDish) {
+		const data: Prisma.DishUpdateInput = {
+			name: dish.name,
+			url: dish.url
+		};
+		if (dish.ingredients) {
+			data.ingredients = { create: dish.ingredients };
+		}
+		if (dish.image && dish.image.size > 0) data.image = { create: dish.image };
+		return data;
+	}
 
-			if (dish.image)
-				if (dish.image.size >= 0) {
-					await prisma.image.deleteMany({
+	public static async update(dish: UpdateDish) {
+		if (!dish || !dish.id)
+			throw new ValueError('dish not valid, missing ID or not provided! Dish: ' + dish);
+		try {
+			const data = this.processUpdateDish(dish);
+			if (data.ingredients) {
+				try {
+					await prisma.ingredient.deleteMany({
 						where: {
 							dishId: dish.id
 						}
 					});
-					data = {
-						...data,
-						image: { create: dish.image }
-					};
+				} catch (e) {
+					console.log('No entry to delete..');
 				}
-
+			}
+			if (data.image) {
+				try {
+					await prisma.image.delete({
+						where: {
+							dishId: dish.id
+						}
+					});
+				} catch (e) {
+					console.log('No entry to delete..');
+				}
+			}
 			await prisma.dish.update({
 				where: {
 					id: dish.id
@@ -120,18 +154,49 @@ export class DishQueries {
 				data: data
 			});
 		} catch (error) {
-			throw new ObjectUpdateError('Failed to update dish' + error);
+			throw new ObjectUpdateError('Failed to update dish! Reason: ' + error);
 		}
 	}
 
-	public static mapIngredients(ingredients: string[] | undefined) {
-		if (ingredients === undefined) return [];
-		const mappedIngredients: { value: string }[] = [];
-		for (const ing of ingredients) {
-			mappedIngredients.push({
-				value: ing
+	public static async delete(id: number) {
+		if (!id) throw new ValueError('Please provide an id ');
+
+		try {
+			IngredientQueries.delete(id);
+			ImageQueries.delete(id);
+			await prisma.dish.delete({
+				where: {
+					id: id
+				}
 			});
+		} catch (error) {
+			throw new ObjectUpdateError('Failed to delete dish! Reason: ' + error);
 		}
-		return mappedIngredients;
+	}
+}
+
+export class IngredientQueries {
+	public static async delete(dishId: number) {
+		if (!dishId) throw new ValueError('Please provide an id ');
+		await prisma.ingredient.deleteMany({
+			where: {
+				dishId: dishId
+			}
+		});
+	}
+}
+
+export class ImageQueries {
+	public static async delete(dishId: number) {
+		if (!dishId) throw new ValueError('Please provide an id ');
+		try {
+			await prisma.image.delete({
+				where: {
+					dishId: dishId
+				}
+			});
+		} catch {
+			return;
+		}
 	}
 }

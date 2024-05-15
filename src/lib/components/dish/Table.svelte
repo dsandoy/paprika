@@ -1,10 +1,11 @@
 <script lang="ts">
 	import type { Dish } from '@prisma/client';
 	import Icons from '../Icons.svelte';
+	import type { ReadDish } from '$lib/types';
 
 	export let dishes: Dish[];
 
-	function displayIngredients(dish: Dish) {
+	function displayIngredients(dish: ReadDish) {
 		const ingredients = dish.ingredients?.map((i) => i.value) || [];
 		if (ingredients) return ingredients.join(', ');
 		return '';
@@ -37,22 +38,11 @@
 						</td>
 						<td>
 							<div class="flex flex-row gap-4 items-center justify-start">
-								{#if !dish.imageId}
-									<div class="w-12 lg:w-16">
-										<button
-											class="bg-gray-200 h-12 w-12 lg:h-16 lg:w-16 flex align-center text-gray-500 items-center rounded hover:bg-gray-300 hover:text-gray-500"
-										>
-											<Icons iconName="zondicons:camera" height="2.3rem" classNames="m-auto"
-											></Icons>
-										</button>
+								<div class="avatar">
+									<div class="mask mask-squircle w-12 h-12 lg:w-16 lg:h-16">
+										<img src={`/api/dishes/${dish.id}/image/`} alt="Dish" />
 									</div>
-								{:else}
-									<div class="avatar">
-										<div class="mask mask-squircle w-12 h-12 lg:w-16 lg:h-16">
-											<img src={`/api/dishes/${dish.id}/image/${dish.imageId}`} alt="Dish" />
-										</div>
-									</div>
-								{/if}
+								</div>
 								<div class="">{dish.name}</div>
 							</div>
 						</td>

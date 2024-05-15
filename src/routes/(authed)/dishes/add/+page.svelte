@@ -149,7 +149,7 @@
 			</h3>
 			<div class="grid grid-cols-1 lg:grid-cols-2 gap-6 w-full">
 				<!-- include ingredients -->
-				<input type="hidden" value={$ingredients} name="ingredients" />
+				<input type="hidden" value={JSON.stringify($ingredients)} name="ingredients" />
 				<input type="hidden" value={data.user.email} name="user" />
 				<div class="flex flex-col items-center gap-6">
 					<TextInput

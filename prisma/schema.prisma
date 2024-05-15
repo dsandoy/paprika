@@ -17,13 +17,11 @@ datasource db {
 }
 
 model Dish {
-  id Int @id @default(autoincrement())
+  id Int @id @default(autoincrement()) @unique
   name String
   // url to recipe
   url String
-  // url to image
-  image Image? @relation(fields: [imageId], references: [id])
-  imageId Int
+  image Image?
   // The user email
   user String
   createdAt DateTime @default(now())
@@ -35,17 +33,19 @@ model Dish {
 model Ingredient {
   id     Int    @id @default(autoincrement())
   value  String
-  dish   Dish   @relation(fields: [dishId], references: [id])
+  dish   Dish?   @relation(fields: [dishId], references: [id])
   dishId Int
   @@index([dishId])
 }
 
 model Image {
-  id           Int    @id @default(autoincrement())
+  id           Int    @id @default(autoincrement()) @unique
   name         String
   size         Int
   type         String
   lastModified Float
   data         Bytes
-  Dish Dish[]
+  dish Dish?  @relation(fields: [dishId], references: [id])
+  dishId Int @unique
+  @@index([dishId])
 }

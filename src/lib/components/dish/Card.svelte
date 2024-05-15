@@ -1,9 +1,9 @@
 <script lang="ts">
-	import type { Dish } from '$lib/types';
+	import type { ReadDish } from '$lib/types';
 	import Icons from '../Icons.svelte';
 
 	/** The dish to display on the card */
-	export let dish: Dish;
+	export let dish: ReadDish;
 
 	function edit() {
 		try {
@@ -19,11 +19,7 @@
 	on:click={edit}
 >
 	<figure class="max-h-28 lg:max-h-40">
-		{#if dish.customImage}
-			<img src={dish.customImage} alt="dish" />
-		{:else}
-			<img src="/logo-red.svg" alt="dish" />
-		{/if}
+		<img src={`/api/dishes/${dish.id}/image/`} alt="dish" />
 	</figure>
 	<div class="card-title p-4 pb-0">
 		<h2 class="text-sm lg:text-lg">{dish.name}</h2>

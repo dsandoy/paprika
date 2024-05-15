@@ -20,12 +20,13 @@
 	let imageURL: string | null = null;
 	let image: File | undefined;
 	let loading = false;
+	let loadingDelete = false;
 
 	const dish = data.dish;
 	// ingredients.set(dish.ingredients);
 	url_text = dish.url;
 	name_text = dish.name;
-	imageURL = `/api/dishes/${dish.id}/image/${dish.imageId}`;
+	imageURL = `/api/dishes/${dish.id}/image`;
 	ingredients.set(dish.ingredients);
 
 	/** Tell the user that the ingredient is already in the list */
@@ -80,9 +81,12 @@
 
 	let v: ValidationResult = form?.v || { is_valid: true, message: '' };
 	$: v = form?.v || v;
-	$: if (!v.is_valid) loading = false;
+	$: if (!v.is_valid) {
+		loading = false;
+		loadingDelete = false;
+	}
 
-	async function AddDish() {
+	async function StartLoading() {
 		loading = true;
 	}
 
@@ -99,6 +103,7 @@
 		method="post"
 		use:enhance
 		novalidate
+		action="?/edit"
 		enctype="multipart/form-data"
 	>
 		<div class="card shadow-lg bg-base-200 border-[1px] border-base-300 w-full p-4">
@@ -196,13 +201,22 @@
 			</div>
 		</div>
 		<ErrorAlert bind:v />
-		<button
-			class="btn btn-primary btn-lg text-white font-normal text-lg"
-			type="submit"
-			on:click={AddDish}
-		>
-			<Loading bind:loading>Lagre endringer</Loading>
-		</button>
+		<div class="flex justify-center items-center gap-12">
+			<button
+				class="btn btn-primary btn-lg text-white font-normal text-lg"
+				type="submit"
+				on:click={StartLoading}
+			>
+				<Loading bind:loading>Lagre endringer</Loading>
+			</button>
+			<button
+				formaction="?/delete"
+				class="btn btn-accent btn-lg btn-outline text-white font-normal text-lg"
+				on:click={() => (loadingDelete = true)}
+			>
+				<Loading bind:loading={loadingDelete}>Slett</Loading>
+			</button>
+		</div>
 	</form>
 	{#if !smallSize}
 		<BottomCircles />

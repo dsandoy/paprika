@@ -1,43 +1,5 @@
 import type { Timestamp } from 'firebase/firestore';
 
-export type Ingredient = string;
-
-/** Dinner or dish had for dinner */
-export interface Dish {
-	id?: string;
-	/** What is the dish called */
-	name: string;
-	/** Url to the recipe */
-	url: string;
-	/** When it was last scheduled in the dinner scheduler */
-	lastMade?: Timestamp;
-	/** The image number of the dinner, used if no custom image */
-	image?: number;
-	/** the user uploaded custom image */
-	customImage?: string;
-	/** Used when creating shopping list */
-	ingredients?: Ingredient[];
-	/** The user email that created the dinner */
-	user: string;
-}
-
-/** Dinner or dish had for dinner */
-export interface ClientDish {
-	id?: string;
-	/** What is the dish called */
-	name: string;
-	/** Url to the recipe */
-	url: string;
-	/** When it was last scheduled in the dinner scheduler */
-	lastMade?: Timestamp;
-	/** The image number of the dinner, used if no custom image */
-	image?: string;
-	/** Used when creating shopping list */
-	ingredients?: Ingredient[];
-	/** The user email that created the dinner */
-	user?: string;
-}
-
 export interface PlanEntry {
 	id?: string;
 	date: Timestamp;
@@ -58,4 +20,59 @@ export interface ShoppingList {
 	/* the uid of the user */
 	user: string;
 	list: ShoppingListEntry[];
+}
+
+export interface CreateIngredient {
+	value: string;
+}
+
+export interface CreateImage {
+	name: string;
+	size: number;
+	type: string;
+	lastModified: number;
+	data: Buffer;
+}
+
+export interface CreateDish {
+	name: string;
+	url: string;
+	user: string;
+	ingredients?: CreateIngredient[];
+	image?: CreateImage;
+}
+
+export interface UpdateImage {
+	name: string;
+	size: number;
+	type: string;
+	lastModified: number;
+	data: Buffer;
+}
+
+export interface UpdateIngredient {
+	// id: number;
+	value: string;
+	// dishId?: number;
+}
+
+export interface UpdateDish {
+	id: number;
+	name: string;
+	url: string;
+	ingredients?: UpdateIngredient[];
+	image?: UpdateImage;
+}
+
+export interface ReadIngredient {
+	id: number;
+	value: string;
+}
+
+export interface ReadDish {
+	id: number;
+	name: string;
+	url: string;
+	user: string;
+	ingredients?: ReadIngredient[];
 }

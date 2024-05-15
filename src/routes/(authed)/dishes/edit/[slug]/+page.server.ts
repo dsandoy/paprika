@@ -1,8 +1,6 @@
 import { DishQueries } from '$lib/server/queries.js';
-import { IngredientConverter } from '$lib/server/utils.js';
-import { ingredients } from '$lib/stores.js';
+import type { UpdateDish, UpdateImage, UpdateIngredient } from '$lib/types.js';
 import { DishValidator, type ValidationResult } from '$lib/utils';
-import type { Dish, Image, Ingredient } from '@prisma/client';
 import { error, redirect } from '@sveltejs/kit';
 
 export const load = async ({ params, parent }) => {
@@ -19,20 +17,18 @@ export const load = async ({ params, parent }) => {
 };
 
 export const actions = {
-	default: async ({ request }) => {
+	edit: async ({ request }) => {
 		const data = await request.formData();
 		let v: ValidationResult = { is_valid: true, message: '' };
 
-		const dish = {
+		// TODO: Ensure that ingredients dont have IDs...
+
+		const dish: UpdateDish = {
 			id: parseInt(data.get('id') as string),
 			name: data.get('name') as string,
 			url: data.get('url') as string,
-			user: data.get('user') as string,
-			ingredients: JSON.parse(data.get('ingredients') as Ingredient[])
+			ingredients: JSON.parse(data.get('ingredients') as string) as UpdateIngredient[]
 		};
-
-		console.log('Yo! Pay attention:');
-		console.log('ingredients:', dish.ingredients[0]);
 
 		const image = data.get('image') as File;
 		if (image.size != 0) v = DishValidator.validateImage(image);
@@ -57,7 +53,7 @@ export const actions = {
 			};
 
 		try {
-			let imagePr: Omit<Image, 'id'> | null = null;
+			let imagePr: UpdateImage | undefined = undefined;
 			if (image instanceof File) {
 				if (image.size !== 0) {
 					const ciArray = await image?.arrayBuffer();
@@ -71,30 +67,41 @@ export const actions = {
 						data: ciBuffer
 					};
 				}
+				if (imagePr) dish.image = imagePr;
 			}
-
-			const dbDish: Dish = {
-				id: dish.id,
-				name: dish.name,
-				url: dish.url,
-				user: dish.user,
-				ingredients: dish.ingredients
-			};
-			if (imagePr) {
-				dbDish.image = imagePr;
-			}
-			await DishQueries.update(dbDish);
+			await DishQueries.update(dish);
 		} catch (error) {
-			console.error(error as Error);
+			console.error(error);
+			let message = 'Database Error';
+			if (error instanceof Error || (typeof error === 'object' && error?.constructor === Error)) {
+				message = 'Database Error: ' + error.name;
+			}
 			return {
 				data: dish,
 				v: {
 					is_valid: false,
-					message: 'Database Error: ' + error.name
+					message: message
 				}
 			};
 		}
 
 		redirect(307, '/dishes/');
+	},
+
+	delete: async ({ request }) => {
+		const data = await request.formData();
+		const id = data.get('id') as string;
+		try {
+			await DishQueries.delete(parseInt(id));
+			redirect(307, '/dishes/');
+		} catch (e) {
+			console.error(e);
+			return {
+				v: {
+					is_valid: false,
+					message: 'Failed to delete dish'
+				}
+			};
+		}
 	}
 };
