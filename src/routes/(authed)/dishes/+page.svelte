@@ -5,10 +5,14 @@
 	import Icons from '$lib/components/Icons.svelte';
 	import { dishes, ingredients } from '$lib/stores.js';
 	import type { Dish } from '@prisma/client';
+	import { onMount } from 'svelte';
 
 	export let data;
 
-	let viewMode: 'table' | 'card' = 'table';
+	let viewMode: 'table' | 'card';
+	onMount(() => {
+		viewMode = (localStorage.getItem('viewMode') as 'card' | 'table') || 'table';
+	});
 
 	// reset the ingredients in case the user if coming from a dish page...
 	ingredients.set([]);
@@ -27,10 +31,12 @@
 
 	function selectTable() {
 		viewMode = 'table';
+		localStorage.setItem('viewMode', 'table');
 	}
 
 	function selectCard() {
 		viewMode = 'card';
+		localStorage.setItem('viewMode', 'card');
 	}
 
 	let filteredDishes: Dish[] = [];
@@ -43,7 +49,7 @@
 		</div>
 		<div class="flex flex-row content-center gap-4 justify-between w-full pl-4 pr-4 h-12">
 			<div class="flex flex-row justify-center items-center gap-3">
-				<div class="dropdown dropdown-top">
+				<div class="dropdown dropdown-right dropdown-end">
 					<div
 						tabindex="0"
 						role="button"
@@ -57,18 +63,19 @@
 					</div>
 					<ul
 						tabindex="-1"
-						class="dropdown-content z-[10] menu p-2 shadow bg-base-100 rounded-box w-52"
+						class="dropdown-content z-[10] menu p-2 shadow bg-base-200 rounded-box w-52"
 					>
+						<strong class="p-2">Visning</strong>
 						<li>
-							<button on:click={selectTable}>
-								<Icons iconName="zondicons:list" />
+							<button on:click={selectTable} class="flex justify-between items-center">
 								Tabell
+								<Icons iconName="zondicons:list" />
 							</button>
 						</li>
 						<li>
-							<button on:click={selectCard}>
-								<Icons iconName="mage:dashboard-fill" />
+							<button on:click={selectCard} class="flex justify-between items-center">
 								Bilder
+								<Icons iconName="mage:dashboard-fill" />
 							</button>
 						</li>
 					</ul>
