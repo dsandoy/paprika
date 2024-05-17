@@ -1,6 +1,7 @@
 import { NotFoundError, ValueError } from '$lib/errors';
 import prisma from '$lib/prisma';
 import type { CreateDish, CreatePlan, UpdateDish, UpdatePlan } from '$lib/types';
+import { DateHandler } from '$lib/utils';
 import type { Dish, Prisma } from '@prisma/client';
 
 export class ObjectCreationError extends Error {
@@ -284,8 +285,7 @@ export class PlanQueries {
 			where: {
 				user: email,
 				date: {
-					gte: dates[0],
-					lte: dates[1]
+					in: dates
 				}
 			},
 			include: {

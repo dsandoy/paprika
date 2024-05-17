@@ -23,15 +23,14 @@ export class PlansHandler {
 	 */
 	public static async CreateMissingPlans(email: string, dates: Date[]) {
 		const plans: CreatePlan[] = [];
-		let date = dates[0];
-		while (date <= dates[1]) {
+		for (const date of dates) {
 			const plan: CreatePlan = {
 				date: date,
 				user: email
 			};
 			plans.push(plan);
-			date = new Date(date.setDate(date.getDate() + 1));
 		}
+
 		await PlanQueries.createMany(plans);
 	}
 

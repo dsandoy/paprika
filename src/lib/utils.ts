@@ -1,9 +1,6 @@
-import type { User } from 'firebase/auth';
-import { DBService, PlanQueries } from './Firebase';
-import type { ClientDish, Ingredient, PlanEntry, ShoppingListEntry } from './types';
+import type { CreateIngredient, ReadDish, ShoppingListEntry } from './types';
 import type { Dish } from '@prisma/client';
-import { Timestamp } from 'firebase/firestore';
-import { ArrayEmptyError, NotFoundError, ObjectExists, ValueError } from './errors';
+import { ArrayEmptyError, ObjectExists, ValueError } from './errors';
 
 export class DateHandler {
 	/** Display the date in the date number and month only. Ex: 12. feb,
@@ -11,16 +8,15 @@ export class DateHandler {
 	 * @param date The date to display
 	 * @param emptyMessage The message to display if no date
 	 */
-	public static showDate(date: Timestamp | undefined, emptyMessage = '') {
+	public static showDate(date: Date | undefined, emptyMessage = '') {
 		if (date === undefined || typeof date !== 'object') {
 			if (emptyMessage) {
 				return emptyMessage;
 			}
 			return '';
 		}
-		const date2 = date.toDate();
-		const dateStr = date2.toDateString();
-		// remove month and year:
+		const dateStr = date.toDateString();
+		// remove month and year
 		const dateArr = dateStr.split(' ');
 		return dateArr[0] + ' ' + dateArr[2];
 	}
@@ -52,15 +48,14 @@ export class DateHandler {
 
 	/** Returns a date range of the current week */
 	public static getWeek(date: Date) {
-		const day = date.getDay();
+		const day = date.getUTCDay();
 		if (day === 0) {
 			return [this.getDayNDaysAway(date, -6), date];
 		}
 		return [this.getDayNDaysAway(date, -(day - 1)), this.getDayNDaysAway(date, 7 - day)];
 	}
 
-	public static isTimestampToday(timestamp: Timestamp): 'before' | 'after' | 'today' | '' {
-		const date = timestamp.toDate();
+	public static isTimestampToday(date: Date): 'before' | 'after' | 'today' | '' {
 		const today = new Date();
 		if (
 			date.getFullYear() === today.getFullYear() &&
@@ -74,6 +69,15 @@ export class DateHandler {
 			return 'after';
 		}
 		return '';
+	}
+
+	public static getWholeWeek(begin: Date) {
+		const dates = this.getWeek(begin);
+		const week: Date[] = [];
+		for (let i = 0; i < 7; i++) {
+			week.push(this.getDayNDaysAway(dates[0], i));
+		}
+		return week;
 	}
 }
 
@@ -138,7 +142,7 @@ export class DishValidator {
 	 * const v = DishValidator.validateName('name');
 	 * ```
 	 */
-	public static validateName(name: string, dishes: Dish[] | ClientDish[] = []) {
+	public static validateName(name: string, dishes: ReadDish[] = []) {
 		if (name.length === 0) return this.EMPTY('Navnet');
 
 		if (dishes.length === 0) return this.VALID;
@@ -150,7 +154,7 @@ export class DishValidator {
 	}
 
 	/** Returns 0 if valid, IN_USE if already in use */
-	public static validateIngredients(ing: Ingredient, ingredients: Ingredient[]) {
+	public static validateIngredients(ing: CreateIngredient, ingredients: CreateIngredient[]) {
 		if (ingredients.some((i) => i === ing)) {
 			return this.IN_USE('Ingrediensen');
 		}
@@ -170,7 +174,7 @@ export class DishValidator {
 	/** Validates all fields of a dish simultaneously
 	 *  To be used before submitting a dish to the database
 	 */
-	public static validateAll(dish: ClientDish, dishes: ClientDish[], nameOkay = false) {
+	public static validateAll(dish: ReadDish, dishes: ReadDish[], nameOkay = false) {
 		let result = this.VALID;
 		if (!nameOkay) {
 			result = this.validateName(dish.name, dishes);
@@ -186,51 +190,6 @@ export class DishValidator {
 			}
 		}
 		return this.VALID;
-	}
-}
-
-/** Handles various plan related functions */
-export class PlansHandler {
-	/** Creates plans for the upcoming week if it does not exist.
-	 * @param user The logged in user
-	 * @param date optional if the date is not the next monday...
-	 */
-	public static async CreateMissingPlans(user: User | null, date: Date | null = null) {
-		let nextMonday;
-		if (!date) {
-			nextMonday = DateHandler.getNextMonday(new Date());
-		} else {
-			nextMonday = date;
-		}
-		const query = PlanQueries.getPlans(user, [
-			nextMonday,
-			DateHandler.getDayNDaysAway(nextMonday, 6)
-		]);
-		const plans = (await DBService.getResources(query)) as PlanEntry[];
-		if (!plans || plans.length === 0) {
-			await DBService.createWeekPlans(nextMonday, user);
-		}
-	}
-
-	public static extractCheckedDishes(plans: PlanEntry[], dishes: Dish[]): Dish[] {
-		/** NOTE: Will trow from getDishFromID if dish id mismatch (which should not happen) */
-		const selectedDishes: Dish[] = [];
-		plans.forEach((plan) => {
-			if (plan.checked && plan.dish) {
-				selectedDishes.push(this.getDishFromID(plan.dish, dishes));
-			}
-		});
-
-		return selectedDishes;
-	}
-
-	protected static getDishFromID(id: string, dishes: Dish[]): Dish {
-		const dish = dishes.find((dish) => dish.id == id);
-		if (dish) {
-			return dish;
-		} else {
-			throw new NotFoundError('id not found in dishes!');
-		}
 	}
 }
 

@@ -1,13 +1,15 @@
 <script lang="ts">
-	import type { Dish } from '$lib/types';
+	import type { ReadDish } from '$lib/types';
 	import Icons from './Icons.svelte';
 
 	/** word that is searched for*/
 	export let searchWord: string = '';
 	/** the dishes that should be filtered */
-	export let dishes: Dish[] = [];
+	export let dishes: ReadDish[] = [];
 	/** the output of the search function*/
-	export let filteredDishes: Dish[] = [];
+	export let filteredDishes: ReadDish[] = [];
+
+	export let classNames = '';
 
 	/** returns the dishes matching the search word. Not case sensitive*/
 	function search() {
@@ -26,6 +28,11 @@
 <label
 	class="input input-bordered input-primary flex justify-center items-center gap-2 focus-within:outline-none focus-within:ring-2 focus-within:ring-primary"
 >
-	<input placeholder="Søk" type="text" class="w-24 lg:w-auto" bind:value={searchWord} />
+	<input
+		placeholder="Søk"
+		type="text"
+		class="{classNames} w-24 lg:w-auto"
+		bind:value={searchWord}
+	/>
 	<Icons iconName="zondicons:search" height="1.5rem" classNames="text-green" />
 </label>
