@@ -9,48 +9,79 @@
 
 	export let plannerEntry: ReadPlan;
 
-	let isOpen = false;
 	export let filteredDishes: ReadDish[] = [];
+	let note = plannerEntry.note || '';
 
-	let chosenDish: ReadDish | null | Note = null;
+	let chosenDish: ReadDish | null | Note | undefined = plannerEntry.dish;
 
 	function fetchDish() {
-		// chosenDish = plannerEntry.dish ? $dishes.find((d) => d.id === plannerEntry.dish) : undefined;
 		chosenDish = plannerEntry.dish;
+		if (chosenDish === null) {
+			chosenDish = plannerEntry.note;
+		}
+		if (chosenDish === undefined) {
+			chosenDish = null;
+		}
 	}
 
 	fetchDish();
 	export let searchWord = '';
 	// $: fetchDish(), $dishes;
 
-	function setChosenDish(dish: ReadDish) {
+	async function setChosenDish(dish: ReadDish) {
 		if (chosenDish !== dish) {
-			isOpen = false;
 			chosenDish = dish;
 		} else {
 			chosenDish = null;
 		}
+
+		const response = await fetch('/api/plans/update', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({
+				plan: plannerEntry,
+				dishId: chosenDish?.id
+			})
+		});
+		if (response.ok) {
+			console.log('updated');
+		}
 	}
 
-	function addNote() {
-		chosenDish = searchWord;
+	async function addNote() {
+		chosenDish = note;
+		plannerEntry.note = note;
+		const response = await fetch('/api/plans/update', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({
+				plan: plannerEntry,
+				dishId: null
+			})
+		});
+		if (response.ok) {
+			console.log('updated');
+		}
 	}
 </script>
 
-<div class="flex flex-row lg:w-[26rem] align-center items-center p-4">
+<div class="flex flex-row justify-center items-center p-4 gap-2">
 	<Checkbox bind:checked={plannerEntry.checked} />
 	<p
-		class="lg:w-24 w-24 text-sm text-center"
+		class="lg:w-24 w-16 text-sm text-center"
 		class:text-gray-500={DateHandler.isTimestampToday(plannerEntry.date) === 'before'}
 	>
 		{DateHandler.showDate(plannerEntry.date)}
 	</p>
 
-	<!-- dropdown "button" -->
-	<div class="dropdown">
+	<!-- dish dropdown -->
+	<section class="dropdown">
 		<div
-			data-ui={isOpen}
-			class="border-[1px] border-base-300 flex flex-row h-14 w-60 lg:w-64 gap-4 rounded align-center items-center hover:border-primary p-2 bg-base-200 cursor-pointer"
+			class="border-[1px] border-base-300 flex flex-row h-14 w-52 lg:w-64 gap-4 rounded align-center items-center hover:border-primary p-2 bg-base-200 cursor-pointer"
 			tabindex="-1"
 		>
 			{#if chosenDish && typeof chosenDish === 'object'}
@@ -99,6 +130,24 @@
 				{/if}
 			</div>
 		</ul>
-	</div>
-	<!-- dropdown content -->
+	</section>
+	<!-- note dropdown -->
+	<section class="dropdown dropdown-end">
+		<div class="p-1 text-neutral cursor-pointer" tabindex="-1">
+			<Icons iconName="zondicons:compose" />
+		</div>
+
+		<div class="dropdown-content shadow p-2 rounded bg-base-200 z-10">
+			<strong>Legg til notat</strong>
+			<input
+				type="text"
+				bind:value={note}
+				placeholder="Legg til notat"
+				class="input input-sm input-primary mt-3 mb-3"
+			/>
+			<div class="flex items-center justify-center">
+				<button class="btn btn-neutral" on:click={addNote}>Legg til</button>
+			</div>
+		</div>
+	</section>
 </div>

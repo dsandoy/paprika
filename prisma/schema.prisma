@@ -56,5 +56,6 @@ model Plan {
   date DateTime
   user String
   dish Dish? @relation(fields: [dishId], references: [id])
-  dishId Int? @unique
+  dishId Int?
+  note String?
 }

@@ -86,8 +86,9 @@ export interface UpdatePlan {
 	id: number;
 	date: Date;
 	user: string;
-	dishId?: number;
-	dish?: ReadDish;
+	dishId?: number | null;
+	dish?: ReadDish | null;
+	note?: Note | null;
 }
 
 export interface ReadPlan {

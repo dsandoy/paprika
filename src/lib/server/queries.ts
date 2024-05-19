@@ -1,7 +1,6 @@
 import { NotFoundError, ValueError } from '$lib/errors';
 import prisma from '$lib/prisma';
 import type { CreateDish, CreatePlan, UpdateDish, UpdatePlan } from '$lib/types';
-import { DateHandler } from '$lib/utils';
 import type { Dish, Prisma } from '@prisma/client';
 
 export class ObjectCreationError extends Error {
@@ -249,15 +248,16 @@ export class PlanQueries {
 	 * }
 	 * ```
 	 */
-	public static async updateDish(plan: UpdatePlan, dishId: number) {
+	public static async updateDish(plan: UpdatePlan, dishId: number | null) {
 		if (!plan) throw new ValueError('No plan provided');
-		if (!dishId) throw new ValueError('No dishId provided');
+		if (!dishId) dishId = null;
 		await prisma.plan.update({
 			where: {
 				id: plan.id
 			},
 			data: {
-				dishId: dishId
+				dishId: dishId,
+				note: plan.note
 			}
 		});
 	}
@@ -290,6 +290,9 @@ export class PlanQueries {
 			},
 			include: {
 				dish: true
+			},
+			orderBy: {
+				date: 'asc'
 			}
 		});
 		if (!plans || plans.length == 0) throw new NotFoundError('No plans found');
