@@ -2,107 +2,119 @@
 	import Card from '$lib/components/dish/Card.svelte';
 	import Table from '$lib/components/dish/Table.svelte';
 	import DishSearch from '$lib/components/DishSearch.svelte';
-	import Dropdown from '$lib/components/Dropdown.svelte';
-	import Button from '$lib/components/Button.svelte';
 	import Icons from '$lib/components/Icons.svelte';
-	import PrimaryButton from '$lib/components/PrimaryButton.svelte';
-	import { DBService, DishQueries } from '$lib/Firebase.js';
-	import { dishes, ingredients, user } from '$lib/stores.js';
-	import type { Dish } from '$lib/types.js';
+	import { dishes, ingredients } from '$lib/stores.js';
+	import type { Dish } from '@prisma/client';
+	import { onMount } from 'svelte';
 
 	export let data;
 
-	let viewMode: 'table' | 'card' = 'table';
+	let viewMode: 'table' | 'card';
+	onMount(() => {
+		viewMode = (localStorage.getItem('viewMode') as 'card' | 'table') || 'table';
+	});
 
-	let isOpen = false;
+	// reset the ingredients in case the user if coming from a dish page...
+	ingredients.set([]);
 
-	ingredients.set(['']);
-
-	function getDishes() {
-		const q = DishQueries.dishes($user);
-		DBService.getResources(q).then((result) => {
-			dishes.set(result as Dish[]);
-		});
+	function setDishes() {
+		if (!data.dishes) {
+			try {
+				console.log(data.error);
+			} catch {
+				return;
+			}
+		}
+		dishes.set(data.dishes as Dish[]);
 	}
-	$: getDishes(), $user;
+	setDishes();
 
 	function selectTable() {
 		viewMode = 'table';
-		isOpen = false;
+		localStorage.setItem('viewMode', 'table');
 	}
 
 	function selectCard() {
 		viewMode = 'card';
-		isOpen = false;
+		localStorage.setItem('viewMode', 'card');
 	}
 
 	let filteredDishes: Dish[] = [];
 </script>
 
-<section class="flex flex-col items-center align-center w-svw h-[92svh] m-0 bg-green/10">
-	<div class="sticky top-0 bg-green-50 w-full lg:w-[80%]">
+<section class="flex flex-col items-center align-center w-full h-full m-0">
+	<div class="sticky top-0 w-full lg:w-[80%] pb-8">
 		<div class="w-full pl-4">
 			<h2 class="text-3xl mt-8 mb-4 lg:mb-8 lg:text-center">Matretter</h2>
 		</div>
-		<div
-			class="flex flex-row content-center gap-4 justify-between w-full pl-4 pr-4 h-12 bg-green-50"
-		>
-			<div class="flex flex-row gap-3">
-				<Dropdown
-					classNamesButton="px-3 lg:px-5"
-					relative
-					bind:isOpen
-					classNamesContent="border-green border-[1px] rounded absolute bg-white z-value-1"
-				>
-					<button
-						slot="button"
-						class="w-10 h-12 lg:w-16 text-base lg:text-lg flex items-center justify-center"
-						data-ui={viewMode === 'table'}
+		<div class="flex flex-row content-center gap-4 justify-between w-full pl-4 pr-4 h-12">
+			<div class="flex flex-row justify-center items-center gap-3">
+				<div class="dropdown dropdown-right dropdown-end">
+					<div
+						tabindex="0"
+						role="button"
+						class="btn m-1 bg-base-200 border-base-300 hover:bg-base-300 hover:border-base-300"
 					>
 						{#if viewMode === 'table'}
-							<Icons iconName="zondicons:list" height="2rem" />
-						{:else if viewMode === 'card'}
-							<Icons iconName="mage:dashboard-fill" height="2rem" />
-						{/if}
-					</button>
-					<div slot="content">
-						<Button
-							on:click={() => selectTable()}
-							classNames="gap-2 flex hover:bg-green/20 p-2 pl-4"
-						>
 							<Icons iconName="zondicons:list" />
-							<p>Tabell</p>
-						</Button>
-						<Button
-							on:click={() => selectCard()}
-							classNames="gap-2 flex hover:bg-green/20 p-2 pl-4"
-						>
+						{:else if viewMode === 'card'}
 							<Icons iconName="mage:dashboard-fill" />
-							<p>Bilder</p>
-						</Button>
+						{/if}
 					</div>
-				</Dropdown>
+					<ul
+						tabindex="-1"
+						class="dropdown-content z-[10] menu p-2 shadow bg-base-200 rounded-box w-52"
+					>
+						<strong class="p-2">Visning</strong>
+						<li>
+							<button on:click={selectTable} class="flex justify-between items-center">
+								Tabell
+								<Icons iconName="zondicons:list" />
+							</button>
+						</li>
+						<li>
+							<button on:click={selectCard} class="flex justify-between items-center">
+								Bilder
+								<Icons iconName="mage:dashboard-fill" />
+							</button>
+						</li>
+					</ul>
+				</div>
 			</div>
-			<DishSearch dishes={$dishes} bind:filteredDishes />
+			<div>
+				<DishSearch dishes={$dishes} bind:filteredDishes />
+				<div class="dropdown dropdown-top">
+					<span class="text-sm cursor-pointer" tabindex="-1">
+						Kategori:
+						<div class="badge badge-neutral">Matrett</div>
+					</span>
+					<p
+						class="dropdown-content z-[10] flex flex-row gap-2 items-center bg-base-300 text-xs p-4 rounded w-48"
+					>
+						<Icons iconName="zondicons:wrench" height="0.75rem" />
+						Her kan man snart endre søkskategori
+					</p>
+				</div>
+			</div>
 			<a href="/dishes/add">
-				<PrimaryButton classNames="gap-2"
-					><Icons iconName="zondicons:add-solid" /><span class="hidden lg:block">Legg til</span
-					></PrimaryButton
-				>
-			</a>
+				<button class="btn btn-primary gap-2 text-white">
+					<span class="hidden lg:block">Legg til</span>
+					<Icons iconName="zondicons:add-solid" />
+				</button></a
+			>
 		</div>
 	</div>
 	{#if viewMode === 'table'}
 		{#if !data}
 			<div>"Ingen middager"</div>
 		{:else}
-			<div class="bg-green-50 pt-5 pb-12 w-full flex items-center justify-center">
+			<div class=" pt-5 pb-12 flex items-center justify-center">
 				<Table bind:dishes={filteredDishes} />
 			</div>
 		{/if}
 	{:else if viewMode === 'card'}
 		<div
-			class="grid grid-cols-2 md:grid-cols-2 xl:grid-cols-4 lg:grid-cols-3 gap-8 lg:gap-16 mt-12 p-4 lg:w-[80%] w-full overflow-auto h-[80%]"
+			class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 lg:grid-cols-3 gap-8 lg:gap-16 mt-12 p-4 lg:w-[80%] w-full overflow-y-auto h-[80%]"
 		>
 			{#each filteredDishes as dish}
 				<Card {dish} />

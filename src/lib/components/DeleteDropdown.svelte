@@ -21,12 +21,12 @@
 </script>
 
 <Dropdown
-	classNamesContent="w-64 h-40 absolute bg-gray-100 border-[1px] border-red z-20 lg:right-[40%] lg:bottom-[20%] right-[20%] bottom-[20%] text-black p-5 rounded"
+	classNamesContent="w-64 h-40 absolute bg-base-200 border-[1px] border-accent z-20 lg:right-[40%] lg:bottom-[20%] right-[20%] bottom-[20%] p-5 rounded"
 	bind:isOpen
 >
 	<Button
 		slot="button"
-		classNames="rounded-lg hover:bg-red hover:text-white h-12 w-12 bg-white text-red border-[1px] border-red mr-2"
+		classNames="rounded-lg hover:bg-accent hover:text-white h-12 w-12 bg-base-200 text-accent border-[1px] border-accent mr-2"
 	>
 		<Icons height="1.5rem" iconName="zondicons:trash" /></Button
 	>
@@ -36,14 +36,14 @@
 		<div class="flex flex-row justify-between items-center">
 			<Button
 				on:click={deleteItem}
-				classNames="rounded-lg h-14 w-14 bg-green text-white flex items-center justify-center"
+				classNames="rounded-lg h-14 w-14 bg-primary text-white flex items-center justify-center"
 			>
 				<Icons height="1.5rem" iconName="zondicons:thumbs-up" />
 			</Button>
 
 			<Button
 				on:click={cancel}
-				classNames="rounded-lg h-14 w-14 bg-white text-red flex items-center justify-center"
+				classNames="rounded-lg h-14 w-14 bg-base-200 text-red flex items-center justify-center border-[1px] border-accent"
 			>
 				<Icons height="1.5rem" iconName="zondicons:thumbs-down" />
 			</Button>

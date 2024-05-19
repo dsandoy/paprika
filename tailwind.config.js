@@ -58,5 +58,42 @@ export default {
     },
 
   },
-  plugins: [],
+  daisyui : {
+    themes: [{
+      light: {
+        "primary": "#89a492",
+        "secondary": "#cfcfcf",
+        "accent": "#dc8491",
+        "neutral": "#e8b5fd",
+        "base-300": "#e3e3e3",
+        "base-200": "#ffffff",
+        "base-100": "#f3f6f4",
+        "info": "#6090af",
+        "success": "#529873",
+        "warning": "#f9d639",
+        "error": "#ff0000",
+        },
+    },
+    {
+    dark:  {
+      "primary": "#3F5747",
+      "secondary": "#cfcfcf",
+      "accent": "#dc8491",
+      "neutral": "#e8b5fd",
+      "base-300": "#192321",
+      "base-200": "#202B23",
+      "base-100": "#17211A",
+      "info": "#6090af",
+      "success": "#529873",
+      "warning": "#f9d639",
+       "error": "#ff0000",
+      },
+    }
+  ],
+  },
+  plugins: [
+    require("@tailwindcss/typography"),
+    require("daisyui"),
+  ],
+  darkTheme: 'dark',
 }

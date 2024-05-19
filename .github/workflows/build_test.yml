@@ -24,6 +24,9 @@ jobs:
       run: |
         npm run check
         npm run lint
+      env:
+        GOOGLE_ID: ${{ secrets.GOOGLE_ID }}
+        GOOGLE_SECRET: ${{ secrets.GOOGLE_SECRET }}
     - name: Run tests
       run: |
         npm run test

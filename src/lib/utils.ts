@@ -1,8 +1,5 @@
-import type { User } from 'firebase/auth';
-import { DBService, PlanQueries } from './Firebase';
-import type { Dish, Ingredient, PlanEntry, ShoppingListEntry } from './types';
-import { Timestamp } from 'firebase/firestore';
-import { ArrayEmptyError, NotFoundError, ObjectExists, ValueError } from './errors';
+import type { CreateIngredient, ReadDish, ReadListEntry } from './types';
+import { ArrayEmptyError, ObjectExists, ValueError } from './errors';
 
 export class DateHandler {
 	/** Display the date in the date number and month only. Ex: 12. feb,
@@ -10,16 +7,15 @@ export class DateHandler {
 	 * @param date The date to display
 	 * @param emptyMessage The message to display if no date
 	 */
-	public static showDate(date: Timestamp | undefined, emptyMessage = '') {
+	public static showDate(date: Date | undefined, emptyMessage = '') {
 		if (date === undefined || typeof date !== 'object') {
 			if (emptyMessage) {
 				return emptyMessage;
 			}
 			return '';
 		}
-		const date2 = date.toDate();
-		const dateStr = date2.toDateString();
-		// remove month and year:
+		const dateStr = date.toDateString();
+		// remove month and year
 		const dateArr = dateStr.split(' ');
 		return dateArr[0] + ' ' + dateArr[2];
 	}
@@ -41,7 +37,7 @@ export class DateHandler {
 
 	/** Returns the date the set distance away. Works both back and forewards.. */
 	public static getDayNDaysAway(date: Date, distance: number) {
-		return new Date(date.getFullYear(), date.getMonth(), date.getDate() + distance);
+		return new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate() + distance));
 	}
 
 	/** Checks if the provided date preceeds the current date */
@@ -51,15 +47,14 @@ export class DateHandler {
 
 	/** Returns a date range of the current week */
 	public static getWeek(date: Date) {
-		const day = date.getDay();
+		const day = date.getUTCDay();
 		if (day === 0) {
 			return [this.getDayNDaysAway(date, -6), date];
 		}
 		return [this.getDayNDaysAway(date, -(day - 1)), this.getDayNDaysAway(date, 7 - day)];
 	}
 
-	public static isTimestampToday(timestamp: Timestamp): 'before' | 'after' | 'today' | '' {
-		const date = timestamp.toDate();
+	public static isTimestampToday(date: Date): 'before' | 'after' | 'today' | '' {
 		const today = new Date();
 		if (
 			date.getFullYear() === today.getFullYear() &&
@@ -74,23 +69,56 @@ export class DateHandler {
 		}
 		return '';
 	}
+
+	public static getWholeWeek(begin: Date) {
+		const dates = this.getWeek(begin);
+		const week: Date[] = [];
+		for (let i = 0; i < 7; i++) {
+			week.push(this.getDayNDaysAway(dates[0], i));
+		}
+		return week;
+	}
+}
+
+export interface ValidationResult {
+	is_valid: boolean;
+	message: string;
 }
 
 /** Static class for Dish validation methods */
 export class DishValidator {
-	public static readonly INVALID_URL = -3;
+	public static readonly INVALID_URL: ValidationResult = {
+		is_valid: false,
+		message: 'Linken er ugyldig!'
+	};
 	/** Error code if the attribute is empty */
-	public static readonly EMPTY = -1;
+	public static EMPTY(name: string): ValidationResult {
+		return {
+			is_valid: false,
+			message: name + ' kan ikke være tomt'
+		};
+	}
 	/** Error code if the attribute is already in use*/
-	public static readonly IN_USE = -2;
+	public static IN_USE(name: string): ValidationResult {
+		return {
+			is_valid: false,
+			message: name + ' er allerede i bruk'
+		};
+	}
 	/** Error code if the attribute is invalid */
-	public static readonly INVALID_FILE_TYPE = -4;
+	public static readonly INVALID_FILE_TYPE: ValidationResult = {
+		is_valid: false,
+		message: 'Filtypen er ikke gyldig'
+	};
 	/** Code if the attribute is valid */
-	public static readonly VALID = 0;
+	public static readonly VALID: ValidationResult = {
+		is_valid: true,
+		message: ''
+	};
 
 	/** Validate that the inputed value is a url */
 	public static validateURL(url: string) {
-		if (!url) return 0;
+		if (!url) return this.VALID;
 		const pattern = new RegExp(
 			'^(https?:\\/\\/|http?:\\/\\/)?' + // protocol
 				'((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{1,}|' + // domain name
@@ -106,21 +134,28 @@ export class DishValidator {
 	}
 	/** Check that the name is not empty or already in use
 	 * Returns 0 if valid, EMPTY if empty, IN_USE if already in use
+	 * ```ts
+	 * // check if name is in dishes
+	 * const v = DishValidator.validateName('name', dishes);
+	 *  // check for uniquness only:
+	 * const v = DishValidator.validateName('name');
+	 * ```
 	 */
-	public static validateName(name: string, dishes: Dish[]) {
-		if (name.length === 0) return this.EMPTY;
+	public static validateName(name: string, dishes: ReadDish[] = []) {
+		if (name.length === 0) return this.EMPTY('Navnet');
 
+		if (dishes.length === 0) return this.VALID;
 		const names = dishes.map((d) => d.name);
 		if (names.includes(name)) {
-			return this.IN_USE;
+			return this.IN_USE('Navnet');
 		}
 		return this.VALID;
 	}
 
 	/** Returns 0 if valid, IN_USE if already in use */
-	public static validateIngredients(ing: Ingredient, ingredients: Ingredient[]) {
+	public static validateIngredients(ing: CreateIngredient, ingredients: CreateIngredient[]) {
 		if (ingredients.some((i) => i === ing)) {
-			return this.IN_USE;
+			return this.IN_USE('Ingrediensen');
 		}
 		return this.VALID;
 	}
@@ -138,7 +173,7 @@ export class DishValidator {
 	/** Validates all fields of a dish simultaneously
 	 *  To be used before submitting a dish to the database
 	 */
-	public static validateAll(dish: Dish, dishes: Dish[], nameOkay = false) {
+	public static validateAll(dish: ReadDish, dishes: ReadDish[], nameOkay = false) {
 		let result = this.VALID;
 		if (!nameOkay) {
 			result = this.validateName(dish.name, dishes);
@@ -150,56 +185,10 @@ export class DishValidator {
 		if (dish.ingredients) {
 			const uniq = [...new Set(dish.ingredients)];
 			if (uniq.length !== dish.ingredients.length) {
-				console.log('Ingrendients are not unique...');
-				return this.IN_USE;
+				return this.IN_USE('Ingrediensen');
 			}
 		}
 		return this.VALID;
-	}
-}
-
-/** Handles various plan related functions */
-export class PlansHandler {
-	/** Creates plans for the upcoming week if it does not exist.
-	 * @param user The logged in user
-	 * @param date optional if the date is not the next monday...
-	 */
-	public static async CreateMissingPlans(user: User | null, date: Date | null = null) {
-		let nextMonday;
-		if (!date) {
-			nextMonday = DateHandler.getNextMonday(new Date());
-		} else {
-			nextMonday = date;
-		}
-		const query = PlanQueries.getPlans(user, [
-			nextMonday,
-			DateHandler.getDayNDaysAway(nextMonday, 6)
-		]);
-		const plans = (await DBService.getResources(query)) as PlanEntry[];
-		if (!plans || plans.length === 0) {
-			await DBService.createWeekPlans(nextMonday, user);
-		}
-	}
-
-	public static extractCheckedDishes(plans: PlanEntry[], dishes: Dish[]): Dish[] {
-		/** NOTE: Will trow from getDishFromID if dish id mismatch (which should not happen) */
-		const selectedDishes: Dish[] = [];
-		plans.forEach((plan) => {
-			if (plan.checked && plan.dish) {
-				selectedDishes.push(this.getDishFromID(plan.dish, dishes));
-			}
-		});
-
-		return selectedDishes;
-	}
-
-	protected static getDishFromID(id: string, dishes: Dish[]): Dish {
-		const dish = dishes.find((dish) => dish.id == id);
-		if (dish) {
-			return dish;
-		} else {
-			throw new NotFoundError('id not found in dishes!');
-		}
 	}
 }
 
@@ -212,7 +201,7 @@ export class ShoppingListHandler {
 		$shoppingList.list = list;
 	 * ```
 	 */
-	public static sortList(list: ShoppingListEntry[]) {
+	public static sortList(list: ReadListEntry[]) {
 		if (!list || list.length === 0) throw new ArrayEmptyError('No shopping list');
 		list.sort((a, b) => {
 			return a.text < b.text ? -1 : 1;
@@ -228,18 +217,18 @@ export class ShoppingListHandler {
 		$shoppingList.list = list;
 	 * ```
 	 */
-	public static addIngredients(list: ShoppingListEntry[], dish: Dish) {
+	public static addIngredients(list: ReadListEntry[], dish: ReadDish, email: string) {
 		if (!dish.ingredients) throw new ValueError('No ingredients in dish');
 		const ingredients = dish.ingredients;
 
 		if (ingredients.length == 0) return list;
-		if (list.find((i) => i.dish === dish.name)) {
+		if (list.find((i) => i.dishName === dish.name)) {
 			throw new ObjectExists('Dish already in shopping list');
 		}
 
 		ingredients.forEach((i) => {
-			if (i !== '') {
-				list.push({ text: i, is_complete: false, dish: dish.name });
+			if (i.value !== '') {
+				list.push({ text: i.value, is_complete: false, dishName: dish.name, user: email });
 			}
 		});
 		return list;

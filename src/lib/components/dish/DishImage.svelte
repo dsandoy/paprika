@@ -3,8 +3,12 @@
 	export let classNames = '';
 </script>
 
-{#if imagesrc}
-	<img src={imagesrc} alt="dish" class="{classNames} rounded-sm lg:rounded" />
-{:else}
-	<img src="logo-green.svg" alt="dish" class="{classNames} rounded-sm lg:rounded" />
-{/if}
+<div class="avatar">
+	<div class="mask mask-squircle {classNames}">
+		{#if imagesrc}
+			<img src={imagesrc} alt="dish" />
+		{:else}
+			<img src="logo-green.svg" alt="dish" />
+		{/if}
+	</div>
+</div>

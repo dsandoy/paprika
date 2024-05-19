@@ -1,16 +1,14 @@
-import type { Dish, PlanEntry, ShoppingListEntry, ShoppingList } from '$lib/types';
+import type { DemoDish, DemoPlan } from '$lib/types';
 import { DateHandler } from '$lib/utils';
-import { Timestamp } from 'firebase/firestore';
 import { writable } from 'svelte/store';
 
-class DemoData {
-	static dishes: Dish[] = [
+export class DemoData {
+	static dishes: DemoDish[] = [
 		{
-			id: '1',
-			user: '',
+			id: 1,
 			url: '',
 			name: 'Pizza',
-			customImage: 'demo/pizza.jpg',
+			image: 'demo/pizza.jpg',
 			ingredients: [
 				'7dL hvetemel',
 				'3dL vann',
@@ -24,31 +22,27 @@ class DemoData {
 			]
 		},
 		{
-			id: '2',
-			user: '',
+			id: 2,
 			url: '',
 			name: 'Fiskegrateng',
-			customImage: 'demo/fiskegrateng.jpg',
+			image: 'demo/fiskegrateng.jpg',
 			ingredients: ['findus fiskegrateng', '3 poteter', '2 gulrøtter', 'smeltet smør']
 		},
 		{
-			user: '',
-			id: '3',
+			id: 3,
 			url: 'https://www.tine.no/oppskrifter/middag-og-hovedretter/kjott/hjemmelagde-kj%C3%B8ttkaker',
 			name: 'Kjøttkaker i Brun Saus',
-			customImage: 'demo/kjøttkaker.webp'
+			image: 'demo/kjøttkaker.webp'
 		},
 		{
-			user: '',
-			id: '4',
+			id: 4,
 			url: '',
 			name: 'Pasta Carbonara',
-			customImage: 'demo/pasta_carbonara.jpg',
+			image: 'demo/pasta_carbonara.jpg',
 			ingredients: ['tofu/kylling', 'spagetti', '2 egg']
 		},
 		{
-			user: '',
-			id: '5',
+			id: 5,
 			url: 'https://vegetarentusiast.no/linsepannekaker/',
 			name: 'Linsepannekaker',
 			ingredients: [
@@ -61,44 +55,24 @@ class DemoData {
 				'sukker',
 				'stekesmør'
 			],
-			customImage: 'demo/pannekaker.jpg'
+			image: 'demo/pannekaker.jpg'
 		}
 	];
 
-	static dishPlans: PlanEntry[] = [
+	static dishPlans: DemoPlan[] = [
 		{
-			date: Timestamp.fromDate(DateHandler.getDayNDaysAway(new Date(), -1))
+			date: DateHandler.getDayNDaysAway(new Date(), -1)
 		},
 		{
-			date: Timestamp.now(),
-			dish: '1'
+			date: new Date(),
+			dish: DemoData.dishes[0]
 		},
 		{
-			date: Timestamp.fromDate(DateHandler.getNextDay(new Date()))
+			date: DateHandler.getNextDay(new Date())
 		}
 	];
-
-	static listItems: ShoppingListEntry[] = [
-		{
-			text: 'Melk',
-			is_complete: false
-		},
-		{
-			text: 'Smør',
-			is_complete: false
-		},
-		{
-			text: 'Brød',
-			is_complete: false
-		}
-	];
-
-	static shoppingList: ShoppingList = {
-		user: '',
-		list: this.listItems
-	};
 }
 
-export const demoDishes = writable<Dish[]>(DemoData.dishes);
-export const demoPlans = writable<PlanEntry[]>(DemoData.dishPlans);
-export const demoShopping = writable<ShoppingList>(DemoData.shoppingList);
+export const demoDishes = writable<DemoDish[]>(DemoData.dishes);
+export const demoPlans = writable<DemoPlan[]>(DemoData.dishPlans);
+// export const demoShopping = writable<ShoppingList>(DemoData.shoppingList);

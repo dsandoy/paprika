@@ -1,6 +1,4 @@
 <script lang="ts">
-	import DemoShoppingList from '$lib/components/demo/DemoShoppingList.svelte';
-	import { demoDishes, demoShopping } from './demodata';
 </script>
 
 <section class="flex flex-col justify-center items-center gap-4">
@@ -13,8 +11,8 @@
 	</p>
 	<div class="col-span-2 flex justify-center items-center">
 		<!-- shopping list demo -->
-		<div class=" bg-white rounded lg:w-[30rem] mt-8 shadow-sm border-[1px] border-green/20">
-			<DemoShoppingList shoppingList={$demoShopping} bind:dishes={$demoDishes}></DemoShoppingList>
+		<div class="  rounded lg:w-[30rem] mt-8 shadow-sm">
+			<!-- <DemoShoppingList shoppingList={$demoShopping} bind:dishes={$demoDishes}></DemoShoppingList> -->
 		</div>
 	</div>
 </section>

@@ -1,27 +1,15 @@
 <script lang="ts">
 	import SecondaryButton from '$lib/components/SecondaryButton.svelte';
 	import FeatureTable from '$lib/components/featureTable.svelte';
-	import { user } from '$lib/stores';
 	import ShoppingDemo from './ShoppingDemo.svelte';
 	import DinnerDemo from './DinnerDemo.svelte';
 	import UrlDemo from './URLDemo.svelte';
-
-	function naviateToDashboard() {
-		if (!$user) return;
-		try {
-			window.location.href = '/dashboard';
-		} catch {
-			return;
-		}
-	}
-
-	$: naviateToDashboard(), $user;
 </script>
 
 <div class="flex flex-col items-center justify-center w-full">
 	<!-- top section -->
 	<section
-		class="bg-[url('headerbg.png')] bg-no-repeat bg-cover bg-fixed bg-top lg:bg-left-top w-full h-[40rem] lg:h-[44.5rem] flex flex-col items-center"
+		class="bg-[url('/headerbg.png')] bg-no-repeat bg-cover bg-fixed bg-top lg:bg-left-top w-full h-[40rem] lg:h-[44.5rem] flex flex-col items-center"
 	>
 		<h1 class="text-3xl lg:text-5xl w-full p-4 mb-8 mt-8 font-bold text-center">
 			Ta kontroll over middagene med Paprika!

@@ -13,7 +13,7 @@
 		"format": "prettier --write .",
 		"test:integration": "playwright test",
 		"test:unit": "vitest",
-		"postinstall": ""
+		"postinstall": "prisma generate"
 	},
 	"devDependencies": {
 		"@playwright/test": "^1.28.1",
@@ -41,7 +41,12 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"@auth/sveltekit": "^1.0.1",
 		"@iconify/svelte": "^3.1.6",
-		"firebase": "^9.23.0"
+		"@prisma/client": "^5.13.0",
+		"@tailwindcss/typography": "^0.5.13",
+		"@vercel/postgres": "^0.8.0",
+		"daisyui": "^4.10.5",
+		"prisma": "^5.13.0"
 	}
 }
