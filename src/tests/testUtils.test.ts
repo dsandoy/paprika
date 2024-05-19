@@ -1,8 +1,14 @@
 // import { ArrayEmptyError, NotFoundError, ObjectExists, ValueError } from '$lib/errors';
 // import type { ReadDish, ShoppingListEntry } from '$lib/types';
 // import { DishValidator, DateHandler } from '$lib/utils';
-// import { it, expect, describe } from 'vitest';
+import { it, expect, describe } from 'vitest';
 // import { Mocks, Results } from './mocks';
+
+describe('test', () => {
+	it('test', () => {
+		expect(1).toBe(1);
+	});
+});
 
 // describe('Test the DishValidator', () => {
 // 	const dishes: ReadDish[] = [
