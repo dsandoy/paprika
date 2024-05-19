@@ -15,7 +15,7 @@
 	</div>
 	<a href={dish.url}>
 		<button class="flex flex-row gap-2 p-2 items-center w-full lg:w-64 bg-white rounded">
-			<DishImage classNames="h-11 w-11" imagesrc={dish.customImage} />
+			<DishImage classNames="h-11 w-11" imagesrc={dish.image} />
 			<p class="text-sm">{dish.name}</p>
 		</button>
 	</a>

@@ -1,5 +1,4 @@
-import type { CreateIngredient, ReadDish, ShoppingListEntry } from './types';
-import type { Dish } from '@prisma/client';
+import type { CreateIngredient, ReadDish, ReadListEntry } from './types';
 import { ArrayEmptyError, ObjectExists, ValueError } from './errors';
 
 export class DateHandler {
@@ -202,7 +201,7 @@ export class ShoppingListHandler {
 		$shoppingList.list = list;
 	 * ```
 	 */
-	public static sortList(list: ShoppingListEntry[]) {
+	public static sortList(list: ReadListEntry[]) {
 		if (!list || list.length === 0) throw new ArrayEmptyError('No shopping list');
 		list.sort((a, b) => {
 			return a.text < b.text ? -1 : 1;
@@ -218,18 +217,18 @@ export class ShoppingListHandler {
 		$shoppingList.list = list;
 	 * ```
 	 */
-	public static addIngredients(list: ShoppingListEntry[], dish: Dish) {
+	public static addIngredients(list: ReadListEntry[], dish: ReadDish, email: string) {
 		if (!dish.ingredients) throw new ValueError('No ingredients in dish');
 		const ingredients = dish.ingredients;
 
 		if (ingredients.length == 0) return list;
-		if (list.find((i) => i.dish === dish.name)) {
+		if (list.find((i) => i.dishName === dish.name)) {
 			throw new ObjectExists('Dish already in shopping list');
 		}
 
 		ingredients.forEach((i) => {
-			if (i !== '') {
-				list.push({ text: i, is_complete: false, dish: dish.name });
+			if (i.value !== '') {
+				list.push({ text: i.value, is_complete: false, dishName: dish.name, user: email });
 			}
 		});
 		return list;

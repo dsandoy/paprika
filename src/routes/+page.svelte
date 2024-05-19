@@ -1,21 +1,9 @@
 <script lang="ts">
 	import SecondaryButton from '$lib/components/SecondaryButton.svelte';
 	import FeatureTable from '$lib/components/featureTable.svelte';
-	import { user } from '$lib/stores';
 	import ShoppingDemo from './ShoppingDemo.svelte';
 	import DinnerDemo from './DinnerDemo.svelte';
 	import UrlDemo from './URLDemo.svelte';
-
-	function naviateToDashboard() {
-		if (!$user) return;
-		try {
-			window.location.href = '/dashboard';
-		} catch {
-			return;
-		}
-	}
-
-	$: naviateToDashboard(), $user;
 </script>
 
 <div class="flex flex-col items-center justify-center w-full">

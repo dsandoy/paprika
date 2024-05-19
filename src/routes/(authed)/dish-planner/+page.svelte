@@ -38,7 +38,9 @@
 	}
 </script>
 
-<section class="w-full min-h-[93svh] flex flex-col items-center left-0 right-0 gap-5 bg-base-100">
+<section
+	class="absolute top-16 bottom-0 left-0 right-0 flex flex-col items-center gap-5 bg-base-100"
+>
 	<h1 class="text-3xl lg:text-5xl rounded mt-8 mb-8">Middagsplanlegger</h1>
 	<Loading bind:loading>
 		<div class="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:w-auto">

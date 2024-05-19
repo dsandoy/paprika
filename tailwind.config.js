@@ -80,7 +80,7 @@ export default {
       "secondary": "#cfcfcf",
       "accent": "#dc8491",
       "neutral": "#e8b5fd",
-      "base-300": "#222B23",
+      "base-300": "#192321",
       "base-200": "#202B23",
       "base-100": "#17211A",
       "info": "#6090af",

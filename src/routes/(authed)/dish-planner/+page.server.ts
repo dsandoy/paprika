@@ -27,7 +27,7 @@ export const load = async ({ parent }) => {
 		console.log('This weeks plans:', thisWeekPlans);
 	} catch (e) {
 		if (e instanceof NotFoundError) {
-			await PlansHandler.CreateMissingPlans(user?.email, thisWeek);
+			await PlansHandler.CreateMissingPlans(user?.email as string, thisWeek);
 			thisWeekPlans = await PlanQueries.getPlans(user?.email as string, thisWeek);
 		} else {
 			console.error(e);
@@ -40,7 +40,7 @@ export const load = async ({ parent }) => {
 		console.log('next week plans', nextWeekPlans);
 	} catch (e) {
 		if (e instanceof NotFoundError) {
-			await PlansHandler.CreateMissingPlans(user?.email, nextWeek);
+			await PlansHandler.CreateMissingPlans(user?.email as string, nextWeek);
 			nextWeekPlans = await PlanQueries.getPlans(user?.email as string, nextWeek);
 		} else {
 			console.error(e);

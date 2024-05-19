@@ -1,6 +1,4 @@
 <script lang="ts">
-	import DemoPlanEntry from '$lib/components/demo/DemoPlanEntry.svelte';
-	import { demoPlans } from './demodata';
 </script>
 
 <div class=" flex flex-col items-center justify-center gap-6">
@@ -15,8 +13,8 @@
 		</p>
 	</div>
 	<div class="rounded lg:bg-white lg:border-[1px] lg:border-green/20 lg:p-6 lg:shadow-sm">
-		<DemoPlanEntry plannerEntry={$demoPlans[0]} />
-		<DemoPlanEntry plannerEntry={$demoPlans[1]} />
-		<DemoPlanEntry plannerEntry={$demoPlans[2]} />
+		<!-- <DemoPlanEntry plannerEntry={$demoPlans[0]} /> -->
+		<!-- <DemoPlanEntry plannerEntry={$demoPlans[1]} /> -->
+		<!-- <DemoPlanEntry plannerEntry={$demoPlans[2]} /> -->
 	</div>
 </div>

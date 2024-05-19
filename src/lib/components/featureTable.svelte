@@ -4,7 +4,7 @@
 	const functionalities = [
 		{
 			description: 'Innlogging med Google',
-			checked: false
+			checked: true
 		},
 		{
 			description: 'Opprett dine egne matretter',
@@ -24,7 +24,7 @@
 		},
 		{
 			description: 'Opprett handleliste fra middagsplanlegger',
-			checked: true
+			checked: false
 		},
 		{
 			description: 'Oversiktlig dashbord',
@@ -32,7 +32,7 @@
 		},
 		{
 			description: 'Mørkt tema',
-			checked: false
+			checked: true
 		}
 	];
 </script>

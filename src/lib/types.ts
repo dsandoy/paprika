@@ -1,27 +1,3 @@
-import type { Timestamp } from 'firebase/firestore';
-
-export interface PlanEntry {
-	id?: string;
-	date: Timestamp;
-	/** The id of the dish */
-	dish?: string;
-	user?: string;
-	checked?: boolean;
-}
-
-export interface ShoppingListEntry {
-	text: string;
-	is_complete: boolean;
-	dish?: string;
-}
-
-export interface ShoppingList {
-	id?: string;
-	/* the uid of the user */
-	user: string;
-	list: ShoppingListEntry[];
-}
-
 export interface CreateIngredient {
 	value: string;
 }
@@ -123,4 +99,18 @@ export interface ReadListEntry {
 	text: string;
 	is_complete: boolean;
 	dishName?: string | null;
+}
+
+export interface DemoDish {
+	id: number;
+	name: string;
+	url: string;
+	ingredients?: string[];
+	image?: string;
+}
+
+export interface DemoPlan {
+	date: Date;
+	dish?: DemoDish;
+	note?: Note;
 }
