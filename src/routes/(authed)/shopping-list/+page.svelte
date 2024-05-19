@@ -38,6 +38,23 @@
 		if (response.ok) {
 			entryText = '';
 			$shoppingList.push({ ...newEntry, is_complete: false });
+			await fetchList();
+		}
+		return;
+	}
+
+	async function fetchList() {
+		const response = await fetch('/api/list/get', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({
+				user: data.user.email
+			})
+		});
+		if (response.ok) {
+			$shoppingList = await response.json();
 		}
 		return;
 	}
@@ -74,10 +91,8 @@
 	$: countCompleted(), $shoppingList;
 </script>
 
-<section
-	class="lg:flex lg:flex-col gap-5 justify-center items-center bg-base-100 w-full min-h-[92svh]"
->
-	<!-- <h1 class="text-5xl my-8">Handleliste</h1> -->
+<section class="lg:flex lg:flex-col gap-5 justify-center items-center bg-base-100 w-full">
+	<h2 class=" p-4 lg:p-8 text-2xl">Handleliste</h2>
 	<div class="w-full lg:w-[60%] lg:my-8">
 		<div class="min-h-[36rem]">
 			<section class="flex flex-col gap-4 p-4 lg:p-8">
@@ -104,7 +119,7 @@
 						<div class="flex flex-row gap-5 items-center justify-center px-2">
 							<SecondaryButton
 								on:click={() => (hideComplete = !hideComplete)}
-								classNames="h-12 w-12 text-green"
+								classNames="h-12 w-12 text-primary "
 							>
 								{#if hideComplete}<Icons
 										height="1.5rem"
@@ -138,15 +153,20 @@
 				</section>
 			{/if}
 		</div>
-		<section class="border-t-[1px] w-full border-t-base-300 px-8 pt-4 flex flex-col">
+		<section
+			class="border-t-[1px] w-full border-t-base-300 px-8 pt-4 flex flex-col sticky bottom-0"
+		>
 			<button class="btn btn-primary text-white" on:click={() => modal.showModal()}>
 				<Icons iconName="zondicons:add-outline" />Legg til</button
 			>
 			<dialog id="modal" class="modal modal-middle lg:modal-bottom" bind:this={modal}>
-				<div class="modal-box flex flex-col gap-3">
+				<div
+					class="modal-box flex flex-col gap-3 justify-center
+				 items-center"
+				>
 					<h3 class="font-bold text-lg">Legg til i lista</h3>
 					<input
-						class="border-[1px] border-base-300 px-8 bg-primary/20 input"
+						class="border-[1px] border-base-300 px-8 bg-primary/20"
 						type="text"
 						name="entrytext"
 						placeholder="Brød"

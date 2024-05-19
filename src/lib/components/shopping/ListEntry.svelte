@@ -61,7 +61,7 @@
 	/>
 {:else}
 	<button
-		class="border-[1px] border-base-300 rounded-lg px-4 p-2 flex flex-row justify-between items-center w-[95%] bg-base-200 btn"
+		class="border-[1px] border-base-100 rounded-lg px-4 p-2 flex flex-row justify-between items-center w-[95%] bg-base-200 btn font-normal"
 		on:click={toggleIsComplete}
 	>
 		<div class="flex flex-row lg:gap-8 gap-4 relative items-center">
@@ -75,7 +75,7 @@
 		</div>
 		<div class="flex flex-row gap-2 lg:gap-8 items-center">
 			<span class="text-xs text-nice-blue pr-8"
-				>{#if entry.dish}{entry.dish}{/if}</span
+				>{#if entry.dishName}{entry.dishName}{/if}</span
 			>
 			{#if !entry.is_complete}
 				<button class="rounded-lg p-1 hover:text-green" on:click={enableEditMode}
