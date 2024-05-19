@@ -102,3 +102,25 @@ export interface ReadPlan {
 }
 
 export type Note = string;
+
+export interface CreateListEntry {
+	user: string;
+	text: string;
+	dishName?: string;
+}
+
+export interface UpdateListEntry {
+	user: string;
+	id: number;
+	text: string;
+	is_complete: boolean;
+	dishName?: string;
+}
+
+export interface ReadListEntry {
+	user: string;
+	id?: number;
+	text: string;
+	is_complete: boolean;
+	dishName?: string | null;
+}

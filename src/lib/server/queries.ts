@@ -1,6 +1,13 @@
 import { NotFoundError, ValueError } from '$lib/errors';
 import prisma from '$lib/prisma';
-import type { CreateDish, CreatePlan, UpdateDish, UpdatePlan } from '$lib/types';
+import type {
+	CreateDish,
+	CreateListEntry,
+	CreatePlan,
+	UpdateDish,
+	UpdateListEntry,
+	UpdatePlan
+} from '$lib/types';
 import type { Dish, Prisma } from '@prisma/client';
 
 export class ObjectCreationError extends Error {
@@ -297,5 +304,101 @@ export class PlanQueries {
 		});
 		if (!plans || plans.length == 0) throw new NotFoundError('No plans found');
 		return plans;
+	}
+}
+
+/** DB queries for the shopping list
+ *
+ * Functions:
+ * ```ts
+ * // delete an entry
+ * await ListQueries.delete(id);
+ * // delete all completed entries
+ * await ListQueries.deleteCompleted(email);
+ * // get all entries
+ * await ListQueries.getAll(email);
+ * // get completed
+ * await ListQueries.getCompleted(email);
+ * // get incomplete
+ * await ListQueries.getNotCompleted(email);
+ * // create a new entry
+ * await ListQueries.create(entry);
+ * // update an entry
+ * await ListQueries.update(entry);
+ * ```
+ */
+export class ListQueries {
+	/** Delete the provided list entry */
+	public static async delete(id: number) {
+		if (!id) throw new ValueError('Please provide an id ');
+		await prisma.listEntry.delete({
+			where: {
+				id: id
+			}
+		});
+	}
+
+	/** Delete all list entries that are completed.. */
+	public static async deleteCompleted(email: string) {
+		await prisma.listEntry.deleteMany({
+			where: {
+				user: email,
+				is_complete: true
+			}
+		});
+	}
+
+	/** Returns all list entries for the user */
+	public static async getAll(email: string) {
+		if (!email) throw new ValueError('No user provided');
+		const list = await prisma.listEntry.findMany({
+			where: {
+				user: email
+			}
+		});
+		return list;
+	}
+
+	/** returns only the completed entries for the user */
+	public static async getCompleted(email: string) {
+		if (!email) throw new ValueError('No user provided');
+		const list = await prisma.listEntry.findMany({
+			where: {
+				user: email,
+				is_complete: true
+			}
+		});
+		return list;
+	}
+
+	/** Returns only the not completed entries for the user */
+	public static async getNotCompleted(email: string) {
+		if (!email) throw new ValueError('No user provided');
+		const list = await prisma.listEntry.findMany({
+			where: {
+				user: email,
+				is_complete: false
+			}
+		});
+		return list;
+	}
+
+	public static async create(entry: CreateListEntry) {
+		if (!entry) throw new ValueError('No entry provided');
+		if (!entry.user) throw new ValueError('No user provided');
+		await prisma.listEntry.create({
+			data: entry
+		});
+	}
+
+	public static async update(entry: UpdateListEntry) {
+		if (!entry) throw new ValueError('No entry provided');
+		if (!entry.id) throw new ValueError('No id provided');
+		await prisma.listEntry.update({
+			where: {
+				id: entry.id
+			},
+			data: entry
+		});
 	}
 }

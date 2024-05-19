@@ -1,22 +1,18 @@
 <script lang="ts">
-	import { DBService, DBShoppingList, DishQueries } from '$lib/Firebase';
-	import type { Dish, ShoppingList, ShoppingListEntry } from '$lib/types';
+	import { DBShoppingList } from '$lib/Firebase';
+	import type { CreateListEntry, ReadDish } from '$lib/types';
 	import { slide } from 'svelte/transition';
 	import EntryInput from './EntryInput.svelte';
 	import ListEntry from './ListEntry.svelte';
 	import Icons from '../Icons.svelte';
 	import SecondaryButton from '../SecondaryButton.svelte';
 	import DeleteDropdown from '../DeleteDropdown.svelte';
-	import PrimaryButton from '../PrimaryButton.svelte';
-	import Dropdown from '../Dropdown.svelte';
 	import { dishes, user } from '$lib/stores';
 	import DishSearch from '../DishSearch.svelte';
-	import DishImage from '../dish/DishImage.svelte';
 	import { ShoppingListHandler } from '$lib/utils';
 
 	export let listName = 'Handleliste';
 	export let enableCompleteSection = true;
-	export let shoppingList: ShoppingList;
 
 	let entryText = '';
 	function createNewEntry() {
@@ -25,9 +21,8 @@
 			console.log('Skiping empty entry');
 			return;
 		}
-		const newEntry: ShoppingListEntry = {
-			text: value,
-			is_complete: false
+		const newEntry: CreateListEntry = {
+			text: value
 		};
 		shoppingList.list.push(newEntry);
 		shoppingList = shoppingList;
@@ -44,15 +39,9 @@
 
 	let hideComplete = false;
 
-	let filteredDishes: Dish[] = [];
-	let isOpen = false;
+	let filteredDishes: ReadDish[] = [];
 
-	function getDishes() {
-		const q = DishQueries.dishes($user);
-		DBService.getResources(q).then((result) => {
-			dishes.set(result as Dish[]);
-		});
-	}
+	function getDishes() {}
 
 	$: getDishes(), $user;
 
@@ -83,7 +72,7 @@
 		}
 	}
 
-	function addToList(dish: Dish) {
+	function addToList(dish: ReadDish) {
 		console.log('adding to list...');
 		try {
 			let list = shoppingList.list;
@@ -93,7 +82,6 @@
 		} catch (error) {
 			console.warn(error);
 		}
-		isOpen = false;
 	}
 
 	countCompleted();
@@ -101,42 +89,27 @@
 	$: countCompleted(), shoppingList;
 </script>
 
-<div class="border-[1px] border-gray-200 rounded flex flex-col gap-5">
+<div class="border-[1px] border-base-300 rounded flex flex-col gap-5">
 	<section
-		class="h-20 p-4 border-b-[1px] border-b-gray-200 flex flex-row items-center justify-between"
+		class="h-20 p-4 border-b-[1px] border-base-300 flex flex-row items-center justify-between"
 	>
 		<h2 class="text-3xl">{listName}</h2>
-		<Dropdown
-			bind:isOpen
-			relative
-			classNamesContent="absolute bg-white border-[1px] border-green rounded z-10 text-black right-[-1rem] top-[3rem] p-5 w-[18rem] h-[22rem]"
-		>
-			<PrimaryButton
-				slot="button"
-				classNames=" w-34 text-sm lg:w-38 flex flex-row gap-2 items-center"
-				><Icons iconName="zondicons:add-solid" height="1.6rem" />fra matrett</PrimaryButton
-			>
-
-			<div slot="content">
-				<span class="mb-8 flex gap-8 items-center">
-					<h3>Velg middag du vil legge til:</h3>
-				</span>
-
-				<DishSearch dishes={$dishes} bind:filteredDishes />
-				<div class="overflow-y-auto h-[10rem]">
-					{#each filteredDishes as dish}
-						<button
-							on:click={() => addToList(dish)}
-							class="flex flex-row gap-6 text-sm hover:bg-gray-200 cursor-pointer p-2 w-full"
-						>
-							<DishImage classNames="rounded h-8 lg:h-10 w-8 lg:w-10" imagesrc={dish.customImage} />
-
-							<p class="mt-3">{dish.name}</p>
-						</button>
-					{/each}
-				</div>
-			</div></Dropdown
-		>
+		<!-- add from dish -->
+		<section class="dropdown dropdown-bottom dropdown-end">
+			<div tabindex="-1" class="btn btn-primary text-white">
+				<Icons iconName="zondicons:add-outline" />
+				Fra matrett
+			</div>
+			<ul class="dropdown-content menu shadow p-2 rounded gap-3 flex bg-base-200 z-10">
+				<strong>Legg til fra matrett</strong>
+				<button>
+					<DishSearch bind:filteredDishes dishes={$dishes} classNames="text-sm" />
+				</button>
+				<li>
+					<button>Stuff</button>
+				</li>
+			</ul>
+		</section>
 	</section>
 
 	<div class="min-h-[36rem]">
@@ -159,7 +132,7 @@
 		{#if enableCompleteSection}
 			{#if numCompleted !== 0}
 				<section
-					class="flex flex-col gap-4 p-4 lg:p-8 max-h-[25rem] lg:max-h-[35rem] overflow-y-auto border-t-[1px] border-t-gray-200"
+					class="flex flex-col gap-4 p-4 lg:p-8 max-h-[25rem] lg:max-h-[35rem] overflow-y-auto border-t-[1px] border-t-base-300"
 				>
 					<div class="flex flex-row justify-between items-center">
 						<div class="flex flex-row gap-5 items-center justify-center px-2">
@@ -200,7 +173,7 @@
 			{/if}
 		{/if}
 	</div>
-	<section class="border-t-[1px] w-full border-t-gray-200 px-8 pt-4 flex flex-col bg-green-50">
+	<section class="border-t-[1px] w-full border-t-base-300 px-8 pt-4 flex flex-col">
 		<EntryInput bind:entryText on:change={createNewEntry} />
 	</section>
 </div>
