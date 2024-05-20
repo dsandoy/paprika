@@ -354,6 +354,9 @@ export class ListQueries {
 		const list = await prisma.listEntry.findMany({
 			where: {
 				user: email
+			},
+			orderBy: {
+				text: 'asc'
 			}
 		});
 		return list;
@@ -388,6 +391,13 @@ export class ListQueries {
 		if (!entry.user) throw new ValueError('No user provided');
 		await prisma.listEntry.create({
 			data: entry
+		});
+	}
+
+	public static async createMany(entries: CreateListEntry[]) {
+		if (!entries || entries.length == 0) throw new ValueError('No entries provided');
+		await prisma.listEntry.createMany({
+			data: entries
 		});
 	}
 
