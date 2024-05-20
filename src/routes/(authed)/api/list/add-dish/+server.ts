@@ -5,7 +5,7 @@ import { text, type RequestHandler } from '@sveltejs/kit';
 export const POST: RequestHandler = async ({ request }) => {
 	const body = await request.json();
 	const { dish, email } = body;
-	if (!dish.ingredients) throw text('No ingredients in dish');
+	if (!dish.ingredients) return text('No ingredients in dish');
 	const ingredients = dish.ingredients;
 	if (ingredients.length == 0) return text('The ingredients are empty');
 

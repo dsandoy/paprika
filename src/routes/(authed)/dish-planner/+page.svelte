@@ -4,12 +4,14 @@
 	import Loading from '$lib/components/Loading.svelte';
 	import PlannerEntry from '$lib/components/dish/PlannerEntry.svelte';
 	import { currentPlans, dishes, nextWeekPlans } from '$lib/stores';
+	import type { ReadPlan } from '$lib/types.js';
 	import { onMount } from 'svelte';
 
 	export let data;
 
 	let loading = false;
 	let updateLoading = false;
+	let up2loading = false;
 
 	onMount(() => {
 		// create missing plans for current and next week..
@@ -36,6 +38,33 @@
 			currentPlans.set(list);
 		}
 	}
+
+	async function updateShoppingList(is_next = false) {
+		updateLoading = true;
+		let checkedPlans: ReadPlan[];
+		if (is_next) {
+			checkedPlans = $nextWeekPlans.filter((p) => p.checked);
+		} else {
+			checkedPlans = $currentPlans.filter((p) => p.checked);
+		}
+
+		console.log(checkedPlans);
+		const response = await fetch('/api/list/add-dishes', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({
+				plans: checkedPlans,
+				email: data.user.email
+			})
+		});
+
+		if (response.ok) {
+			console.log('ok');
+		}
+		updateLoading = false;
+	}
 </script>
 
 <section
@@ -47,14 +76,17 @@
 			<!-- This week -->
 			<section class="flex flex-col items-center relative">
 				<div
-					class="flex gap-8 lg:gap-12 p-4 justify-center items-center border-b-2 border-b-base-300"
+					class="flex gap-8 lg:gap-16 p-4 justify-center items-center border-b-2 border-b-base-300"
 				>
-					<Button classNames="flex gap-4 w-auto" on:click={() => checkAll()}>
+					<Button classNames="flex gap-6 lg:gap-8 w-auto" on:click={() => checkAll()}>
 						<Checkbox bind:checked={allCheckedThis} disableCheckToggle></Checkbox>
 						<p class="text-xs">Velg alle</p>
 					</Button>
 					<h3 class="text-sm">Denne uka</h3>
-					<button class="text-xs h-auto w-auto p-2 btn btn-primary btn-outline">
+					<button
+						class="text-xs h-auto w-auto p-2 btn btn-primary btn-outline"
+						on:click={() => updateShoppingList}
+					>
 						<Loading bind:loading={updateLoading}>Lag Handleliste</Loading>
 					</button>
 				</div>
@@ -68,15 +100,18 @@
 			<!-- next week -->
 			<section class="flex flex-col items-center relative">
 				<div
-					class="flex gap-8 lg:gap-12 p-4 justify-center items-center border-b-2 border-b-base-300"
+					class="flex gap-8 lg:gap-16 p-4 justify-center items-center border-b-2 border-b-base-300"
 				>
-					<Button classNames="flex gap-4 w-auto" on:click={() => checkAll(true)}>
+					<Button classNames="flex  gap-6 lg:gap-8 w-auto" on:click={() => checkAll(true)}>
 						<Checkbox bind:checked={allCheckedNext} disableCheckToggle></Checkbox>
 						<p class="text-xs">Velg alle</p>
 					</Button>
 					<h3 class="text-sm">Neste Uke</h3>
-					<button class="text-xs h-auto w-auto p-2 btn btn-primary btn-outline"
-						>Lag Handleliste</button
+					<button
+						class="text-xs h-auto w-auto p-2 btn btn-primary btn-outline"
+						on:click={() => updateShoppingList(true)}
+					>
+						<Loading bind:loading={up2loading}>Lag Handleliste</Loading></button
 					>
 				</div>
 				{#if $nextWeekPlans}

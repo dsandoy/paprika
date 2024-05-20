@@ -14,17 +14,14 @@ export const load = async ({ parent }) => {
 		Date.UTC(today.getFullYear(), today.getMonth(), today.getDate(), 0, 0, 0)
 	);
 	const thisWeek = DateHandler.getWholeWeek(todayWithUTCTime);
-	console.log('this week', thisWeek);
 	let nextWeekPlans: ReadPlan[] = [];
 	const nextWeek = DateHandler.getWholeWeek(
 		new Date(new Date().setDate(todayWithUTCTime.getDate() + 7))
 	);
-	console.log('Next week: ', nextWeek);
 
 	// get current week plans
 	try {
 		thisWeekPlans = await PlanQueries.getPlans(user?.email as string, thisWeek);
-		console.log('This weeks plans:', thisWeekPlans);
 	} catch (e) {
 		if (e instanceof NotFoundError) {
 			await PlansHandler.CreateMissingPlans(user?.email as string, thisWeek);
@@ -37,7 +34,6 @@ export const load = async ({ parent }) => {
 	// get next week plans
 	try {
 		nextWeekPlans = await PlanQueries.getPlans(user?.email as string, nextWeek);
-		console.log('next week plans', nextWeekPlans);
 	} catch (e) {
 		if (e instanceof NotFoundError) {
 			await PlansHandler.CreateMissingPlans(user?.email as string, nextWeek);
