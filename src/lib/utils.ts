@@ -1,5 +1,5 @@
 import type { CreateIngredient, ReadDish, ReadListEntry } from './types';
-import { ArrayEmptyError, ObjectExists, ValueError } from './errors';
+import { ArrayEmptyError } from './errors';
 
 export class DateHandler {
 	/** Display the date in the date number and month only. Ex: 12. feb,
