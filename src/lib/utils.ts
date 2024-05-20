@@ -1,5 +1,5 @@
 import type { CreateIngredient, ReadDish, ReadListEntry } from './types';
-import { ArrayEmptyError, ObjectExists, ValueError } from './errors';
+import { ArrayEmptyError } from './errors';
 
 export class DateHandler {
 	/** Display the date in the date number and month only. Ex: 12. feb,
@@ -205,31 +205,6 @@ export class ShoppingListHandler {
 		if (!list || list.length === 0) throw new ArrayEmptyError('No shopping list');
 		list.sort((a, b) => {
 			return a.text < b.text ? -1 : 1;
-		});
-		return list;
-	}
-
-	/**@example
-	 *  ```javascript
-	 *  // update shoppinng list
-	 	let list = $shoppingList.list;
-	 *  list = ShoppingListHandler.addIngredients(list, dish);
-		$shoppingList.list = list;
-	 * ```
-	 */
-	public static addIngredients(list: ReadListEntry[], dish: ReadDish, email: string) {
-		if (!dish.ingredients) throw new ValueError('No ingredients in dish');
-		const ingredients = dish.ingredients;
-
-		if (ingredients.length == 0) return list;
-		if (list.find((i) => i.dishName === dish.name)) {
-			throw new ObjectExists('Dish already in shopping list');
-		}
-
-		ingredients.forEach((i) => {
-			if (i.value !== '') {
-				list.push({ text: i.value, is_complete: false, dishName: dish.name, user: email });
-			}
 		});
 		return list;
 	}

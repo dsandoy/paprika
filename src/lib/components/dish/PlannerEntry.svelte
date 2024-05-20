@@ -35,6 +35,8 @@
 			chosenDish = null;
 		}
 
+		plannerEntry.note = null;
+
 		const response = await fetch('/api/plans/update', {
 			method: 'POST',
 			headers: {
@@ -43,6 +45,25 @@
 			body: JSON.stringify({
 				plan: plannerEntry,
 				dishId: chosenDish?.id
+			})
+		});
+		if (response.ok) {
+			console.log('updated');
+		}
+	}
+
+	async function removeNote() {
+		note = '';
+		chosenDish = null;
+		plannerEntry.note = null;
+		const response = await fetch('/api/plans/update', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({
+				plan: plannerEntry,
+				dishId: null
 			})
 		});
 		if (response.ok) {
@@ -109,25 +130,21 @@
 				<DishSearch bind:filteredDishes dishes={$dishes} classNames="text-sm" bind:searchWord />
 			</button>
 			<div class="overflow-x-auto h-60">
-				{#if !filteredDishes || filteredDishes?.length === 0}
-					<button class="btn btn-secondary btn-sm" on:click={addNote}>Legg til notat</button>
-				{:else}
-					{#each filteredDishes as dish}
-						<li>
-							<button
-								class="flex gap-2 justify-between items-center"
-								on:click={() => setChosenDish(dish)}
-							>
-								<p>{dish.name}</p>
-								<img
-									class="h-8 w-8 lg:h-10 lg:w-10 rounded"
-									src={`/api/dishes/${dish.id}/image/`}
-									alt="dish"
-								/>
-							</button>
-						</li>
-					{/each}
-				{/if}
+				{#each filteredDishes as dish}
+					<li>
+						<button
+							class="flex gap-2 justify-between items-center"
+							on:click={() => setChosenDish(dish)}
+						>
+							<p>{dish.name}</p>
+							<img
+								class="h-8 w-8 lg:h-10 lg:w-10 rounded"
+								src={`/api/dishes/${dish.id}/image/`}
+								alt="dish"
+							/>
+						</button>
+					</li>
+				{/each}
 			</div>
 		</ul>
 	</section>
@@ -145,8 +162,9 @@
 				placeholder="Legg til notat"
 				class="input input-sm input-primary mt-3 mb-3"
 			/>
-			<div class="flex items-center justify-center">
+			<div class="flex items-center justify-between">
 				<button class="btn btn-neutral" on:click={addNote}>Legg til</button>
+				<button class="btn btn-accent" on:click={removeNote}>Fjern</button>
 			</div>
 		</div>
 	</section>

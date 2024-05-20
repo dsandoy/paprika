@@ -5,7 +5,9 @@
 	import DeleteDropdown from '$lib/components/DeleteDropdown.svelte';
 	import Icons from '$lib/components/Icons.svelte';
 	import { slide } from 'svelte/transition';
-	import type { CreateListEntry } from '$lib/types.js';
+	import type { CreateListEntry, ReadDish } from '$lib/types.js';
+	import DishSearch from '$lib/components/DishSearch.svelte';
+	import Loading from '$lib/components/Loading.svelte';
 
 	export let data;
 	const dataDishes = data.dishes;
@@ -87,12 +89,75 @@
 			}
 		}
 	}
+	let filteredDishes: ReadDish[] = [];
+	let selectedDish: ReadDish | null = null;
+	let dishLoading = false;
+
+	function setChosenDish(dish: ReadDish) {
+		selectedDish = dish;
+		selectedDish = selectedDish;
+	}
+
+	async function addDishIngredients() {
+		dishLoading = true;
+		const response = await fetch('/api/list/add-dish', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({
+				email: data.user.email,
+				dish: selectedDish
+			})
+		});
+		if (response.ok) {
+			selectedDish = null;
+			fetchList();
+		}
+		dishLoading = false;
+	}
 
 	$: countCompleted(), $shoppingList;
 </script>
 
 <section class="lg:flex lg:flex-col gap-5 justify-center items-center bg-base-100 w-full">
 	<h2 class=" p-4 lg:p-8 text-2xl">Handleliste</h2>
+	<section class="dropdown">
+		<div class="btn btn-primary text-white" tabindex="-1">
+			<Loading bind:loading={dishLoading}>
+				<Icons iconName="zondicons:add-outline" height="1.5rem" />
+				Fra matrett
+			</Loading>
+		</div>
+		<ul class="dropdown-content menu p-4 shadow bg-base-200 rounded-box z-10">
+			<div class="flex gap-2 justify-between pr-4">
+				<strong class="mb-4">Velg matrett til handleliste</strong>
+			</div>
+			<button class="pb-4">
+				<DishSearch bind:filteredDishes dishes={$dishes} classNames="text-sm" />
+			</button>
+			<div class="overflow-x-auto h-60">
+				{#each filteredDishes as dish}
+					<li>
+						<button
+							class="flex gap-2 justify-between items-center"
+							on:click={() => setChosenDish(dish)}
+						>
+							<p>{dish.name}</p>
+							<img
+								class="h-8 w-8 lg:h-10 lg:w-10 rounded"
+								src={`/api/dishes/${dish.id}/image/`}
+								alt="dish"
+							/>
+						</button>
+					</li>
+				{/each}
+			</div>
+			<button class="btn btn-primary text-white" on:click={addDishIngredients}
+				>Legg til valgte matrett</button
+			>
+		</ul>
+	</section>
 	<div class="w-full lg:w-[60%] lg:my-8">
 		<div class="min-h-[36rem]">
 			<section class="flex flex-col gap-4 p-4 lg:p-8">
@@ -166,7 +231,7 @@
 				>
 					<h3 class="font-bold text-lg">Legg til i lista</h3>
 					<input
-						class="border-[1px] border-base-300 px-8 bg-primary/20"
+						class="border-[1px] border-base-300 px-8 bg-primary/20 input"
 						type="text"
 						name="entrytext"
 						placeholder="Brød"
