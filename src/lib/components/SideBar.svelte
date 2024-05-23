@@ -10,7 +10,7 @@
 <Dropdown
 	bind:isOpen
 	classNamesButton="flex items-center gap-3 cursor-pointer relative "
-	classNamesContent="w-42 lg:w-56 absolute bg-green-50 border-r-[1px] border-grey z-10 text-black p-5 left-0 top-16 bottom-0"
+	classNamesContent="w-42 lg:w-56 absolute bg-base-100 border-r-[1px] border-grey z-10 text-black p-5 left-0 top-16 bottom-0"
 >
 	<Button slot="button" data_ui={isOpen} classNames="data-isOpen:text-green hover:text-green px-0">
 		<Icons iconName="zondicons:menu" height="1.75rem" classNames="m-auto " />

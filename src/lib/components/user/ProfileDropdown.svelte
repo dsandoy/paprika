@@ -13,7 +13,7 @@
 				<Icons iconName="zondicons:user" />
 			{/if}
 		</div>
-		<div class="dropdown-content bg-base-200 rounded-box shadow z-[1] w-52 border-border-[1px]">
+		<div class="dropdown-content bg-base-200 rounded-box shadow z-10 w-52 border-border-[1px]">
 			<strong class="text-xs p-4 pl-6 pt-6">{$page.data.session.user?.name ?? 'User'}</strong>
 			<ul class="menu" tabindex="-1">
 				<li>
