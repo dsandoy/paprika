@@ -6,25 +6,14 @@ import type { ValidationResult } from './utils';
 /** Collection of available api urls */
 export class APIURLS {
 	static ADD_DISH = '/api/dishes/add';
+	static EDIT_DISH = '/api/dishes/edit';
+	static DELETE_DISH = '/api/dishes/delete';
 
 	/** Returns all api urls in a list */
 	public static all(): string[] {
-		return [this.ADD_DISH];
+		return [this.ADD_DISH, this.EDIT_DISH, this.DELETE_DISH];
 	}
 }
-
-/** Type of body request in the add dish api */
-export type AddDishBody = {
-	name: string;
-	url: string;
-	ingredients: CreateIngredient[];
-	email: string;
-	image: File | undefined;
-};
-
-export type AddDishResponse = {
-	va: ValidationResult;
-};
 
 /** Create a post request to the provided api endpoint */
 export async function fetchFromApi<T>(url: string, body: T) {
@@ -41,3 +30,40 @@ export async function fetchFromApi<T>(url: string, body: T) {
 		throw new Error('Invalid api url: ' + url);
 	}
 }
+
+/** Type of body request in the add dish api */
+export type AddDishBody = {
+	name: string;
+	url: string;
+	ingredients: CreateIngredient[];
+	email: string;
+	image: File | undefined;
+};
+
+/** Type of body request in the edit dish api */
+export type EditDishBody = {
+	id: number;
+	name: string;
+	url: string;
+	ingredients: CreateIngredient[];
+	email: string;
+	image: File | undefined;
+};
+
+/** type of body request in the delete dish api */
+export type DeleteDishBody = {
+	id: number;
+	email: string;
+};
+
+export type AddDishResponse = {
+	va: ValidationResult;
+};
+
+export type EditDishResponse = {
+	va: ValidationResult;
+};
+
+export type DeleteDishResponse = {
+	va: ValidationResult;
+};
