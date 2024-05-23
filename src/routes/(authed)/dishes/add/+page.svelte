@@ -8,10 +8,9 @@
 	import Icons from '$lib/components/Icons.svelte';
 	import ErrorAlert from '$lib/components/forms/ErrorAlert.svelte';
 	import InfoDropdown from '$lib/components/dropdowns/InfoDropdown.svelte';
-	import { enhance } from '$app/forms';
+	import { APIURLS, type AddDishBody, fetchFromApi, type AddDishResponse } from '$lib/api.js';
 
 	export let data;
-	export let form;
 	let ingredient = { value: '' };
 	let url_text = '';
 	let name_text = '';
@@ -38,7 +37,7 @@
 	/** add ingredient to client kept ingredients list */
 	const addIngrendient = () => {
 		// prevent empty or duplicated ingredients
-		if (!ingredient) return;
+		if (!ingredient.value) return;
 		if ($ingredients.some((i) => i.value === ingredient.value)) return;
 
 		$ingredients.push(ingredient);
@@ -69,12 +68,25 @@
 		}
 	}
 
-	let v: ValidationResult = form?.v || { is_valid: true, message: '' };
-	$: v = form?.v || v;
+	let v: ValidationResult = { is_valid: true, message: '' };
 	$: if (!v.is_valid) loading = false;
 
 	async function AddDish() {
 		loading = true;
+		const response = await fetchFromApi<AddDishBody>(APIURLS.ADD_DISH, {
+			name: name_text,
+			url: url_text,
+			image: image,
+			ingredients: $ingredients,
+			email: data.user.email as string
+		});
+		const body = (await response.json()) as AddDishResponse;
+		if (body.va.is_valid) {
+			window.location.href = '/dishes/add/success';
+		} else {
+			v = body.va;
+		}
+		loading = false;
 	}
 
 	let smallSize = true;
@@ -85,13 +97,7 @@
 
 <section class="flex flex-col items-center pb-8 justify-center">
 	<h2 class="mb-12 mt-12 text-3xl">Legg til ny Matrett</h2>
-	<form
-		class="w-[95%] md:w-auto flex flex-col justify-center items-center gap-4"
-		method="post"
-		use:enhance
-		novalidate
-		enctype="multipart/form-data"
-	>
+	<section class="w-[95%] md:w-auto flex flex-col justify-center items-center gap-4">
 		<div class="card shadow-lg bg-base-200 border-[1px] border-base-300 w-full p-4">
 			<h3 class="text-base-content/50 text-right p-3">Matrettdetaljer</h3>
 			<div class="grid grid-cols-1 lg:grid-cols-2 w-full">
@@ -161,7 +167,7 @@
 						<span slot="before">Ny</span></TextInput
 					>
 					<button
-						type="button"
+						type="submit"
 						class="btn-accent btn btn-outline w-32 text-base font-normal"
 						on:click={addIngrendient}>Legg til</button
 					>
@@ -188,12 +194,12 @@
 		<ErrorAlert bind:v />
 		<button
 			class="btn btn-primary btn-lg text-white font-normal text-lg"
-			type="submit"
+			type="button"
 			on:click={AddDish}
 		>
 			<Loading bind:loading>Legg til matrett</Loading>
 		</button>
-	</form>
+	</section>
 	{#if !smallSize}
 		<BottomCircles />
 	{/if}
