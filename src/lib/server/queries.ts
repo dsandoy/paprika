@@ -309,23 +309,6 @@ export class PlanQueries {
 
 /** DB queries for the shopping list
  *
- * Functions:
- * ```ts
- * // delete an entry
- * await ListQueries.delete(id);
- * // delete all completed entries
- * await ListQueries.deleteCompleted(email);
- * // get all entries
- * await ListQueries.getAll(email);
- * // get completed
- * await ListQueries.getCompleted(email);
- * // get incomplete
- * await ListQueries.getNotCompleted(email);
- * // create a new entry
- * await ListQueries.create(entry);
- * // update an entry
- * await ListQueries.update(entry);
- * ```
  */
 export class ListQueries {
 	/** Delete the provided list entry */
