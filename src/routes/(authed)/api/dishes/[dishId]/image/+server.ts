@@ -22,7 +22,7 @@ export const GET = async ({ params, setHeaders }) => {
 		'Content-Type': image.type,
 		'Content-Length': image.size.toString(),
 		'Last-Modified': new Date(image.lastModified).toUTCString(),
-		'Cache-Control': 'public, max-age=31536000, immutable'
+		'Cache-Control': 'public, max-age=3600, immutable'
 	});
 
 	return new Response(imageBlob, {

@@ -162,7 +162,7 @@ export class DishValidator {
 
 	/** Make sure the uploaded file is an image */
 	public static validateImage(file: File) {
-		if (!file) return this.VALID;
+		if (!file || file === undefined || file === null || typeof file !== 'object') return this.VALID;
 		const imgTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/svg+xml', 'image/webp'];
 		if (imgTypes.includes(file.type)) {
 			return this.VALID;

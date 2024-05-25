@@ -8,10 +8,16 @@
 	import Icons from '$lib/components/Icons.svelte';
 	import ErrorAlert from '$lib/components/forms/ErrorAlert.svelte';
 	import InfoDropdown from '$lib/components/dropdowns/InfoDropdown.svelte';
-	import { enhance } from '$app/forms';
+	import {
+		APIURLS,
+		fetchFromApi,
+		fetchFromApiForm,
+		type DeleteDishBody,
+		type DeleteDishResponse,
+		type EditDishResponse
+	} from '$lib/api.js';
 
 	export let data;
-	export let form;
 	let ingredient: { value: string } = {
 		value: ''
 	};
@@ -79,15 +85,40 @@
 		}
 	}
 
-	let v: ValidationResult = form?.v || { is_valid: true, message: '' };
-	$: v = form?.v || v;
+	let v: ValidationResult = { is_valid: true, message: '' };
 	$: if (!v.is_valid) {
 		loading = false;
 		loadingDelete = false;
 	}
 
-	async function StartLoading() {
+	async function saveChanges() {
 		loading = true;
+		const formData = new FormData();
+		formData.append('id', dish.id.toString());
+		formData.append('name', name_text);
+		formData.append('url', url_text);
+		formData.append('ingredients', JSON.stringify($ingredients));
+		formData.append('image', image as File);
+		formData.append('email', data?.user?.email as string);
+		const response = await fetchFromApiForm(APIURLS.EDIT_DISH, formData);
+		const { va } = (await response.json()) as EditDishResponse;
+		v = va;
+		if (v.is_valid) window.location.href = '/dishes/';
+		loading = false;
+	}
+
+	async function deleteDish() {
+		loadingDelete = true;
+		// eslint-disable-next-line no-undef
+		const response = await fetchFromApi<DeleteDishBody>(APIURLS.DELETE_DISH, {
+			id: dish.id,
+			email: data.user?.email as string
+		});
+
+		const { va } = (await response.json()) as DeleteDishResponse;
+		v = va;
+		window.location.href = '/dishes/';
+		loadingDelete = false;
 	}
 
 	let smallSize = true;
@@ -98,14 +129,7 @@
 
 <section class="flex flex-col items-center pb-8 justify-center">
 	<h2 class="mb-12 mt-12 text-3xl">Endre {dish.name}</h2>
-	<form
-		class="w-[95%] md:w-auto flex flex-col justify-center items-center gap-4"
-		method="post"
-		use:enhance
-		novalidate
-		action="?/edit"
-		enctype="multipart/form-data"
-	>
+	<section class="w-[95%] md:w-auto flex flex-col justify-center items-center gap-4">
 		<div class="card shadow-lg bg-base-200 border-[1px] border-base-300 w-full p-4">
 			<h3 class="text-base-content/50 text-right p-3">Matrettdetaljer</h3>
 			<div class="grid grid-cols-1 lg:grid-cols-2 w-full">
@@ -205,19 +229,15 @@
 			<button
 				class="btn btn-primary btn-lg text-white font-normal text-lg"
 				type="submit"
-				on:click={StartLoading}
+				on:click={saveChanges}
 			>
 				<Loading bind:loading>Lagre endringer</Loading>
 			</button>
-			<button
-				formaction="?/delete"
-				class="btn btn-accent btn-lg text-white font-normal text-lg"
-				on:click={() => (loadingDelete = true)}
-			>
+			<button class="btn btn-accent btn-lg text-white font-normal text-lg" on:click={deleteDish}>
 				<Loading bind:loading={loadingDelete}>Slett</Loading>
 			</button>
 		</div>
-	</form>
+	</section>
 	{#if !smallSize}
 		<BottomCircles />
 	{/if}

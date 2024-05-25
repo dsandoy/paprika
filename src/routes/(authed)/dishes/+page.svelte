@@ -43,7 +43,7 @@
 </script>
 
 <section class="flex flex-col items-center align-center w-full h-full m-0">
-	<div class="sticky top-0 w-full lg:w-[80%] pb-8 bg-base-100 z-10">
+	<div class="sticky top-0 w-full lg:w-[80%] pb-8 bg-base-100 z-[1]">
 		<div class="w-full pl-4">
 			<h2 class="text-3xl mt-8 mb-4 lg:mb-8 lg:text-center">Matretter</h2>
 		</div>
