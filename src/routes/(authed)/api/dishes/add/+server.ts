@@ -4,8 +4,14 @@ import { DishValidator, type ValidationResult } from '$lib/utils';
 import { type RequestHandler } from '@sveltejs/kit';
 
 export const POST: RequestHandler = async ({ request }): Promise<Response> => {
-	const body = await request.json();
-	const { name, url, ingredients, email, image } = body;
+	const formData = await request.formData();
+	const name = formData.get('name') as string;
+	const url = formData.get('url') as string;
+	const ingredients = JSON.parse(
+		formData.get('ingredients') as string
+	) as CreateDish['ingredients'];
+	const email = formData.get('email') as string;
+	const image = formData.get('image') as File;
 
 	let v: ValidationResult = {
 		is_valid: true,
@@ -17,7 +23,6 @@ export const POST: RequestHandler = async ({ request }): Promise<Response> => {
 		user: email,
 		ingredients: ingredients
 	};
-
 	if (image && image.size != 0) v = DishValidator.validateImage(image);
 	if (!v.is_valid)
 		return new Response(

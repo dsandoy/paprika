@@ -31,6 +31,19 @@ export async function fetchFromApi<T>(url: string, body: T) {
 	}
 }
 
+/** Create a post request to the provided api endpoint using form data... */
+export async function fetchFromApiForm(url: string, body: FormData) {
+	if (APIURLS.all().includes(url)) {
+		const response = await fetch(url, {
+			method: 'POST',
+			body: body
+		});
+		return response;
+	} else {
+		throw new Error('Invalid api url: ' + url);
+	}
+}
+
 /** Type of body request in the add dish api */
 export type AddDishBody = {
 	name: string;

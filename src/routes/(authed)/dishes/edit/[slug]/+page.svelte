@@ -11,9 +11,9 @@
 	import {
 		APIURLS,
 		fetchFromApi,
+		fetchFromApiForm,
 		type DeleteDishBody,
 		type DeleteDishResponse,
-		type EditDishBody,
 		type EditDishResponse
 	} from '$lib/api.js';
 
@@ -93,17 +93,17 @@
 
 	async function saveChanges() {
 		loading = true;
-		const response = await fetchFromApi<EditDishBody>(APIURLS.EDIT_DISH, {
-			id: dish.id,
-			name: name_text,
-			ingredients: $ingredients,
-			url: url_text,
-			image: image,
-			email: data.user?.email as string
-		});
+		const formData = new FormData();
+		formData.append('id', dish.id.toString());
+		formData.append('name', name_text);
+		formData.append('url', url_text);
+		formData.append('ingredients', JSON.stringify($ingredients));
+		formData.append('image', image as File);
+		formData.append('email', data?.user?.email as string);
+		const response = await fetchFromApiForm(APIURLS.EDIT_DISH, formData);
 		const { va } = (await response.json()) as EditDishResponse;
 		v = va;
-		window.location.href = '/dishes';
+		if (v.is_valid) window.location.href = '/dishes/';
 		loading = false;
 	}
 

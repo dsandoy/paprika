@@ -1,11 +1,20 @@
 import type { EditDishBody } from '$lib/api';
 import { DishQueries } from '$lib/server/queries';
-import type { CreateIngredient, UpdateDish, UpdateImage } from '$lib/types';
+import type { CreateIngredient, UpdateDish, UpdateImage, UpdateIngredient } from '$lib/types';
 import { DishValidator, type ValidationResult } from '$lib/utils';
 import type { RequestHandler } from '@sveltejs/kit';
 
 export const POST: RequestHandler = async ({ request }) => {
-	const data: EditDishBody = await request.json();
+	const formData = await request.formData();
+	const data: EditDishBody = {
+		id: parseInt(formData.get('id') as string),
+		name: formData.get('name') as string,
+		email: formData.get('email') as string,
+		url: formData.get('url') as string,
+		ingredients: JSON.parse(formData.get('ingredients') as string) as UpdateIngredient[],
+		image: formData.get('image') as File | undefined
+	};
+
 	if (!data.email) {
 		return new Response(
 			JSON.stringify({
@@ -35,8 +44,8 @@ export const POST: RequestHandler = async ({ request }) => {
 		dish.ingredients = processedIngredients;
 	}
 
-	const image = data.image as File;
-	if (image && image.size != 0) v = DishValidator.validateImage(image);
+	const image = data.image;
+	if (image && image !== undefined && image.size != 0) v = DishValidator.validateImage(image);
 	if (!v.is_valid)
 		return new Response(
 			JSON.stringify({

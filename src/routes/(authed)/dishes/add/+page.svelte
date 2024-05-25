@@ -8,7 +8,7 @@
 	import Icons from '$lib/components/Icons.svelte';
 	import ErrorAlert from '$lib/components/forms/ErrorAlert.svelte';
 	import InfoDropdown from '$lib/components/dropdowns/InfoDropdown.svelte';
-	import { APIURLS, type AddDishBody, fetchFromApi, type AddDishResponse } from '$lib/api.js';
+	import { APIURLS, type AddDishResponse, fetchFromApiForm } from '$lib/api.js';
 
 	export let data;
 	let ingredient = { value: '' };
@@ -73,13 +73,15 @@
 
 	async function AddDish() {
 		loading = true;
-		const response = await fetchFromApi<AddDishBody>(APIURLS.ADD_DISH, {
-			name: name_text,
-			url: url_text,
-			image: image,
-			ingredients: $ingredients,
-			email: data.user.email as string
-		});
+		console.log('Image: ', image);
+		const formData = new FormData();
+		formData.append('name', name_text);
+		formData.append('url', url_text);
+		formData.append('ingredients', JSON.stringify($ingredients));
+		formData.append('email', data.user.email as string);
+		formData.append('image', image as File);
+
+		const response = await fetchFromApiForm(APIURLS.ADD_DISH, formData);
 		const body = (await response.json()) as AddDishResponse;
 		if (body.va.is_valid) {
 			window.location.href = '/dishes/add/success';
