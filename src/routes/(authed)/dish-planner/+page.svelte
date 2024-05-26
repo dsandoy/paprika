@@ -1,54 +1,46 @@
 <script lang="ts">
-	import Button from '$lib/components/Button.svelte';
 	import Checkbox from '$lib/components/Checkbox.svelte';
+	import Icons from '$lib/components/Icons.svelte';
 	import Loading from '$lib/components/Loading.svelte';
 	import PlannerEntry from '$lib/components/dish/PlannerEntry.svelte';
-	import { currentPlans, dishes, nextWeekPlans } from '$lib/stores';
+	import { currentPlans, dishes } from '$lib/stores';
 	import type { ReadPlan } from '$lib/types.js';
+	import { DateHandler } from '$lib/utils';
 	import { onMount } from 'svelte';
 
 	export let data;
 
 	let loading = false;
 	let updateLoading = false;
-	let up2loading = false;
+	let modal: HTMLDialogElement;
+	let hasCreatedShoppingList = false;
 
 	onMount(() => {
 		// create missing plans for current and next week..
 		loading = true;
 		dishes.set(data.dishes);
-		currentPlans.set(data.thisWeekPlans);
-		nextWeekPlans.set(data.nextWeekPlans);
+		currentPlans.set(data.plans);
 		loading = false;
 	});
 
 	let allCheckedThis = false;
-	let allCheckedNext = false;
 
-	function checkAll(next = false) {
-		if (next) {
-			allCheckedNext = !allCheckedNext;
-			const list = $nextWeekPlans;
-			list.forEach((p) => (p.checked = allCheckedNext));
-			nextWeekPlans.set(list);
-		} else {
-			allCheckedThis = !allCheckedThis;
-			const list = $currentPlans;
-			list.forEach((p) => (p.checked = allCheckedThis));
-			currentPlans.set(list);
-		}
+	function checkAll() {
+		allCheckedThis = !allCheckedThis;
+		const list = $currentPlans;
+		list.forEach((p) => (p.checked = allCheckedThis));
+		currentPlans.set(list);
 	}
 
-	async function updateShoppingList(is_next = false) {
+	async function updateShoppingList() {
+		if (hasCreatedShoppingList) return;
 		updateLoading = true;
-		let checkedPlans: ReadPlan[];
-		if (is_next) {
-			checkedPlans = $nextWeekPlans.filter((p) => p.checked);
-		} else {
-			checkedPlans = $currentPlans.filter((p) => p.checked);
+		let checkedPlans: ReadPlan[] = $currentPlans.filter((p) => p.checked);
+		if (checkedPlans.length == 0) {
+			updateLoading = false;
+			return;
 		}
 
-		console.log(checkedPlans);
 		const response = await fetch('/api/list/add-dishes', {
 			method: 'POST',
 			headers: {
@@ -62,6 +54,7 @@
 
 		if (response.ok) {
 			console.log('ok');
+			hasCreatedShoppingList = true;
 		}
 		updateLoading = false;
 	}
@@ -71,55 +64,82 @@
 	class="absolute top-16 bottom-0 left-0 right-0 flex flex-col items-center gap-5 bg-base-100"
 >
 	<h1 class="text-3xl lg:text-5xl rounded mt-8 mb-8">Middagsplanlegger</h1>
+	<div class="p-4 flex justify-end items-center">
+		<button class="btn btn-primary text-white" on:click={() => modal.showModal()}>
+			<Icons iconName="zondicons:list-add" height="1.5rem" />
+			Generer Handleliste</button
+		>
+	</div>
 	<Loading bind:loading>
-		<div class="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:w-auto">
+		<div>
 			<!-- This week -->
-			<section class="flex flex-col items-center relative">
-				<div
-					class="flex gap-8 lg:gap-16 p-4 justify-center items-center border-b-2 border-b-base-300"
-				>
-					<Button classNames="flex gap-6 lg:gap-8 w-auto" on:click={() => checkAll()}>
-						<Checkbox bind:checked={allCheckedThis} disableCheckToggle></Checkbox>
-						<p class="text-xs">Velg alle</p>
-					</Button>
-					<h3 class="text-sm">Denne uka</h3>
-					<button
-						class="text-xs h-auto w-auto p-2 btn btn-primary btn-outline"
-						on:click={() => updateShoppingList}
-					>
-						<Loading bind:loading={updateLoading}>Lag Handleliste</Loading>
-					</button>
-				</div>
-				{#if $currentPlans}
-					{#each $currentPlans as plannerEntry}
-						<PlannerEntry bind:plannerEntry />
-					{/each}
-				{/if}
-				<div class="lg:hidden h-[2px] w-[90%] mt-8 bg-gray-300"></div>
-			</section>
-			<!-- next week -->
-			<section class="flex flex-col items-center relative">
-				<div
-					class="flex gap-8 lg:gap-16 p-4 justify-center items-center border-b-2 border-b-base-300"
-				>
-					<Button classNames="flex  gap-6 lg:gap-8 w-auto" on:click={() => checkAll(true)}>
-						<Checkbox bind:checked={allCheckedNext} disableCheckToggle></Checkbox>
-						<p class="text-xs">Velg alle</p>
-					</Button>
-					<h3 class="text-sm">Neste Uke</h3>
-					<button
-						class="text-xs h-auto w-auto p-2 btn btn-primary btn-outline"
-						on:click={() => updateShoppingList(true)}
-					>
-						<Loading bind:loading={up2loading}>Lag Handleliste</Loading></button
-					>
-				</div>
-				{#if $nextWeekPlans}
-					{#each $nextWeekPlans as plannerEntry}
-						<PlannerEntry {plannerEntry} />
-					{/each}
-				{/if}
+			<section>
+				<ul class="timeline timeline-vertical timeline-compact">
+					{#if $currentPlans}
+						{#each $currentPlans as plannerEntry}
+							<PlannerEntry bind:plannerEntry />
+						{/each}
+					{/if}
+				</ul>
 			</section>
 		</div>
 	</Loading>
 </section>
+
+<dialog bind:this={modal} class="modal">
+	<div class="modal-box">
+		<h3 class="font-bold text-lg">Generer handleliste</h3>
+		{#if hasCreatedShoppingList}
+			<div class="flex flex-col gap-4 justify-center items-center">
+				<Icons iconName="zondicons:checkmark-outline" height="3.5rem" classNames="text-success" />
+				<p>Du har generert handlelisten!</p>
+				<div class="flex flex-row gap-4">
+					<a href="/shopping-list" class="btn btn-primary w-52 text-white">La meg se</a>
+					<button class="btn btn-secondary" on:click={() => (hasCreatedShoppingList = false)}>
+						<Icons iconName="zondicons:refresh" height="1.5rem" />
+						Generer igjen</button
+					>
+					<form method="dialog">
+						<button class="btn btn-accent">Lukk</button>
+					</form>
+				</div>
+			</div>
+		{:else}
+			<p class="py-4 text-sm">Velg alle matrettene du vil handle for</p>
+			<button on:click={checkAll} class="btn btn-neutral mb-4">Velg Alle</button>
+			<div class="max-h-96 text-sm overflow-y-auto flex flex-col gap-2">
+				{#each $currentPlans as plan}
+					{#if (DateHandler.isTimestampToday(plan.date) == 'after' || DateHandler.isTimestampToday(plan.date) == 'today') && plan.dish}
+						<button
+							data-ui={plan.checked}
+							class="flex gap-2 bg-base-200 data-isOpen:bg-primary p-2 rounded-sm"
+							on:click={() => (plan.checked = !plan.checked)}
+						>
+							<Checkbox bind:checked={plan.checked} disableCheckToggle />
+							<p>{DateHandler.showDate(plan.date)}</p>
+							<img alt="dish" src={`/api/dishes/${plan.dishId}/image/`} class="h-8 w-8 rounded" />
+							<p>{plan.dish.name}</p>
+						</button>
+					{/if}
+				{/each}
+			</div>
+			<div class="modal-action">
+				<button
+					class="btn btn-primary text-white w-52 lg:w-64"
+					on:click={() => updateShoppingList()}
+				>
+					<Loading bind:loading={updateLoading}>
+						<Icons iconName="zondicons:list-add" height="1.5rem" />
+						Generer
+					</Loading>
+				</button>
+				<form method="dialog">
+					<button class="btn btn-accent">Tilbake</button>
+				</form>
+			</div>
+		{/if}
+	</div>
+	<form method="dialog" class="modal-backdrop">
+		<button></button>
+	</form>
+</dialog>

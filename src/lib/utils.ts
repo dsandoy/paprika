@@ -17,7 +17,27 @@ export class DateHandler {
 		const dateStr = date.toDateString();
 		// remove month and year
 		const dateArr = dateStr.split(' ');
-		return dateArr[0] + ' ' + dateArr[2];
+		return this.translateToNorwegian(dateArr[0] + ' ' + dateArr[2]);
+	}
+
+	private static translateToNorwegian(date: string) {
+		const dateArr = date.split(' ');
+		if (dateArr[0] == 'Mon') {
+			dateArr[0] = 'Man';
+		} else if (dateArr[0] == 'Tue') {
+			dateArr[0] = 'Tir';
+		} else if (dateArr[0] == 'Wed') {
+			dateArr[0] = 'Ons';
+		} else if (dateArr[0] == 'Thu') {
+			dateArr[0] = 'Tor';
+		} else if (dateArr[0] == 'Fri') {
+			dateArr[0] = 'Fre';
+		} else if (dateArr[0] == 'Sat') {
+			dateArr[0] = 'Lør';
+		} else if (dateArr[0] == 'Sun') {
+			dateArr[0] = 'Søn';
+		}
+		return dateArr.join(' ') + '.';
 	}
 
 	/** Returns the next monday from the provided date.. */
