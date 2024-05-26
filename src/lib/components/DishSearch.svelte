@@ -28,11 +28,6 @@
 <label
 	class="input input-bordered input-primary flex justify-center items-center gap-2 focus-within:outline-none focus-within:ring-2 focus-within:ring-primary"
 >
-	<input
-		placeholder="Søk"
-		type="text"
-		class="{classNames} w-24 lg:w-auto"
-		bind:value={searchWord}
-	/>
+	<input placeholder="Søk" type="text" class="{classNames} grow" bind:value={searchWord} />
 	<Icons iconName="zondicons:search" height="1.5rem" classNames="text-green" />
 </label>

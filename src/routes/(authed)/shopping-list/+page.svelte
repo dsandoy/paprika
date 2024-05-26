@@ -24,7 +24,9 @@
 	let entryText = '';
 
 	async function createNewEntry() {
+		todoLoading = true;
 		if (entryText == '') {
+			todoLoading = false;
 			return;
 		}
 		const newEntry: CreateListEntry = {
@@ -43,6 +45,7 @@
 			$shoppingList.push({ ...newEntry, is_complete: false });
 			await fetchList();
 		}
+		todoLoading = false;
 		return;
 	}
 
@@ -93,6 +96,7 @@
 	let filteredDishes: ReadDish[] = [];
 	let selectedDish: ReadDish | null = null;
 	let dishLoading = false;
+	let todoLoading = false;
 
 	function setChosenDish(dish: ReadDish) {
 		selectedDish = dish;
@@ -125,10 +129,8 @@
 	<div class="flex justify-between items-center pr-4 pl-4">
 		<h2 class=" p-4 text-2xl">Handleliste</h2>
 		<button class="btn btn-primary text-white" on:click={() => modal2.showModal()}>
-			<Loading bind:loading={dishLoading}>
-				<Icons iconName="zondicons:add-outline" height="1.5rem" />
-				Fra matrett
-			</Loading>
+			<Icons iconName="zondicons:add-outline" height="1.5rem" />
+			Fra matrett
 		</button>
 	</div>
 	<dialog class="modal" bind:this={modal2}>
@@ -156,16 +158,16 @@
 					</li>
 				{/each}
 			</div>
-			<button class="btn btn-primary text-white" on:click={addDishIngredients}
-				>Legg til valgte matrett</button
-			>
+			<button class="btn btn-primary text-white" on:click={addDishIngredients}>
+				<Loading bind:loading={dishLoading}>Legg til valgte matrett</Loading>
+			</button>
 		</ul>
 		<form method="dialog" class="modal-backdrop">
 			<button>close</button>
 		</form>
 	</dialog>
 	<div class="w-full lg:w-[60%] lg:my-8">
-		<div class="min-h-[36rem]">
+		<div class="min-h-[36rem] max-h-[42rem]">
 			<section class="flex flex-col gap-4 p-4 lg:p-8">
 				{#if numTodo === 0}
 					<h3 class="text-center text-2xl">Handlelista er tom..</h3>
@@ -232,22 +234,27 @@
 			>
 			<dialog id="modal" class="modal modal-middle lg:modal-bottom" bind:this={modal}>
 				<div
-					class="modal-box flex flex-col gap-3 justify-center
+					class="modal-box flex flex-col gap-4 justify-center
 				 items-center"
 				>
 					<h3 class="font-bold text-lg">Legg til i lista</h3>
 					<input
-						class="border-[1px] border-base-300 px-8 bg-primary/20 input"
+						class="border-[1px] bg-base-100 px-8 input input-primary"
 						type="text"
 						name="entrytext"
 						placeholder="Brød"
 						bind:value={entryText}
 					/>
-					<form method="dialog" class="flex justify-between">
-						<button class="btn btn-primary text-white" on:click={createNewEntry}>Legg til</button>
-						<button class="btn btn-accent text-white">Avbryt</button>
-					</form>
+					<button class="btn btn-primary text-white w-64" on:click={createNewEntry}>
+						<Loading bind:loading={todoLoading}>
+							<Icons iconName="zondicons:add-outline" />
+							Legg til
+						</Loading>
+					</button>
 				</div>
+				<form method="dialog" class="modal-backdrop">
+					<button></button>
+				</form>
 			</dialog>
 		</section>
 	</div>
