@@ -18,6 +18,7 @@
 	let numCompleted = 0;
 
 	let modal: HTMLDialogElement;
+	let modal2: HTMLDialogElement;
 	let hideComplete = false;
 
 	let entryText = '';
@@ -121,17 +122,19 @@
 </script>
 
 <section class="lg:flex lg:flex-col gap-5 justify-center items-center bg-base-100 w-full">
-	<h2 class=" p-4 lg:p-8 text-2xl">Handleliste</h2>
-	<section class="dropdown">
-		<div class="btn btn-primary text-white" tabindex="-1">
+	<div class="flex justify-between items-center pr-4 pl-4">
+		<h2 class=" p-4 text-2xl">Handleliste</h2>
+		<button class="btn btn-primary text-white" on:click={() => modal2.showModal()}>
 			<Loading bind:loading={dishLoading}>
 				<Icons iconName="zondicons:add-outline" height="1.5rem" />
 				Fra matrett
 			</Loading>
-		</div>
-		<ul class="dropdown-content menu p-4 shadow bg-base-200 rounded-box z-10">
+		</button>
+	</div>
+	<dialog class="modal" bind:this={modal2}>
+		<ul class="modal-box w-72 lg:w-96 menu p-4 shadow bg-base-200 rounded-box z-10">
 			<div class="flex gap-2 justify-between pr-4">
-				<strong class="mb-4">Velg matrett til handleliste</strong>
+				<strong class="mb-4 mt-2 text-base">Velg matrett til handleliste</strong>
 			</div>
 			<button class="pb-4">
 				<DishSearch bind:filteredDishes dishes={$dishes} classNames="text-sm" />
@@ -157,7 +160,10 @@
 				>Legg til valgte matrett</button
 			>
 		</ul>
-	</section>
+		<form method="dialog" class="modal-backdrop">
+			<button>close</button>
+		</form>
+	</dialog>
 	<div class="w-full lg:w-[60%] lg:my-8">
 		<div class="min-h-[36rem]">
 			<section class="flex flex-col gap-4 p-4 lg:p-8">
