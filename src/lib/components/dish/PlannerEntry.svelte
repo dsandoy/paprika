@@ -75,7 +75,7 @@
 		}
 	}
 
-	let iconColor;
+	let iconColor: string;
 	if (
 		DateHandler.isTimestampToday(plannerEntry.date) === 'after' ||
 		DateHandler.isTimestampToday(plannerEntry.date) === 'today'
