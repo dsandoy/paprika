@@ -42,11 +42,15 @@ export const load = async ({ parent }) => {
 			console.error(e);
 		}
 	}
+	thisWeekPlans = thisWeekPlans.filter(
+		(p) => p.date >= DateHandler.getDayNDaysAway(todayWithUTCTime, -2)
+	);
+
+	const plans = [...thisWeekPlans, ...nextWeekPlans];
 
 	return {
 		user: user,
 		dishes: dishes,
-		thisWeekPlans: thisWeekPlans,
-		nextWeekPlans: nextWeekPlans
+		plans: plans
 	};
 };
