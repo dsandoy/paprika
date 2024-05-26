@@ -21,7 +21,7 @@
 </script>
 
 <Dropdown
-	classNamesContent="w-64 h-40 absolute bg-base-200 border-[1px] border-accent z-20 lg:right-[40%] lg:bottom-[20%] right-[20%] bottom-[20%] p-5 rounded"
+	classNamesContent="w-64 h-40 absolute bg-base-200 shadow-lg  z-20 lg:right-[40%] lg:bottom-[20%] right-[20%] bottom-[20%] p-5 rounded"
 	bind:isOpen
 >
 	<Button
