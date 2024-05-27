@@ -127,6 +127,16 @@ export class DishQueries {
 		return data;
 	}
 
+	public static async getCount(email: string) {
+		if (!email) throw new ValueError('No user provided');
+		const count = await prisma.dish.count({
+			where: {
+				user: email
+			}
+		});
+		return count;
+	}
+
 	public static async update(dish: UpdateDish) {
 		if (!dish || !dish.id)
 			throw new ValueError('dish not valid, missing ID or not provided! Dish: ' + dish);
@@ -216,6 +226,18 @@ export class PlanQueries {
 				id: id
 			}
 		});
+	}
+
+	/** Counts the number of plans with a dish ID */
+	public static async getCount(email: string) {
+		if (!email) throw new ValueError('No user provided');
+		const count = await prisma.plan.count({
+			where: {
+				user: email,
+				dishId: { not: null }
+			}
+		});
+		return count;
 	}
 
 	/**
