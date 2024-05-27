@@ -3,12 +3,12 @@ import { DateHandler } from '$lib/utils.js';
 
 export const load = async ({ parent }) => {
 	const { user } = await parent();
-	const planCount = await PlanQueries.getCount(user.email);
-	const dishCount = await DishQueries.getCount(user.email);
+	const planCount = await PlanQueries.getCount(user?.email as string);
+	const dishCount = await DishQueries.getCount(user?.email as string);
 
 	const dateRange = createDateRange();
 
-	const plans = await PlanQueries.getPlans(user.email, dateRange);
+	const plans = await PlanQueries.getPlans(user?.email as string, dateRange);
 
 	return {
 		planCount: planCount,
