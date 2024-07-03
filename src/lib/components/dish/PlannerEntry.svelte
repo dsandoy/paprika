@@ -127,20 +127,43 @@
 		</a>
 
 		<!-- set dish modal  -->
-		<button class="p-3 btn text-neutral cursor-pointer" on:click={() => modal.showModal()}>
+		<button
+			class="p-3 btn btn-outline btn-neutral cursor-pointer"
+			on:click={() => modal.showModal()}
+		>
 			<Icons iconName="zondicons:compose" />
 		</button>
 		<dialog bind:this={modal} class="modal">
-			<div class="modal-box bg-base-200 w-[24rem] lg:w-[40rem]">
+			<div class="modal-box bg-base-200 w-full rounded-sm lg:w-[40rem]">
 				<ul class="menu rounded-box z-10">
+					<div
+						class="flex flex-row gap-2 p-2 justify-start items-center mb-4 w-full min-h-14 border-base-300 border-[1px] rounded"
+					>
+						{#if chosenDish && typeof chosenDish === 'object'}
+							<DishImage
+								classNames="w-10 lg:w-11 h-10 lg:h-11"
+								imagesrc={`/api/dishes/${chosenDish.id}/image/`}
+							/>
+
+							<p class="text-base">
+								{chosenDish.name}
+							</p>
+						{:else if chosenDish && typeof chosenDish === 'string'}
+							<div class="flex justify-center items-center pl-3 pr-3">
+								<Icons iconName="zondicons:edit-pencil" classNames="text-primary" height="1.0rem" />
+							</div>
+							<p class="text-base">{chosenDish}</p>
+						{/if}
+					</div>
 					<div class="flex gap-2 justify-between pr-4">
-						<strong class="mb-4">Legg til matrett</strong>
+						<strong class="mb-4">Hva skal være til middag?</strong>
 						{DateHandler.showDate(plannerEntry.date)}
 					</div>
+
 					<button class="pb-4">
 						<DishSearch bind:filteredDishes dishes={$dishes} bind:searchWord />
 					</button>
-					<div class="overflow-x-auto h-60">
+					<div class="overflow-x-auto h-40 lg:h-60">
 						{#each filteredDishes as dish}
 							<li>
 								<button
@@ -160,45 +183,33 @@
 				</ul>
 				<div class="mt-4 mb-4 text-sm flex flex-col gap-4">
 					<strong>Eller legg til notat</strong>
-					<div class="flex flex-col lg:flex-row gap-3 w-full justify-center items-center">
+					<div class="flex flex-col gap-3 w-full justify-center items-center">
 						<label class="input input-primary text-sm flex-row">
 							Notat
 							<input type="text" bind:value={note} placeholder="Restemat" class=" mt-3 mb-3" />
 						</label>
 
 						<div class="flex flex-row gap-3">
-							<button class="btn btn-neutral" on:click={addNote}>Legg til</button>
-							<button class="btn btn-accent" on:click={removeNote}>Fjern</button>
+							<button class="btn btn-neutral" on:click={addNote}>
+								<Icons iconName="mdi:note-edit" />
+								Bruk notat</button
+							>
+							<button class="btn btn-accent" on:click={removeNote}>
+								<Icons iconName="zondicons:trash" />
+							</button>
 						</div>
 					</div>
 					<form method="dialog" class="flex flex-col gap-4 justify-center items-center">
-						<div
-							class="flex flex-row gap-2 p-2 justify-start items-center w-full min-h-14 border-base-300 border-[1px] rounded"
+						<button class="btn btn-primary w-full text-white" on:click={updateDatabase}>
+							<Icons iconName="mdi:autorenew" />
+							Lagre</button
 						>
-							{#if chosenDish && typeof chosenDish === 'object'}
-								<DishImage
-									classNames="w-10 lg:w-11 h-10 lg:h-11"
-									imagesrc={`/api/dishes/${chosenDish.id}/image/`}
-								/>
-
-								<p class="text-base">
-									{chosenDish.name}
-								</p>
-							{:else if chosenDish && typeof chosenDish === 'string'}
-								<div class="flex justify-center items-center pl-3 pr-3">
-									<Icons
-										iconName="zondicons:edit-pencil"
-										classNames="text-primary"
-										height="1.0rem"
-									/>
-								</div>
-								<p class="text-base">{chosenDish}</p>
-							{/if}
-						</div>
-						<button class="btn btn-primary w-full" on:click={updateDatabase}>Ferdig</button>
 					</form>
 				</div>
 			</div>
+			<form method="dialog" class="modal-backdrop">
+				<button></button>
+			</form>
 		</dialog>
 	</div>
 	<hr

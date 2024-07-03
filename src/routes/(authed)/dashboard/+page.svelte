@@ -9,7 +9,7 @@
 	<div class="w-full p-4 mt-4">
 		<h1 class="text-2xl lg:text-3xl lg:text-center">Dashbord</h1>
 		<section class="flex flex-col justify-center items-center p-4 pt-8 lg:pt-16">
-			<div class="stats bg-base-200 shadow-lg stats-horizontal">
+			<div class="stats bg-base-200 stats-horizontal">
 				<div class="p-4 stat place-items-center">
 					<h3 class="stat-title">Middager</h3>
 					<div class="stat-value text-success">{data.planCount}</div>
@@ -23,10 +23,10 @@
 				</div>
 				<div class="stat p-4 shadow-lg place-items-center">
 					<h3 class="stat-title">Matretter</h3>
-					<div class="stat-value text-nice-blue">{data.dishCount}</div>
+					<div class="stat-value text-neutral">{data.dishCount}</div>
 					<div class="stat-desc">Antall matretter</div>
 					<div class="stat-actions">
-						<a href="/dishes/add" class="btn btn-sm bg-nice-blue/60">
+						<a href="/dishes/add" class="btn btn-sm btn-neutral">
 							<Icons iconName="zondicons:location-food" height="0.8rem" />
 							Legg til
 						</a>

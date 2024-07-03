@@ -52,17 +52,22 @@
 						<td>
 							{#if dish.url !== ''}
 								<a href={dish.url} class="w-12 lg:w-16">
-									<button class="btn btn-primary text-white rounded-lg lg:rounded-sm">
+									<button
+										class="btn btn-primary h-12 w-12 min-h-12 lg:w-auto text-white rounded-lg lg:rounded-sm"
+									>
 										<span class="hidden lg:block">Oppskrift</span>
-										<Icons height="1rem" />
+										<Icons height="1.3rem" />
 									</button>
 								</a>
 							{/if}
 						</td>
 						<td>
-							<a href="/dishes/edit/{dish.id}" class="btn btn-secondary rounded-lg lg:rounded-sm">
+							<a
+								href="/dishes/edit/{dish.id}"
+								class="btn btn-secondary rounded-lg h-12 w-12 min-h-12 lg:w-auto lg:rounded-sm"
+							>
 								<span class="hidden lg:block">Endre</span>
-								<Icons iconName="zondicons:edit-pencil" height="1rem" />
+								<Icons iconName="zondicons:edit-pencil" height="1.1rem" />
 							</a>
 						</td>
 					</tr>
