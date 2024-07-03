@@ -61,10 +61,10 @@ export default {
   daisyui : {
     themes: [{
       light: {
-        "primary": "#89a492",
-        "secondary": "#cfcfcf",
+        "primary": "#627F6B",
+        "secondary": "#839D9A",
         "accent": "#dc8491",
-        "neutral": "#e8b5fd",
+        "neutral": "#003844",
         "base-300": "#e3e3e3",
         "base-200": "#ffffff",
         "base-100": "#f4f4f4",
@@ -77,11 +77,11 @@ export default {
     {
     dark:  {
       "primary": "#3F5747",
-      "secondary": "#cfcfcf",
+      "secondary": "#839D9A",
       "accent": "#dc8491",
-      "neutral": "#e8b5fd",
-      "base-300": "#192321",
-      "base-200": "#2a3c38",
+      "neutral": "#426B6F",
+      "base-300": "#3B4C49",
+      "base-200": "#2F3E3B",
       "base-100": "#22302d",
       "info": "#6090af",
       "success": "#529873",

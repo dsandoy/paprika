@@ -23,10 +23,10 @@
 				</div>
 				<div class="stat p-4 shadow-lg place-items-center">
 					<h3 class="stat-title">Matretter</h3>
-					<div class="stat-value text-nice-blue">{data.dishCount}</div>
+					<div class="stat-value text-neutral">{data.dishCount}</div>
 					<div class="stat-desc">Antall matretter</div>
 					<div class="stat-actions">
-						<a href="/dishes/add" class="btn btn-sm bg-nice-blue/60">
+						<a href="/dishes/add" class="btn btn-sm btn-neutral">
 							<Icons iconName="zondicons:location-food" height="0.8rem" />
 							Legg til
 						</a>

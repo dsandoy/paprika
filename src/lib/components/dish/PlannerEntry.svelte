@@ -127,7 +127,10 @@
 		</a>
 
 		<!-- set dish modal  -->
-		<button class="p-3 btn text-neutral cursor-pointer" on:click={() => modal.showModal()}>
+		<button
+			class="p-3 btn btn-outline btn-neutral cursor-pointer"
+			on:click={() => modal.showModal()}
+		>
 			<Icons iconName="zondicons:compose" />
 		</button>
 		<dialog bind:this={modal} class="modal">

@@ -61,7 +61,7 @@
 	/>
 {:else}
 	<button
-		class="border-[1px] border-base-100 rounded-sm px-4 p-2 flex flex-row justify-between items-center w-[100%] bg-base-200 btn font-normal"
+		class="border-[1px] border-base-100 rounded-sm lg:rounded px-4 p-2 flex flex-row justify-between items-center w-[100%] bg-base-200 btn font-normal"
 		on:click={toggleIsComplete}
 	>
 		<div class="flex flex-row lg:gap-8 gap-4 relative items-center">

@@ -147,7 +147,7 @@
 </script>
 
 <section class="lg:flex lg:flex-col gap-5 justify-center items-center bg-base-100 w-full">
-	<div class="flex justify-between items-center pr-4 pl-4 mt-8">
+	<div class="flex justify-between w-full lg:w-[35%] items-center pr-4 pl-4 mt-8">
 		<h2 class=" p-4 text-2xl">Handleliste</h2>
 		<button
 			class="btn btn-primary text-white"
@@ -195,7 +195,7 @@
 			<button>close</button>
 		</form>
 	</dialog>
-	<div class="w-full lg:w-[60%]">
+	<div class="w-full lg:w-[40%]">
 		<div class="">
 			<section class="flex flex-col gap-4 lg:p-8">
 				{#if numTodo === 0}

@@ -115,7 +115,7 @@
 					{#if (DateHandler.isTimestampToday(plan.date) == 'after' || DateHandler.isTimestampToday(plan.date) == 'today') && plan.dish}
 						<button
 							data-ui={plan.checked}
-							class="flex gap-2 bg-base-200 data-isOpen:bg-primary p-2 rounded-sm"
+							class="flex gap-2 bg-base-200 data-isOpen:bg-primary/60 p-2 rounded-sm"
 							on:click={() => (plan.checked = !plan.checked)}
 						>
 							<Checkbox bind:checked={plan.checked} disableCheckToggle />
@@ -139,7 +139,7 @@
 				<form method="dialog">
 					<button class="btn btn-accent text-white">
 						<Icons iconName="mdi:close-circle" />
-						Tilbake</button
+						<span class="hidden lg:contents">Tilbake</span></button
 					>
 				</form>
 			</div>
