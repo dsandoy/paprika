@@ -221,7 +221,7 @@
 				>
 					<Icons iconName="zondicons:add-outline" height="1.7rem" /></button
 				>
-				<dialog id="modal" class="modal lg:modal-middle modal-bottom" bind:this={modal}>
+				<dialog id="modal" class="modal modal-middle" bind:this={modal}>
 					<div
 						class="modal-box flex flex-col gap-4 justify-center
 					 items-center w-full lg:w-auto rounded-sm lg:rounded-box"
