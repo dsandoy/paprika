@@ -65,10 +65,10 @@
 >
 	<h1 class="text-3xl lg:text-5xl rounded mt-8 mb-8">Middagsplanlegger</h1>
 	<div class="p-4 flex justify-end items-center">
-		<button class="btn btn-primary text-white" on:click={() => modal.showModal()}>
-			<Icons iconName="zondicons:list-add" height="1.5rem" />
-			Generer Handleliste</button
-		>
+		<button class="btn btn-primary text-white btn-md" on:click={() => modal.showModal()}>
+			<Icons iconName="mdi:add-shopping-cart" height="1.7rem" />
+			Lag Handleliste
+		</button>
 	</div>
 	<Loading bind:loading>
 		<div>
@@ -106,7 +106,10 @@
 			</div>
 		{:else}
 			<p class="py-4 text-sm">Velg alle matrettene du vil handle for</p>
-			<button on:click={checkAll} class="btn btn-neutral mb-4">Velg Alle</button>
+			<button on:click={checkAll} class="btn btn-neutral mb-4">
+				<Icons iconName="mdi:checkbox-marked-outline" />
+				Velg Alle</button
+			>
 			<div class="max-h-96 text-sm overflow-y-auto flex flex-col gap-2">
 				{#each $currentPlans as plan}
 					{#if (DateHandler.isTimestampToday(plan.date) == 'after' || DateHandler.isTimestampToday(plan.date) == 'today') && plan.dish}
@@ -123,18 +126,21 @@
 					{/if}
 				{/each}
 			</div>
-			<div class="modal-action">
+			<div class="modal-action justify-start">
 				<button
 					class="btn btn-primary text-white w-52 lg:w-64"
 					on:click={() => updateShoppingList()}
 				>
 					<Loading bind:loading={updateLoading}>
-						<Icons iconName="zondicons:list-add" height="1.5rem" />
+						<Icons iconName="mdi:add-shopping-cart" height="1.7rem" />
 						Generer
 					</Loading>
 				</button>
 				<form method="dialog">
-					<button class="btn btn-accent">Tilbake</button>
+					<button class="btn btn-accent text-white">
+						<Icons iconName="mdi:close-circle" />
+						Tilbake</button
+					>
 				</form>
 			</div>
 		{/if}
