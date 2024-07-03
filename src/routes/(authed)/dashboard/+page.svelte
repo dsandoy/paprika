@@ -9,7 +9,7 @@
 	<div class="w-full p-4 mt-4">
 		<h1 class="text-2xl lg:text-3xl lg:text-center">Dashbord</h1>
 		<section class="flex flex-col justify-center items-center p-4 pt-8 lg:pt-16">
-			<div class="stats bg-base-200 shadow-lg stats-horizontal">
+			<div class="stats bg-base-200 stats-horizontal">
 				<div class="p-4 stat place-items-center">
 					<h3 class="stat-title">Middager</h3>
 					<div class="stat-value text-success">{data.planCount}</div>

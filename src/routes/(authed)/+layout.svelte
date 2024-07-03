@@ -18,12 +18,12 @@
 	{:else}
 		<div class="w-16"></div>
 		<div class="absolute top-4 left-4 z-10 flex flex-row gap-5">
-			<a href="/dashboard" class="hover:text-green" title="Dashbord"
-				><Icons iconName="zondicons:home" height="1.75rem" /></a
+			<a href="/dashboard" class="hover:text-green flex gap-2 items-end text-sm" title="Dashbord"
+				><Icons iconName="zondicons:home" height="1.5rem" /> Dashboard</a
 			>
 			{#each navigations as nav}
-				<a href={nav.url} class="hover:text-green" title={nav.name}
-					><Icons iconName={nav.icon} height="1.75rem" /></a
+				<a href={nav.url} class="hover:text-green flex gap-2 items-end text-sm" title={nav.name}
+					><Icons iconName={nav.icon} height="1.5rem" />{nav.name}</a
 				>
 			{/each}
 		</div>

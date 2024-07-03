@@ -63,7 +63,7 @@
 <section
 	class="absolute top-16 bottom-0 left-0 right-0 flex flex-col items-center gap-5 bg-base-100"
 >
-	<h1 class="text-3xl lg:text-5xl rounded mt-8 mb-8">Middagsplanlegger</h1>
+	<h1 class="text-2xl lg:text-3xl rounded mt-8 mb-8">Middagsplanlegger</h1>
 	<div class="p-4 flex justify-end items-center">
 		<button class="btn btn-primary text-white btn-md" on:click={() => modal.showModal()}>
 			<Icons iconName="mdi:add-shopping-cart" height="1.7rem" />
