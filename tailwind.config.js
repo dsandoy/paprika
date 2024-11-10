@@ -46,11 +46,22 @@ export default {
             opacity: "1",
             transform: "scale(1)",
           }
-        }
+        },
+          fade_in_right: {
+            "0%": {
+              transform: "translateX(-100%)",
+              opacity: "0",
+            },
+            "100%": {
+              transform: "translateX(0)",
+              opacity: "1",
+            },
+          },
       },
       animation: {
         wiggle: 'confetti 1s ease-in-out infinite',
-        sparkle: 'sparkle 0.35s ease-in-out'
+        sparkle: 'sparkle 0.35s ease-in-out',
+        fade_in_right: 'fade_in_right 0.25s forwards'
       }
     },
     data: {
@@ -61,14 +72,14 @@ export default {
   daisyui : {
     themes: [{
       light: {
-        "primary": "#627F6B",
-        "secondary": "#839D9A",
+        "primary": "#457B9D",
+        "secondary": "#B9CABF",
         "accent": "#dc8491",
-        "neutral": "#003844",
+        "neutral": "#CF5C36",
         "base-300": "#e3e3e3",
         "base-200": "#ffffff",
-        "base-100": "#f4f4f4",
-        "info": "#6090af",
+        "base-100": "#f3f6f4",
+        "info": "#457B9D",
         "success": "#529873",
         "warning": "#f9d639",
         "error": "#ff0000",
@@ -76,19 +87,35 @@ export default {
     },
     {
     dark:  {
-      "primary": "#3F5747",
-      "secondary": "#839D9A",
+      "primary": "#f3f6f4",
+      "secondary": "#6E7C73",
       "accent": "#dc8491",
       "neutral": "#426B6F",
       "base-300": "#3B4C49",
       "base-200": "#2F3E3B",
-      "base-100": "#22302d",
+      "base-100": "#232e27",
       "info": "#6090af",
       "success": "#529873",
       "warning": "#f9d639",
        "error": "#ff0000",
       },
-    }
+    },
+    {
+      tree:    {
+        "primary": "#896978",
+        "secondary": "#394053",
+        "accent": "#723D46",
+        "neutral": "#BFC4AC",
+        "base-100": "#Dad7cd",
+        "base-200": "#F2E9E4",
+        "base-300":"#cbc7b9",
+        "info": "#69585F",
+        "success": "#588157",
+        "warning": "#A3B18A",
+        "error": "#ff0000",
+      }
+    },
+
   ],
   },
   plugins: [

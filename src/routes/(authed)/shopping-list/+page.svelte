@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { dishes, shoppingList } from '$lib/stores';
 	import ListEntry from '$lib/components/shopping/ListEntry.svelte';
-	import SecondaryButton from '$lib/components/SecondaryButton.svelte';
 	import DeleteDropdown from '$lib/components/DeleteDropdown.svelte';
 	import Icons from '$lib/components/Icons.svelte';
 	import { slide } from 'svelte/transition';
@@ -148,17 +147,13 @@
 
 <section class="lg:flex lg:flex-col gap-5 justify-center items-center bg-base-100 w-full">
 	<div class="flex justify-between w-full lg:w-[35%] items-center pr-4 pl-4 mt-8">
-		<h2 class=" p-4 text-2xl">Handleliste</h2>
-		<button
-			class="btn btn-primary text-white"
-			on:click={() => modal2.showModal()}
-			title="Generer handleliste"
-		>
-			<Icons iconName="mdi:add-shopping-cart" height="1.7rem" />
+		<h2 class=" p-4 h2">Handleliste</h2>
+		<button class="btn btn-primary" on:click={() => modal2.showModal()} title="Generer handleliste">
+			<Icons iconName="mdi:add-shopping-cart" height="2.2rem" />
 		</button>
 	</div>
 	<dialog class="modal" bind:this={modal2}>
-		<ul class="modal-box w-full lg:w-96 menu p-4 shadow bg-base-200 rounded-sm lg:rounded-box z-10">
+		<ul class="modal-box w-6/10 lg:w-96 menu p-4 shadow bg-base-200 rounded-sm lg:rounded-box z-10">
 			<div class="flex gap-2 justify-between pr-4">
 				<strong class="mb-4 mt-2 text-base">Velg matrett til handleliste</strong>
 			</div>
@@ -187,9 +182,11 @@
 					</li>
 				{/each}
 			</div>
-			<button class="btn btn-primary text-white" on:click={addDishIngredients}>
-				<Loading bind:loading={dishLoading}>Legg til valgte matrett</Loading>
-			</button>
+			<div>
+				<button class="btn btn-warning" on:click={addDishIngredients}>
+					<Loading bind:loading={dishLoading}>Legg til valgte matrett</Loading>
+				</button>
+			</div>
 		</ul>
 		<form method="dialog" class="modal-backdrop">
 			<button>close</button>
@@ -214,19 +211,15 @@
 			</section>
 
 			<section class="sticky bottom-[30px] p-4">
-				<button
-					class="btn btn-primary text-white"
-					on:click={() => modal.showModal()}
-					title="Legg til"
-				>
+				<button class="btn btn-primary" on:click={() => modal.showModal()} title="Legg til">
 					<Icons iconName="zondicons:add-outline" height="1.7rem" /></button
 				>
 				<dialog id="modal" class="modal modal-middle" bind:this={modal}>
 					<div
 						class="modal-box flex flex-col gap-4 justify-center
-					 items-center w-full lg:w-auto rounded-sm lg:rounded-box"
+					 items-center w-8/10 lg:w-auto rounded-sm lg:rounded-box border border-base-300"
 					>
-						<h3 class="font-bold text-lg">Legg til i lista</h3>
+						<h3 class="font-bold text-lg w-full text-left">Legg til i lista</h3>
 						<input
 							class="border-[1px] bg-base-100 px-8 input input-primary"
 							type="text"
@@ -234,7 +227,7 @@
 							placeholder="Brød"
 							bind:value={entryText}
 						/>
-						<button class="btn btn-primary text-white w-64" on:click={createNewEntry}>
+						<button class="btn btn-primary" on:click={createNewEntry}>
 							<Loading bind:loading={todoLoading}>
 								<Icons iconName="zondicons:add-outline" />
 								Legg til
@@ -250,14 +243,14 @@
 				<section class="flex flex-col gap-4 p-4 lg:p-8 border-t-[1px] border-t-base-300">
 					<div class="flex flex-row justify-between items-center">
 						<div class="flex flex-row gap-5 items-center justify-center px-2">
-							<SecondaryButton on:click={toggleHideComplete} classNames="h-12 w-12 text-primary ">
+							<button
+								on:click={toggleHideComplete}
+								class="h-12 w-12 text-info hover:text-secondary"
+							>
 								{#if hideComplete}<Icons
-										height="1.5rem"
+										height="2.3rem"
 										iconName="zondicons:view-show"
-									/>{:else}<Icons
-										height="1.5rem"
-										iconName="zondicons:view-hide"
-									/>{/if}</SecondaryButton
+									/>{:else}<Icons height="2.3rem" iconName="zondicons:view-hide" />{/if}</button
 							>
 							<h3 class="text-center text-2xl">Fullførte:</h3>
 						</div>

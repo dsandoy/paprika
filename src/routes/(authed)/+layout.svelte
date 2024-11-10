@@ -12,14 +12,16 @@
 	});
 </script>
 
-<header class="w-svw h-16 flex justify-between px-5 items-center">
+<header
+	class="w-svw h-16 flex justify-between px-5 items-center border-b border-base-300 bg-neutral"
+>
 	{#if smallSize}
 		<SideBar />
 	{:else}
 		<div class="w-16"></div>
 		<div class="absolute top-4 left-4 z-10 flex flex-row gap-5">
 			<a href="/dashboard" class="hover:text-primary flex gap-2 items-end text-sm" title="Dashbord"
-				><Icons iconName="zondicons:home" height="1.5rem" /> Dashboard</a
+				><Icons iconName="mdi:view-dashboard" height="1.5rem" /> Dashboard</a
 			>
 			{#each navigations as nav}
 				<a href={nav.url} class="hover:text-primary flex gap-2 items-end text-sm" title={nav.name}

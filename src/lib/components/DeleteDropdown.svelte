@@ -21,14 +21,11 @@
 </script>
 
 <Dropdown
-	classNamesContent="w-64 h-40 absolute bg-base-200 shadow-lg  z-20 lg:right-[40%] lg:bottom-[20%] right-[20%] bottom-[20%] p-5 rounded"
+	classNamesContent="w-64 h-40 absolute bg-base-200 shadow-lg  border border-base-300 z-20 lg:right-[40%] lg:bottom-[20%] right-[20%] bottom-[20%] p-5 rounded"
 	bind:isOpen
 >
-	<Button
-		slot="button"
-		classNames="rounded-lg hover:bg-accent hover:text-white h-12 w-12 bg-base-200 text-accent border-[1px] border-accent mr-2"
-	>
-		<Icons height="1.5rem" iconName="zondicons:trash" /></Button
+	<Button slot="button" classNames=" text-accent  mr-2">
+		<Icons height="1.7rem" iconName="zondicons:trash" /></Button
 	>
 	<div slot="content">
 		<p class="mb-4">Er du sikker på at du vil slette {text}?</p>
@@ -36,16 +33,16 @@
 		<div class="flex flex-row justify-between items-center">
 			<Button
 				on:click={deleteItem}
-				classNames="rounded-lg h-14 w-14 bg-primary text-white flex items-center justify-center"
+				classNames="btn h-14 w-14 btn-primary  flex items-center justify-center"
 			>
-				<Icons height="1.5rem" iconName="zondicons:thumbs-up" />
+				Ja
 			</Button>
 
 			<Button
 				on:click={cancel}
-				classNames="rounded-lg h-14 w-14 bg-base-200 text-red flex items-center justify-center border-[1px] border-accent"
+				classNames="btn h-14 w-14 bg-base-200 text-accent flex items-center justify-center border-[1px] border-accent"
 			>
-				<Icons height="1.5rem" iconName="zondicons:thumbs-down" />
+				Nei
 			</Button>
 		</div>
 	</div>
