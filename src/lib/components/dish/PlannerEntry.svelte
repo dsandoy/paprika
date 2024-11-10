@@ -80,14 +80,14 @@
 		DateHandler.isTimestampToday(plannerEntry.date) === 'after' ||
 		DateHandler.isTimestampToday(plannerEntry.date) === 'today'
 	) {
-		iconColor = 'text-success';
+		iconColor = 'text-primary';
 	} else {
 		iconColor = 'text-primary';
 	}
 </script>
 
 <li>
-	<hr class:bg-success={DateHandler.isTimestampToday(plannerEntry.date) === 'after'} />
+	<hr class:bg-primary={DateHandler.isTimestampToday(plannerEntry.date) === 'after'} />
 	<div class="timeline-start">
 		<p
 			class="w-16 text-sm text-left"
@@ -104,7 +104,9 @@
 			<Icons iconName="zondicons:calendar" classNames={iconColor} height="1.0rem" />
 		{/if}
 	</div>
-	<div class="timeline-end timeline-box border-none shadow-none flex flex-row gap-4">
+	<div
+		class="timeline-end timeline-box border-none shadow-none flex flex-row justify-center items-center gap-4"
+	>
 		<a
 			class="border-[1px] border-base-300 flex flex-row h-14 w-52 lg:w-64 gap-4 rounded align-center items-center hover:border-primary p-2 bg-base-200 cursor-pointer"
 			href={chosenDish && typeof chosenDish === 'object' ? chosenDish.url : ''}
@@ -128,33 +130,14 @@
 
 		<!-- set dish modal  -->
 		<button
-			class="p-3 btn btn-outline btn-neutral cursor-pointer"
+			class="p-1 btn min-h-10 max-h-10 h-10 btn-secondary cursor-pointer"
 			on:click={() => modal.showModal()}
 		>
-			<Icons iconName="zondicons:compose" />
+			<Icons iconName="mdi:calendar-edit" height="1.9rem" />
 		</button>
 		<dialog bind:this={modal} class="modal">
-			<div class="modal-box bg-base-200 w-full rounded-sm lg:w-[40rem]">
+			<div class="modal-box bg-base-200 w-8/10 rounded-sm lg:w-[40rem] border border-base-300">
 				<ul class="menu rounded-box z-10">
-					<div
-						class="flex flex-row gap-2 p-2 justify-start items-center mb-4 w-full min-h-14 border-base-300 border-[1px] rounded"
-					>
-						{#if chosenDish && typeof chosenDish === 'object'}
-							<DishImage
-								classNames="w-10 lg:w-11 h-10 lg:h-11"
-								imagesrc={`/api/dishes/${chosenDish.id}/image/`}
-							/>
-
-							<p class="text-base">
-								{chosenDish.name}
-							</p>
-						{:else if chosenDish && typeof chosenDish === 'string'}
-							<div class="flex justify-center items-center pl-3 pr-3">
-								<Icons iconName="zondicons:edit-pencil" classNames="text-primary" height="1.0rem" />
-							</div>
-							<p class="text-base">{chosenDish}</p>
-						{/if}
-					</div>
 					<div class="flex gap-2 justify-between pr-4">
 						<strong class="mb-4">Hva skal være til middag?</strong>
 						{DateHandler.showDate(plannerEntry.date)}
@@ -199,6 +182,25 @@
 							</button>
 						</div>
 					</div>
+					<div
+						class="flex flex-row gap-2 p-2 justify-start items-center mb-4 w-full min-h-14 border-base-300 border-[1px] rounded"
+					>
+						{#if chosenDish && typeof chosenDish === 'object'}
+							<DishImage
+								classNames="w-10 lg:w-11 h-10 lg:h-11"
+								imagesrc={`/api/dishes/${chosenDish.id}/image/`}
+							/>
+
+							<p class="text-base">
+								{chosenDish.name}
+							</p>
+						{:else if chosenDish && typeof chosenDish === 'string'}
+							<div class="flex justify-center items-center pl-3 pr-3">
+								<Icons iconName="zondicons:edit-pencil" classNames="text-primary" height="1.0rem" />
+							</div>
+							<p class="text-base">{chosenDish}</p>
+						{/if}
+					</div>
 					<form method="dialog" class="flex flex-col gap-4 justify-center items-center">
 						<button class="btn btn-primary w-full text-white" on:click={updateDatabase}>
 							<Icons iconName="mdi:autorenew" />
@@ -213,7 +215,7 @@
 		</dialog>
 	</div>
 	<hr
-		class:bg-success={DateHandler.isTimestampToday(plannerEntry.date) === 'after' ||
+		class:bg-primary={DateHandler.isTimestampToday(plannerEntry.date) === 'after' ||
 			DateHandler.isTimestampToday(plannerEntry.date) === 'today'}
 	/>
 </li>

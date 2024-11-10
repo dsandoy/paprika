@@ -68,13 +68,13 @@
 			<Checkbox bind:checked disableCheckToggle />
 			{#if checked && !entry.is_complete}
 				<div
-					class="animation-sparkle absolute bottom-[-6px] left-[-7px] z-2 animate-sparkle h-[2.4rem] w-[2.4rem] rounded-lg border-dotted border-[3px] border-green opacity-0"
+					class="animation-sparkle absolute bottom-[-6px] left-[-7px] z-2 animate-sparkle h-[2.4rem] w-[2.4rem] rounded-lg border-dotted border-[3px] border-primary opacity-0"
 				></div>
 			{/if}
 			<p data-ui={checked} class="lg:text-lg text-sm data-isOpen:line-through">{entry.text}</p>
 		</div>
 		<div class="flex flex-row gap-2 lg:gap-8 items-center">
-			<span class="text-xs text-nice-blue pr-8"
+			<span class="text-xs text-secondary pr-8"
 				>{#if entry.dishName}{entry.dishName}{/if}</span
 			>
 			{#if !entry.is_complete}

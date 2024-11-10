@@ -63,7 +63,7 @@
 <section
 	class="absolute top-16 bottom-0 left-0 right-0 flex flex-col items-center gap-5 bg-base-100"
 >
-	<h1 class="text-2xl lg:text-3xl rounded mt-8 mb-8">Middagsplanlegger</h1>
+	<h1 class="h2 w-full text-left lg:text-center p-4 rounded">Middagsplanlegger</h1>
 	<div class="p-4 flex justify-end items-center">
 		<button class="btn btn-primary text-white btn-md" on:click={() => modal.showModal()}>
 			<Icons iconName="mdi:add-shopping-cart" height="1.7rem" />
@@ -88,19 +88,19 @@
 
 <dialog bind:this={modal} class="modal">
 	<div class="modal-box">
-		<h3 class="font-bold text-lg">Generer handleliste</h3>
+		<h3 class="font-bold text-lg p-2">Generer handleliste</h3>
 		{#if hasCreatedShoppingList}
 			<div class="flex flex-col gap-4 justify-center items-center">
 				<Icons iconName="zondicons:checkmark-outline" height="3.5rem" classNames="text-success" />
 				<p>Du har generert handlelisten!</p>
 				<div class="flex flex-row gap-4">
-					<a href="/shopping-list" class="btn btn-primary w-52 text-white">La meg se</a>
-					<button class="btn btn-secondary" on:click={() => (hasCreatedShoppingList = false)}>
+					<a href="/shopping-list" class="btn btn-primary w-24 p-1 text-white">La meg se</a>
+					<button class="btn btn-secondary p-1" on:click={() => (hasCreatedShoppingList = false)}>
 						<Icons iconName="zondicons:refresh" height="1.5rem" />
 						Generer igjen</button
 					>
 					<form method="dialog">
-						<button class="btn btn-accent">Lukk</button>
+						<button class="btn btn-accent p-1">Lukk</button>
 					</form>
 				</div>
 			</div>

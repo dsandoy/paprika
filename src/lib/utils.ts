@@ -233,17 +233,17 @@ export class ShoppingListHandler {
 export const navigations = [
 	{
 		url: '/dish-planner',
-		icon: 'zondicons:calendar',
+		icon: 'mdi:nutrition',
 		name: 'Middager'
 	},
 	{
 		url: '/dishes',
-		icon: 'zondicons:location-food',
+		icon: 'mdi:food-turkey',
 		name: 'Matretter'
 	},
 	{
 		url: '/shopping-list',
-		icon: 'zondicons:list',
+		icon: 'mdi:shopping-cart-arrow-down',
 		name: 'Handleliste'
 	}
 ];

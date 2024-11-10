@@ -26,8 +26,13 @@
 </script>
 
 <label
-	class="input input-bordered input-primary flex justify-center items-center gap-2 focus-within:outline-none focus-within:ring-2 focus-within:ring-primary"
+	class="input input-primary min-h-10 h-10 max-h-10 min-w-52 w-52 max-w-52 p-2 flex justify-center items-center gap-2 focus-within:outline-none focus-within:ring-2 focus-within:ring-primary"
 >
-	<input placeholder="Søk" type="text" class="{classNames} grow" bind:value={searchWord} />
+	<input
+		placeholder="Søk"
+		type="text"
+		class="{classNames} min-w-40 w-40 max-w-40"
+		bind:value={searchWord}
+	/>
 	<Icons iconName="zondicons:search" height="1.5rem" classNames="text-green" />
 </label>
